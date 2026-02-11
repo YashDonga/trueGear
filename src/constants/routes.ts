@@ -4,6 +4,8 @@ export const ROUTES = {
   REGISTER: '/register',
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
+  ADD_VEHICLE: '/add-vehicle',
+  VEHICLE_ENTRY_SUCCESS: '/vehicle-entry-success',
 };
 
 export default ROUTES;

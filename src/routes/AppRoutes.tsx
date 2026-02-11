@@ -4,16 +4,20 @@ import Login from '../screens/auth/Login';
 import Register from '../screens/auth/Register';
 import Dashboard from '../screens/dashboard/Dashboard';
 import Profile from '../screens/profile/Profile';
+import AddVehicle from '../screens/vehicles/AddVehicle';
+import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
 import MainLayout from '../layouts/MainLayout.tsx';
 import { ROUTES } from '../constants/routes';
 
 const AppRoutes: React.FC = () => (
-  <BrowserRouter>
+  <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
     <Routes>
-      <Route path={ROUTES.HOME} element={<MainLayout />}> 
+      <Route path={ROUTES.HOME} element={<MainLayout />}>
         <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
         <Route path={ROUTES.DASHBOARD.slice(1)} element={<Dashboard />} />
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
+        <Route path={ROUTES.ADD_VEHICLE.slice(1)} element={<AddVehicle />} />
+        <Route path={ROUTES.VEHICLE_ENTRY_SUCCESS.slice(1)} element={<VehicleEntrySuccess />} />
       </Route>
 
       <Route path={ROUTES.LOGIN} element={<Login />} />
