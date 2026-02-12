@@ -248,7 +248,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
       ) : (
         <>
           {/* ===== Desktop Table ===== */}
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full min-w-175">
               <thead>
                 <tr className="border-b border-[#e5e7eb] text-sm text-[#666]">
@@ -322,7 +322,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
           </div>
 
           {/* ===== Mobile / Tablet Card Layout ===== */}
-          <div className="md:block lg:hidden space-y-3">
+          <div className="sm:block md:hidden space-y-3 mt-4">
             {paginatedVehicles.map((vehicle) => (
               <div key={vehicle.id} className="border rounded-xl p-3">
                 {/* Top Row */}

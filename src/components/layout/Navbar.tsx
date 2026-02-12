@@ -25,7 +25,9 @@ export function Header({ toggleSidebar }: Props) {
           className="lg:hidden sm:px-2! p-2!"
           onClick={() => {
             toggleSidebar();
-            toggleMobileMenu();
+            if (mobileMenuOpen) {
+              setMobileMenuOpen(false);
+            }
           }}
         />
 
