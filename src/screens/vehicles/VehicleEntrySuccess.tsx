@@ -11,7 +11,7 @@ const VehicleEntrySuccess: React.FC = () => {
   const vehicleNumber = "KA-";
 
   const handleAddNewVehicle = () => {
-    navigate(ROUTES.DASHBOARD);
+    navigate(ROUTES.SECURITY_DASHBOARD);
   };
 
   return (

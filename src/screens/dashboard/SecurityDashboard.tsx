@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { StatCard } from "../../components/cards/StatCard";
-import { VehicleLookup } from "../../components/cards/VehicleLookup";
+import { StatCard } from "../../components/cards/StatCard.tsx";
+import { VehicleLookup } from "../../components/cards/VehicleLookup.tsx";
 import { Truck } from "lucide-react";
-import { VehicleTable } from "../../components/cards/VehicleTable.tsx";
-import { ROUTES } from "../../constants/routes";
+import { VehicleTable } from "../../components/cards/VehicleTable.tsx.tsx";
+import { ROUTES } from "../../constants/routes.ts";
 
-const Dashboard: React.FC = () => {
+const SecurityDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -65,5 +65,5 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default SecurityDashboard;
 

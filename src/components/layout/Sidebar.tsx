@@ -1,4 +1,6 @@
-import { Car, Truck, Users, Menu, X } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Car, Truck, Users, Menu, X, CheckCircle, ShieldUser } from "lucide-react";
+import { ROUTES } from "../../constants/routes";
 
 interface Props {
   open: boolean;
@@ -6,6 +8,17 @@ interface Props {
 }
 
 export function Sidebar({ open, setOpen }: Props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <>
       {/* Overlay Mobile */}
@@ -48,18 +61,28 @@ export function Sidebar({ open, setOpen }: Props) {
           </>
         )}
 
-        {/* Active */}
-        <button className="bg-linear-to-b from-[#ff4f31] to-[#fe2b73] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center shadow-md">
-          <Car className="text-white" />
+        {/* Security Dashboard - Active */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all ${
+            isActive(ROUTES.SECURITY_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.SECURITY_DASHBOARD)}
+        >
+          <ShieldUser className={isActive(ROUTES.SECURITY_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
 
-        {/* Other Icons */}
-        <button className="sidebar-btn">
-          <Truck className="text-gray-400" />
-        </button>
-
-        <button className="sidebar-btn">
-          <Users className="text-gray-400" />
+        {/* Quality Check Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all ${
+            isActive(ROUTES.QUALITY_CHECK_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.QUALITY_CHECK_DASHBOARD)}
+        >
+          <CheckCircle className={isActive(ROUTES.QUALITY_CHECK_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
       </aside>
     </>
