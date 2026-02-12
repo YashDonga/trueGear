@@ -51,7 +51,7 @@ export function PhotoCaptureCard({
             <Button
               onClick={onCapture}
               variant="gradient"
-              gradient={{ from: '#04c397', to: '#158e86', direction: 'to-r' }}
+              gradient={{ from: '#04C397', to: '#158E86', direction: 'to-r' }}
               icon={<Camera className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={1.5} />}
               className="w-full sm:w-32.5 h-11 sm:h-12.5"
             >
