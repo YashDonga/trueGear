@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, Truck, Users, Menu, X, CheckCircle, ShieldUser } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 
 interface Props {

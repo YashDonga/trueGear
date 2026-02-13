@@ -4,6 +4,7 @@ export const ROUTES = {
   REGISTER: '/register',
   SECURITY_DASHBOARD: '/security-dashboard',
   QUALITY_CHECK_DASHBOARD: '/quality-check-dashboard',
+  QUALITY_CHECK_INSPECTION: '/quality-check-inspection',
   PROFILE: '/profile',
   ADD_VEHICLE: '/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/vehicle-entry-success',

@@ -4,6 +4,7 @@ import Login from '../screens/auth/Login';
 import Register from '../screens/auth/Register';
 import SecurityDashboard from '../screens/dashboard/SecurityDashboard.tsx';
 import QualityCheckDashboard from '../screens/dashboard/QualityCheckDashboard.tsx';
+import QualityCheckInspection from '../screens/dashboard/QualityCheckInspection.tsx';
 import Profile from '../screens/profile/Profile';
 import AddVehicle from '../screens/vehicles/AddVehicle';
 import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
@@ -17,6 +18,7 @@ const AppRoutes: React.FC = () => (
         <Route index element={<Navigate to={ROUTES.SECURITY_DASHBOARD} replace />} />
         <Route path={ROUTES.SECURITY_DASHBOARD.slice(1)} element={<SecurityDashboard />} />
         <Route path={ROUTES.QUALITY_CHECK_DASHBOARD.slice(1)} element={<QualityCheckDashboard />} />
+        <Route path={ROUTES.QUALITY_CHECK_INSPECTION.slice(1)} element={<QualityCheckInspection />} />
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
         <Route path={ROUTES.ADD_VEHICLE.slice(1)} element={<AddVehicle />} />
         <Route path={ROUTES.VEHICLE_ENTRY_SUCCESS.slice(1)} element={<VehicleEntrySuccess />} />

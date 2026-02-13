@@ -3,6 +3,8 @@ import truck from "../../assets/truck.png";
 import Button from '../common/Button';
 import { useState } from 'react';
 import { Pagination } from "../common/Pagination";
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../constants/routes';
 
 interface VehicleQueueRow {
   registration: string;
@@ -65,9 +67,14 @@ export function QCTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const itemsPerPage = 5;
+  const navigate = useNavigate();
 
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setStatusFilter(filter);
+  };
+
+  const handleStartInspection = (_registration: string) => {
+    navigate(ROUTES.QUALITY_CHECK_INSPECTION);
   };
 
   // Filter vehicles based on status filter
@@ -193,7 +200,7 @@ export function QCTable() {
                       <PriorityBadge priority={vehicle.priority} />
                     </td>
                     <td className="py-4 pl-5">
-                      <Button variant="gradient">
+                      <Button variant="gradient" onClick={() => handleStartInspection(vehicle.registration)}>
                         Start Inspection
                       </Button>
                     </td>
@@ -250,7 +257,7 @@ export function QCTable() {
 
                 {/* Action Button */}
                 <div className="mt-4">
-                  <Button variant="gradient">
+                  <Button variant="gradient" onClick={() => handleStartInspection(vehicle.registration)}>
                     Start Inspection
                   </Button>
                 </div>

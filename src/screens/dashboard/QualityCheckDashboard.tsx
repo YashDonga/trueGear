@@ -1,15 +1,8 @@
-import { useState } from "react";
 import { StatCard } from "../../components/cards/StatCard.tsx";
 import { Truck } from "lucide-react";
 import { QCTable } from "../../components/cards/QCTable.tsx";
 
 const QualityCheckDashboard: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    console.log("QC Search triggered with query:", query);
-  };
 
   return (
     <>
