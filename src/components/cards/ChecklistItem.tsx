@@ -20,13 +20,13 @@ export function ChecklistItem({ label, description }: ChecklistItemProps) {
 
       <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
         {/* Status Buttons */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-[#EFEFEF] p-1.25 border border-[#DBDBDB] rounded-[10px]">
           <button
             onClick={() => setStatus('pass')}
             className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'pass'
-                ? 'bg-[#3aa400] text-white'
-                : 'bg-white border border-[#e5e7eb] text-[#333] hover:bg-gray-50'
+                ? 'bg-linear-to-r from-[#7CE000] to-[#03A800] text-white border border-[#EBEBEB]'
+                : ' text-[#333] '
             }`}
           >
             Pass
@@ -35,8 +35,8 @@ export function ChecklistItem({ label, description }: ChecklistItemProps) {
             onClick={() => setStatus('fail')}
             className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'fail'
-                ? 'bg-[#ff0000] text-white'
-                : 'bg-white border border-[#e5e7eb] text-[#333] hover:bg-gray-50'
+                ? 'bg-linear-to-r from-[#FF0000] to-[#E50000] text-white border border-[#EBEBEB]'
+                : ' text-[#333] '
             }`}
           >
             Fail
@@ -45,8 +45,8 @@ export function ChecklistItem({ label, description }: ChecklistItemProps) {
             onClick={() => setStatus('na')}
             className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'na'
-                ? 'bg-[#999] text-white'
-                : 'bg-white border border-[#e5e7eb] text-[#333] hover:bg-gray-50'
+                ? 'bg-linear-to-r from-[#C1C1C1] to-[#B1B1B1] text-white border border-[#EBEBEB]'
+                : ' text-[#333]'
             }`}
           >
             N/A

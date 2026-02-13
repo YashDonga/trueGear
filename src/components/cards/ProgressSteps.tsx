@@ -1,4 +1,4 @@
-import { Truck, Armchair, Gauge, ClipboardList, Camera, CheckSquare } from "lucide-react";
+import { Truck, Armchair, Gauge, ClipboardList, Camera, CheckSquare, Check } from "lucide-react";
 
 interface Step {
   id: number;
@@ -26,6 +26,10 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
       <div className="md:hidden relative">
         {/* Vertical Progress Line */}
         <div className="absolute left-5 top-3 bottom-3 w-0.5 bg-gray-300" />
+        <div 
+          className="absolute left-5 top-3 w-0.5 bg-linear-to-r from-[#7CE000] to-[#03A800]" 
+          style={{ height: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+        />
 
         <div className="flex flex-col space-y-0">
           {steps.map((step) => {
@@ -45,11 +49,11 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                     isActive
                       ? "bg-linear-to-r from-[#FF4F31] to-[#FE2B73] text-white shadow-lg"
                       : isCompleted
-                      ? "bg-green-500 text-white"
+                      ? "bg-linear-to-r from-[#7CE000] to-[#03A800] text-white"
                       : "bg-[#FBFBFB] border-[#BFBFBF] border rounded-[10px] text-gray-400"
                   }`}
                 >
-                  <Icon size={20} />
+                  { isCompleted ? <Check size={20} /> : <Icon size={20} />}
                 </div>
 
                 {/* Label */}
@@ -68,11 +72,13 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
           })}
         </div>
       </div>
-
-      {/* Desktop: Horizontal Stepper */}
       <div className="hidden md:block w-full relative">
         {/* Progress Line */}
         <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-300" />
+        <div 
+          className="absolute top-5 left-0 h-0.5 bg-linear-to-r from-[#7CE000] to-[#03A800]" 
+          style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+        />
 
         <div className="flex items-center justify-between">
           {steps.map((step, index) => {
@@ -100,11 +106,11 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                     isActive
                       ? "bg-linear-to-r from-[#FF4F31] to-[#FE2B73] text-white shadow-lg"
                       : isCompleted
-                      ? "bg-green-500 text-white"
+                      ? "bg-linear-to-r from-[#7CE000] to-[#03A800] text-white"
                       : "bg-[#FBFBFB] border-[#BFBFBF] border rounded-[10px] text-gray-400"
                   }`}
                 >
-                  <Icon size={20} />
+                  {isCompleted ? <Check size={20} /> : <Icon size={20} />}
                 </div>
 
                 {/* Label */}

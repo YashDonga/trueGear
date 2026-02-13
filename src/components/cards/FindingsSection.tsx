@@ -1,0 +1,31 @@
+import { cn } from '../utils/cn';
+
+export const FindingsSection = () => {
+  const stats = [
+    { label: 'Pass', count: 25, color: 'text-green-500', gradient: 'from-[#7ce000] to-[#03a800]' },
+    { label: 'Failed', count: '02', color: 'text-red-500', gradient: 'from-red-500 to-red-600' },
+    { label: 'N/A', count: '01', color: 'text-gray-400', gradient: null },
+    { label: 'Pending', count: '01', color: 'text-orange-400', gradient: null },
+  ];
+
+  return (
+    <div className="mb-8">
+       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+         {stats.map((stat, index) => (
+           <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 flex flex-col items-center justify-center h-36 md:h-40 lg:h-48 shadow-sm hover:shadow-md transition-shadow">
+             <span className={cn(
+               "text-xs md:text-sm font-semibold mb-2 md:mb-3",
+               stat.gradient ? "bg-clip-text text-transparent bg-linear-to-b" : stat.color,
+               stat.gradient
+             )}>
+               {stat.label}
+             </span>
+             <span className="text-4xl md:text-4xl lg:text-5xl font-medium text-gray-800 tracking-tight">
+               {stat.count}
+             </span>
+           </div>
+         ))}
+       </div>
+    </div>
+  );
+};
