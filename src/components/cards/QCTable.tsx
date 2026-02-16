@@ -157,7 +157,7 @@ export function QCTable() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full min-w-225">
               <thead>
-                <tr className="border-b border-[#ebebeb]">
+                <tr className="border-b border-[#E5E7EB]">
                   <th className="text-left py-3 pr-5 text-[#333] text-[14px] font-normal">Vehicle Details</th>
                   <th className="text-left py-3 px-5 text-[#333] text-[14px] font-normal">Service Type</th>
                   <th className="text-left py-3 px-5 text-[#333] text-[14px] font-normal">Waiting Time</th>
@@ -168,8 +168,8 @@ export function QCTable() {
               </thead>
               <tbody>
                 {paginatedVehicles.map((vehicle, index) => (
-                  <tr key={index} className="border-b border-[#ebebeb] last:border-0 hover:bg-[#fafafa]">
-                    <td className="py-4 pr-5">
+                  <tr key={index} className="border-b border-[#E5E7EB] last:border-0 hover:bg-[#fafafa]">
+                    <td className="py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-linear-to-b from-[#FFC38B] to-[#FF4F31] overflow-hidden">
                           <img
@@ -184,22 +184,22 @@ export function QCTable() {
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-5">
+                    <td>
                       <p className="text-[#333] text-[14px]">{vehicle.serviceType}</p>
                     </td>
-                    <td className="py-4 px-5">
+                    <td>
                       <div className="flex items-center gap-1.5 text-[#999] text-[14px]">
                         <Clock className="w-4 h-4" />
                         <span>{vehicle.waitingTime}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-5">
+                    <td>
                       <StatusBadge status={vehicle.status} />
                     </td>
-                    <td className="py-4 px-5">
+                    <td>
                       <PriorityBadge priority={vehicle.priority} />
                     </td>
-                    <td className="py-4 pl-5">
+                    <td>
                       <Button variant="gradient" onClick={() => handleStartInspection(vehicle.registration)}>
                         Start Inspection
                       </Button>

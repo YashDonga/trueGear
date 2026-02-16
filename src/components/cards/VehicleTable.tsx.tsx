@@ -265,7 +265,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                 {paginatedVehicles.map((vehicle) => (
                   <tr
                     key={vehicle.id}
-                    className="border-b hover:bg-gray-50 text-sm"
+                    className="border-b border-[#E5E7EB] hover:bg-gray-50 text-sm"
                   >
                     <td className="py-3">
                       <div className="flex items-center gap-3">

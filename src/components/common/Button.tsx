@@ -1,6 +1,6 @@
 import React from "react";
 
-type ButtonVariant = "primary" | "secondary" | "gradient" | "outline";
+type ButtonVariant = "primary" | "secondary" | "gradient" | "outline" | "custom";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
@@ -18,6 +18,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
       | "to-br"
       | "to-bl";
   };
+  customStyles?: {
+    background?: string;
+    border?: string;
+    text?: string;
+    hoverBg?: string;
+  };
   icon?: React.ReactNode;
   className?: string;
 }
@@ -26,6 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   children,
   variant = "primary",
   gradient,
+  customStyles,
   icon,
   className = "",
   ...rest
@@ -47,6 +54,8 @@ const Button: React.FC<ButtonProps> = ({
         return "bg-[#0066FF] text-white hover:bg-[#0052cc]";
       case "outline":
         return "border-2 border-[#EBEBEB] text-[#808080] bg-transparent hover:bg-[#fff]";
+      case "custom":
+        return "";
       default:
         return "bg-gray-100 text-gray-700 hover:bg-gray-200";
     }
@@ -58,6 +67,21 @@ const Button: React.FC<ButtonProps> = ({
       : " px-5 sm:px-6";
   };
 
+  const getCustomStyles = () => {
+    if (variant !== "custom" || !customStyles) return "";
+    const styles = [];
+    if (customStyles.background) styles.push(`bg-[${customStyles.background}]`);
+    if (customStyles.border) styles.push(`border border-[${customStyles.border}]`);
+    if (customStyles.text) styles.push(`text-[${customStyles.text}]`);
+    if (customStyles.hoverBg) {
+      styles.push(`hover:bg-[${customStyles.hoverBg}]`);
+    } else if (customStyles.background) {
+      // Default hover behavior
+      styles.push("transition-colors");
+    }
+    return styles.join(" ");
+  };
+
   return (
     <button
       style={
@@ -67,9 +91,15 @@ const Button: React.FC<ButtonProps> = ({
                 gradient.direction === "to-r" ? "to right" : "to bottom"
               }, ${gradient.from}, ${gradient.to})`,
             }
-          : undefined
+          : variant === "custom" && customStyles
+            ? {
+                backgroundColor: customStyles.background,
+                borderColor: customStyles.border,
+                color: customStyles.text,
+              }
+            : undefined
       }
-      className={`${getBaseStyles()} ${getVariantStyles()} ${getResponsiveStyles()} ${className} cursor-pointer`}
+      className={`${getBaseStyles()} ${getVariantStyles()} ${getResponsiveStyles()} ${getCustomStyles()} ${className} cursor-pointer`}
       {...rest}
     >
       {icon && <span className="shrink-0">{icon}</span>}
