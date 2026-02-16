@@ -1,5 +1,3 @@
-import { RatingButtons } from "./RatingButtons";
-
 interface QCRemarkSectionProps {
   title: string;
   description: string;
