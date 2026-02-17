@@ -110,7 +110,7 @@ export function QCTable() {
           <Button
             onClick={() => handleStatusFilterChange("All")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "All"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -121,7 +121,7 @@ export function QCTable() {
           <Button
             onClick={() => handleStatusFilterChange("Urgent")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Urgent"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -132,7 +132,7 @@ export function QCTable() {
           <Button
             onClick={() => handleStatusFilterChange("Delayed")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Delayed"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"

@@ -90,12 +90,12 @@ export function ServiceAdvisorTable() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-5">
         <div className="flex flex-wrap gap-2 bg-[#f5f5f5] p-1.25 rounded-[10px]">
           <Button
             onClick={() => handleStatusFilterChange("All")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "All"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -106,7 +106,7 @@ export function ServiceAdvisorTable() {
           <Button
             onClick={() => handleStatusFilterChange("Awaiting Approval")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Awaiting Approval"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -117,7 +117,7 @@ export function ServiceAdvisorTable() {
           <Button
             onClick={() => handleStatusFilterChange("In Service")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "In Service"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -128,7 +128,7 @@ export function ServiceAdvisorTable() {
           <Button
             onClick={() => handleStatusFilterChange("QC Complete")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "QC Complete"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -139,7 +139,7 @@ export function ServiceAdvisorTable() {
           <Button
             onClick={() => handleStatusFilterChange("Ready for Billing")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Ready for Billing"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
@@ -220,6 +220,7 @@ export function ServiceAdvisorTable() {
                           }}
                           icon={<FileText size={16} />}
                           className="h-8 px-2 text-xs"
+                          onClick={() => navigate(`/create-job-card/${vehicle.id}`)}
                         >
                           Create Job Card
                         </Button>
@@ -298,6 +299,7 @@ export function ServiceAdvisorTable() {
                       }}
                       icon={<FileText size={16} />}
                       className="w-full h-9 text-sm"
+                      onClick={() => navigate(`/create-job-card/${vehicle.id}`)}
                     >
                       Create Job Card
                     </Button>

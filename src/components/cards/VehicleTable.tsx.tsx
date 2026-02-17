@@ -1,4 +1,4 @@
-import { Edit2, Trash2, MoreVertical } from "lucide-react";
+import { Edit2, Trash2, MoreHorizontal } from "lucide-react";
 import truck from "../../assets/truck.png";
 import { Pagination } from "../common/Pagination";
 import Button from "../common/Button";
@@ -118,17 +118,27 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
   // Helper function to convert date format from "30 JAN 26" to "YYYY-MM-DD"
   const convertDateFormat = (dateStr: string): string => {
     const months: Record<string, string> = {
-      JAN: "01", FEB: "02", MAR: "03", APR: "04", MAY: "05", JUN: "06",
-      JUL: "07", AUG: "08", SEP: "09", OCT: "10", NOV: "11", DEC: "12"
+      JAN: "01",
+      FEB: "02",
+      MAR: "03",
+      APR: "04",
+      MAY: "05",
+      JUN: "06",
+      JUL: "07",
+      AUG: "08",
+      SEP: "09",
+      OCT: "10",
+      NOV: "11",
+      DEC: "12",
     };
-    
+
     const parts = dateStr.split(" ");
     if (parts.length !== 3) return "";
-    
+
     const day = parts[0].padStart(2, "0");
     const month = months[parts[1]] || "01";
     const year = "20" + parts[2];
-    
+
     return `${year}-${month}-${day}`;
   };
 
@@ -198,33 +208,33 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
           <Button
             onClick={() => handleStatusFilterChange("All")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "All"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
-          }`}
+            }`}
           >
             All
           </Button>
           <Button
             onClick={() => handleStatusFilterChange("Inside")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Inside"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
-          }`}
+            }`}
           >
             Inside
           </Button>
           <Button
             onClick={() => handleStatusFilterChange("Pending Exit")}
             variant="secondary"
-            className={`rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none ${
+            className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
               statusFilter === "Pending Exit"
                 ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
                 : "bg-[#f5f5f5]! text-gray-700! hover:bg-[#e8e8e8]!"
-          }`}
+            }`}
           >
             Pending Exit
           </Button>
@@ -304,15 +314,24 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
 
                     <td>
                       <div className="flex gap-2">
-                        <button className="p-2 hover:bg-gray-100 rounded-md">
+                        <Button
+                          variant="custom"
+                          className="p-2! h-10! hover:bg-gray-100 bg-[#FBFBFB] border border-[#EBEBEB] rounded-md"
+                        >
                           <Edit2 size={16} />
-                        </button>
-                        <button className="p-2 hover:bg-gray-100 rounded-md">
+                        </Button>
+                        <Button
+                          variant="custom"
+                          className="p-2! h-10! hover:bg-gray-100 bg-[#FBFBFB] border border-[#EBEBEB] rounded-md"
+                        >
                           <Trash2 size={16} />
-                        </button>
-                        <button className="p-2 hover:bg-gray-100 rounded-md">
-                          <MoreVertical size={16} />
-                        </button>
+                        </Button>
+                        <Button
+                          variant="custom"
+                          className="p-2! h-10! hover:bg-gray-100 rounded-md"
+                        >
+                          <MoreHorizontal size={16} />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -328,7 +347,13 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                 {/* Top Row */}
                 <div className="flex justify-between items-start">
                   <div className="flex gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-linear-to-b from-[#ff4f31] to-[#fe2b73]" />
+                    <div className="w-10 h-10 rounded-lg bg-linear-to-b from-[#FFC38B] to-[#FF4F31] overflow-hidden">
+                      <img
+                        src={truck}
+                        alt="Vehicle"
+                        className="max-w-15 object-contain"
+                      />
+                    </div>
                     <div>
                       <p className="text-sm font-medium">
                         {vehicle.registration}
@@ -340,7 +365,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                   <div className="flex gap-1">
                     <Edit2 size={16} />
                     <Trash2 size={16} />
-                    <MoreVertical size={16} />
+                    <MoreHorizontal size={16} />
                   </div>
                 </div>
 
@@ -395,4 +420,3 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
     </div>
   );
 }
-

@@ -22,43 +22,50 @@ export function ChecklistItem({ label, description }: ChecklistItemProps) {
       <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
         {/* Status Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2 bg-[#EFEFEF] p-1.25 border border-[#DBDBDB] rounded-[10px]">
-          <button
+          <Button
+            variant="custom"
             onClick={() => setStatus('pass')}
-            className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
+            className={`px-2 sm:px-4 h-9.5! rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'pass'
-                ? 'bg-linear-to-r from-[#7CE000] to-[#03A800] text-white border border-[#EBEBEB]'
-                : ' text-[#333] '
+                ? 'bg-linear-to-r from-[#7CE000] to-[#03A800] text-white border border-[#EBEBEB] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)]'
+                : 'bg-transparent text-[#333] hover:bg-gray-100'
             }`}
           >
             Pass
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="custom"
             onClick={() => setStatus('fail')}
-            className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
+            className={`px-2 sm:px-4 h-9.5! rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'fail'
-                ? 'bg-linear-to-r from-[#FF0000] to-[#E50000] text-white border border-[#EBEBEB]'
-                : ' text-[#333] '
+                ? 'bg-linear-to-r from-[#FF0000] to-[#E50000] text-white border border-[#EBEBEB] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)]'
+                : 'bg-transparent text-[#333] hover:bg-gray-100'
             }`}
           >
             Fail
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="custom"
             onClick={() => setStatus('na')}
-            className={`px-2 sm:px-4 h-8 rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
+            className={`px-2 sm:px-4 h-9.5! rounded-md text-[12px] sm:text-[14px] font-medium transition-colors ${
               status === 'na'
-                ? 'bg-linear-to-r from-[#C1C1C1] to-[#B1B1B1] text-white border border-[#EBEBEB]'
-                : ' text-[#333]'
+                ? 'bg-linear-to-r from-[#C1C1C1] to-[#B1B1B1] text-white border border-[#EBEBEB] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)]'
+                : 'bg-transparent text-[#333] hover:bg-gray-100'
             }`}
           >
             N/A
-          </button>
+          </Button>
         </div>
 
         {/* Camera Icon */}
-        <button className="w-8 h-8 rounded-md border border-[#e5e7eb] flex items-center justify-center hover:bg-gray-50 shrink-0">
+        <Button
+          variant="custom"
+          className="h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
+        >
           <StickyNote size={20} color="#CACACA" />
-        </button>
+        </Button>
       </div>
     </div>
   );
 }
+

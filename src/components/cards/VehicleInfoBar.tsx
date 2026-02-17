@@ -5,11 +5,13 @@ import Button from "../common/Button";
 interface VehicleInfoBarProps {
   customerName: string;
   customerPhone: string;
+  onCreateJobCard?: () => void;
 }
 
 export function VehicleInfoBar({
   customerName,
   customerPhone,
+  onCreateJobCard,
 }: VehicleInfoBarProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm mb-6">
@@ -48,6 +50,7 @@ export function VehicleInfoBar({
           gradient={{ from: "#ff4f31", to: "#fe2b73", direction: "to-b" }}
           icon={<PlusCircle size={16} />}
           className="px-4 py-2.5 rounded-lg text-sm font-medium shadow-md shadow-red-200 w-full sm:w-auto"
+          onClick={onCreateJobCard}
         >
           Create Job Card
         </Button>

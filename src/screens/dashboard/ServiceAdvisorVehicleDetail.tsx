@@ -203,6 +203,7 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
         <VehicleInfoBar
           customerName={vehicle.customerName}
           customerPhone={vehicle.customerPhone}
+          onCreateJobCard={() => navigate(`/create-job-card/${id}`)}
         />
 
         <ServiceProgress />

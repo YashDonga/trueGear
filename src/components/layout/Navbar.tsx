@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Bell, Settings, LogOut, Menu, ChevronDown } from "lucide-react";
 import user from "../../assets/user.jpg";
 import Button from "../common/Button";
+import { ROUTES } from "../../constants/routes";
 
 interface Props {
   toggleSidebar: () => void;
@@ -9,6 +11,27 @@ interface Props {
 
 export function Header({ toggleSidebar }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const routeTitles: Record<string, { title: string; description: string }> = {
+    [ROUTES.SECURITY_DASHBOARD]: {
+      title: "Security Gate Entry",
+      description: "Register vehicle arrival and capture entry photos",
+    },
+    [ROUTES.QUALITY_CHECK_DASHBOARD]: {
+      title: "Quality Check Dashboard",
+      description: "Review vehicle quality and inspection reports",
+    },
+    [ROUTES.SERVICE_ADVISOR_DASHBOARD]: {
+      title: "Service Advisor Dashboard",
+      description: "Manage vehicle service and job cards",
+    },
+  };
+
+  const currentRoute = routeTitles[location.pathname] || {
+    title: "TrueGear",
+    description: "",
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -33,10 +56,10 @@ export function Header({ toggleSidebar }: Props) {
 
         <div>
           <h1 className="text-sm sm:text-lg font-semibold text-[#333]">
-            Security Gate Entry
+            {currentRoute.title}
           </h1>
           <p className="hidden lg:block text-[#999] text-xs sm:text-sm">
-            Register vehicle arrival and capture entry photos
+            {currentRoute.description}
           </p>
         </div>
       </div>
@@ -61,17 +84,17 @@ export function Header({ toggleSidebar }: Props) {
         {/* Icons */}
         <Button
           variant="outline"
-          className="p-2!"
+          className="p-2! h-10!"
           icon={<Bell className="w-5 h-5 text-[#8C8C8C]" />}
         />
         <Button
           variant="outline"
-          className="p-2!"
+          className="p-2! h-10!"
           icon={<Settings className="w-5 h-5 text-[#8C8C8C]" />}
         />
         <Button
           variant="outline"
-          className="bg-[#faedee] p-2! border-[#ffc0d1] hover:bg-[#ffe5ed]"
+          className="bg-[#faedee] p-2! h-10! border-[#ffc0d1] hover:bg-[#ffe5ed]"
           icon={<LogOut className="w-5 h-5 text-[#FE306C]" />}
         />
       </div>
