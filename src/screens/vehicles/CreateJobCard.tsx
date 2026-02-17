@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { JobCardActions } from "../../components/cards/JobCardActions";
 import { JobCardHeader } from "../../components/cards/JobCardHeader";
 import { JobDetails, type Job } from "../../components/cards/JobDetails";
@@ -43,7 +43,6 @@ const mockVehicleData = {
 
 const CreateJobCard: React.FC = () => {
   const navigate = useNavigate();
-  const { vehicleId } = useParams<{ vehicleId: string }>();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
 
   const addJob = () => {
