@@ -57,7 +57,7 @@ export function ServiceAdvisorTable() {
 
   const handleVehicleClick = (vehicleId: string, status: string) => {
     if (status === "QC Complete") {
-      navigate(`/service-advisor-vehicle/${vehicleId}`);
+      navigate(`vehicle/${vehicleId}`);
     }
   };
 
@@ -220,7 +220,7 @@ export function ServiceAdvisorTable() {
                           }}
                           icon={<FileText size={16} />}
                           className="h-8 px-2 text-xs"
-                          onClick={() => navigate(`/create-job-card/${vehicle.id}`)}
+                          onClick={() => navigate(`job-card/${vehicle.id}`)}
                         >
                           Create Job Card
                         </Button>
@@ -299,7 +299,7 @@ export function ServiceAdvisorTable() {
                       }}
                       icon={<FileText size={16} />}
                       className="w-full h-9 text-sm"
-                      onClick={() => navigate(`/create-job-card/${vehicle.id}`)}
+                      onClick={() => navigate(`job-card/${vehicle.id}`)}
                     >
                       Create Job Card
                     </Button>

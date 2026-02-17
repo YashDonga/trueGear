@@ -9,6 +9,7 @@ import { TabNavigation } from "../../components/cards/TabNavigation";
 import { QCReport } from "../../components/cards/QCReport";
 import { VehicleHistory } from "../../components/cards/VehicleHistory";
 import { JobCardEmpty } from "../../components/cards/JobCardEmpty";
+import ROUTES from "../../constants/routes";
 
 interface VehicleData {
   id: string;
@@ -179,7 +180,7 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
       case "vehicleHistory":
         return <VehicleHistory />;
       case "jobCard":
-        return <JobCardEmpty onButtonClick={() => navigate(`/create-job-card/${id}`)} />;
+        return <JobCardEmpty onButtonClick={() => navigate(`${ROUTES.SERVICE_ADVISOR_DASHBOARD}/job-card/${id}`)} />;
       default:
         return null;
     }
@@ -203,7 +204,7 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
         <VehicleInfoBar
           customerName={vehicle.customerName}
           customerPhone={vehicle.customerPhone}
-          onCreateJobCard={() => navigate(`/create-job-card/${id}`)}
+          onCreateJobCard={() => navigate(`${ROUTES.SERVICE_ADVISOR_DASHBOARD}/job-card/${id}`)}
         />
 
         <ServiceProgress />

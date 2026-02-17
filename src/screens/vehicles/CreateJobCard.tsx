@@ -91,7 +91,7 @@ const CreateJobCard: React.FC = () => {
   const total = subtotal + gst;
 
   const handleBackClick = () => {
-    navigate(`/service-advisor-vehicle/${vehicleId}`);
+    navigate(-1)
   };
 
   const handleSaveDraft = () => {

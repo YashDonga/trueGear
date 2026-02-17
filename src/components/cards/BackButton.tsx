@@ -8,7 +8,7 @@ interface BackButtonProps {
 export function BackButton({ onClick, label = "Back to List" }: BackButtonProps) {
   return (
     <button 
-      className="flex items-center text-xs text-gray-500 hover:text-gray-700 transition-colors"
+      className="flex items-center text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
       onClick={onClick}
     >
       <ChevronLeft size={16} />

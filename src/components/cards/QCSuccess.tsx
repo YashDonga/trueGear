@@ -9,7 +9,7 @@ const QCSuccess: React.FC = () => {
 
 
   const handleAddNewVehicle = () => {
-    navigate(ROUTES.SECURITY_DASHBOARD);
+    navigate(ROUTES.QUALITY_CHECK_DASHBOARD);
   };
 
   return (

@@ -19,15 +19,18 @@ const AppRoutes: React.FC = () => (
     <Routes>
       <Route path={ROUTES.HOME} element={<MainLayout />}>
         <Route index element={<Navigate to={ROUTES.SECURITY_DASHBOARD} replace />} />
-        <Route path={ROUTES.SECURITY_DASHBOARD.slice(1)} element={<SecurityDashboard />} />
-        <Route path={ROUTES.QUALITY_CHECK_DASHBOARD.slice(1)} element={<QualityCheckDashboard />} />
-        <Route path={ROUTES.QUALITY_CHECK_INSPECTION.slice(1)} element={<QualityCheckInspection />} />
-        <Route path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)} element={<ServiceAdvisorDashboard />} />
-        <Route path={ROUTES.SERVICE_ADVISOR_VEHICLE_DETAIL.slice(1)} element={<ServiceAdvisorVehicleDetail />} />
+        <Route path={ROUTES.SECURITY_DASHBOARD.slice(1)} element={<SecurityDashboard />}>
+          <Route path="add-vehicle" element={<AddVehicle />} />
+          <Route path="vehicle-entry-success" element={<VehicleEntrySuccess />} />
+        </Route>
+        <Route path={ROUTES.QUALITY_CHECK_DASHBOARD.slice(1)} element={<QualityCheckDashboard />}>
+          <Route path="quality-check-inspection" element={<QualityCheckInspection />} />
+        </Route>
+        <Route path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)} element={<ServiceAdvisorDashboard />}>
+          <Route path="vehicle/:id" element={<ServiceAdvisorVehicleDetail />} />
+          <Route path="job-card/:vehicleId" element={<CreateJobCard />} />
+        </Route>
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
-        <Route path={ROUTES.ADD_VEHICLE.slice(1)} element={<AddVehicle />} />
-        <Route path={ROUTES.VEHICLE_ENTRY_SUCCESS.slice(1)} element={<VehicleEntrySuccess />} />
-        <Route path={ROUTES.CREATE_JOB_CARD.slice(1)} element={<CreateJobCard />} />
       </Route>
 
       <Route path={ROUTES.LOGIN} element={<Login />} />

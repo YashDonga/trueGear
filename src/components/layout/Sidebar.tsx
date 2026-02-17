@@ -12,7 +12,7 @@ export function Sidebar({ open, setOpen }: Props) {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname.startsWith(path);
   };
 
   const handleNavigation = (path: string) => {

@@ -45,7 +45,7 @@ export function TabNavigation({
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
           className={cn(
-            "flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap shrink-0",
+            "flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap shrink-0 cursor-pointer",
             activeTab === tab.key
               ? "bg-white text-gray-800 shadow-sm"
               : "text-gray-500 hover:text-gray-700 hover:bg-gray-200",
