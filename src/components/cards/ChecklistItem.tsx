@@ -1,5 +1,6 @@
 import { StickyNote } from 'lucide-react';
 import { useState } from 'react';
+import Button from '../common/Button';
 
 interface ChecklistItemProps {
   label: string;
