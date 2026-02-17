@@ -10,6 +10,7 @@ import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehi
 import Profile from '../screens/profile/Profile';
 import AddVehicle from '../screens/vehicles/AddVehicle';
 import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
+import CreateJobCard from '../screens/vehicles/CreateJobCard';
 import MainLayout from '../layouts/MainLayout.tsx';
 import { ROUTES } from '../constants/routes';
 
@@ -26,6 +27,7 @@ const AppRoutes: React.FC = () => (
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
         <Route path={ROUTES.ADD_VEHICLE.slice(1)} element={<AddVehicle />} />
         <Route path={ROUTES.VEHICLE_ENTRY_SUCCESS.slice(1)} element={<VehicleEntrySuccess />} />
+        <Route path={ROUTES.CREATE_JOB_CARD.slice(1)} element={<CreateJobCard />} />
       </Route>
 
       <Route path={ROUTES.LOGIN} element={<Login />} />

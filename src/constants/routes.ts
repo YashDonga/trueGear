@@ -10,6 +10,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   ADD_VEHICLE: '/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/vehicle-entry-success',
+  CREATE_JOB_CARD: '/create-job-card/:vehicleId',
 };
 
 export default ROUTES;
