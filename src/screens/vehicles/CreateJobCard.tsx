@@ -43,7 +43,7 @@ const mockVehicleData = {
 
 const CreateJobCard: React.FC = () => {
   const navigate = useNavigate();
-  const { vehicleId } = useParams<{ vehicleId: string }>();
+  useParams<{ vehicleId: string }>();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
 
   const addJob = () => {
