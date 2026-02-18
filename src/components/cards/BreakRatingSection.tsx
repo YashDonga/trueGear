@@ -3,9 +3,11 @@ import { RatingButtons } from "./RatingButtons";
 interface BreakSectionProps {
   title: string;
   description: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-const BreakRatingSection = ({ title, description }: BreakSectionProps) => {
+const BreakRatingSection = ({ title, description, value, onChange }: BreakSectionProps) => {
   return (
     <>
       <div className="bg-white border border-[#ebebeb] rounded-[10px] mb-5">
@@ -20,6 +22,8 @@ const BreakRatingSection = ({ title, description }: BreakSectionProps) => {
           <RatingButtons
             options={["Good", "Average", "Poor"]}
             defaultValue="Good"
+            value={value}
+            onChange={onChange}
           />
         </div>
       </div>

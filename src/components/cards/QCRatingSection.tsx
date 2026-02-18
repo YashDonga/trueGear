@@ -3,9 +3,11 @@ import { RatingButtons } from "./RatingButtons";
 interface BreakSectionProps {
   title: string;
   description: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-const QCRatingSection = ({ title, description }: BreakSectionProps) => {
+const QCRatingSection = ({ title, description, value, onChange }: BreakSectionProps) => {
   return (
     <>
       <div className="bg-white border border-[#ebebeb] rounded-[10px] mb-5">
@@ -20,6 +22,8 @@ const QCRatingSection = ({ title, description }: BreakSectionProps) => {
           <RatingButtons
             options={["Pass", "conditional", "Fail - Suggested"]}
             defaultValue="Pass"
+            value={value}
+            onChange={onChange}
           />
         </div>
         <div className="bg-[#EDEDED] flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3.75 py-2.5 px-5 gap-2 sm:gap-0">

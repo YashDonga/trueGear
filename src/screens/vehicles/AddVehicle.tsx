@@ -21,10 +21,7 @@ const AddVehicle: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleConfirmEntry = () => {
-    setIsModalOpen(true);
-  };
+  const [validationError, setValidationError] = useState<string>("");
 
   const [photoSlots, setPhotoSlots] = useState<PhotoSlot[]>([
     {
@@ -33,13 +30,28 @@ const AddVehicle: React.FC = () => {
       capturedImage: numberplate,
     },
     { title: "Odometer Reading (KM)", required: true, capturedImage: odometer },
-    { title: "Front View", required: false },
+    { title: "Front View", required: true },
     { title: "Rear View", required: false },
     { title: "Left View", required: false },
     { title: "Right View", required: false },
     { title: "Dashboard View", required: false },
     { title: "Engine View", required: false },
   ]);
+
+  // Check if all required fields are captured
+  const requiredSlots = photoSlots.filter(slot => slot.required);
+  const capturedRequiredCount = requiredSlots.filter(slot => slot.capturedImage).length;
+  const isValid = capturedRequiredCount === requiredSlots.length;
+  const missingCount = requiredSlots.length - capturedRequiredCount;
+
+  const handleConfirmEntry = () => {
+    if (!isValid) {
+      setValidationError(`Please capture ${missingCount} more required photo${missingCount !== 1 ? 's' : ''} before confirming entry.`);
+      return;
+    }
+    setValidationError("");
+    setIsModalOpen(true);
+  };
 
   const capturedCount = photoSlots.filter((slot) => slot.capturedImage).length;
 
@@ -153,6 +165,13 @@ const AddVehicle: React.FC = () => {
 
       {/* Confirmation Section */}
       <div className="bg-white rounded-[10px] p-4 sm:p-5 md:p-6 mb-5">
+        {/* Validation Error Message */}
+        {validationError && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[10px]">
+            <p className="text-red-600 text-[13px]">{validationError}</p>
+          </div>
+        )}
+        
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-[#e5e7eb] rounded-[10px] p-4 sm:p-5">
           
           {/* Left Content */}
@@ -166,15 +185,22 @@ const AddVehicle: React.FC = () => {
                 Ready to confirm entry?
               </p>
 
-              <p className="text-[#999] text-[12px]">
-                Please capture at least {Math.max(0, 4 - capturedCount)} more
-                photo{Math.max(0, 4 - capturedCount) !== 1 ? "s" : ""}
+              <p className={`text-[12px] ${!isValid ? 'text-orange-600' : 'text-[#999]'}`}>
+                {!isValid 
+                  ? `${missingCount} required photo${missingCount !== 1 ? 's' : ''} missing`
+                  : `Please capture at least ${Math.max(0, 4 - capturedCount)} more photo${Math.max(0, 4 - capturedCount) !== 1 ? 's' : ''}`
+                }
               </p>
             </div>
           </div>
 
           {/* Button */}
-          <Button variant="gradient" icon={<CheckCircle className="w-5 h-5" />} onClick={handleConfirmEntry}>
+          <Button 
+            variant="gradient" 
+            icon={<CheckCircle className="w-5 h-5" />} 
+            onClick={handleConfirmEntry}
+            disabled={!isValid}
+          >
             Confirm Entry!
           </Button>
         </div>

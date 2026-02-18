@@ -63,7 +63,7 @@ export function Sidebar({ open, setOpen }: Props) {
 
         {/* Security Dashboard - Active */}
         <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all ${
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
             isActive(ROUTES.SECURITY_DASHBOARD)
               ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
               : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
@@ -75,7 +75,7 @@ export function Sidebar({ open, setOpen }: Props) {
 
         {/* Quality Check Dashboard */}
         <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all ${
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
             isActive(ROUTES.QUALITY_CHECK_DASHBOARD)
               ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
               : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
@@ -87,7 +87,7 @@ export function Sidebar({ open, setOpen }: Props) {
 
         {/* Service Advisor Dashboard */}
         <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all ${
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
             isActive(ROUTES.SERVICE_ADVISOR_DASHBOARD)
               ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
               : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"

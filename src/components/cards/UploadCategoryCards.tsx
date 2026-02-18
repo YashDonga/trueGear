@@ -2,17 +2,38 @@ import { useState, useRef } from "react";
 import { Truck, Armchair, Gauge, Settings, Camera, Trash2, Upload, Check } from "lucide-react";
 import { cn } from "../utils/cn";
 
-export const UploadCategoryCards = () => {
+interface UploadCategoryCardsProps {
+  uploadedImages?: Record<string, string | null>;
+  onImagesChange?: (images: Record<string, string | null>) => void;
+}
+
+export const UploadCategoryCards = ({ 
+  uploadedImages: externalUploadedImages, 
+  onImagesChange 
+}: UploadCategoryCardsProps) => {
   const [activeTab, setActiveTab] = useState("Exterior");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // State to track uploaded images for each category
-  const [uploadedImages, setUploadedImages] = useState<Record<string, string | null>>({
+  const [internalUploadedImages, setInternalUploadedImages] = useState<Record<string, string | null>>({
     Exterior: null,
     Interior: null,
     Engine: null,
     Brake: null,
   });
+
+  // Use external state if provided, otherwise use internal state
+  const currentUploadedImages = externalUploadedImages !== undefined 
+    ? externalUploadedImages 
+    : internalUploadedImages;
+
+  const setUploadedImages = (images: Record<string, string | null>) => {
+    if (externalUploadedImages !== undefined) {
+      onImagesChange?.(images);
+    } else {
+      setInternalUploadedImages(images);
+    }
+  };
 
   const categories = [
     { label: "Exterior", icon: Truck },
@@ -30,10 +51,11 @@ export const UploadCategoryCards = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUploadedImages((prev) => ({
-          ...prev,
+        const newImages: Record<string, string | null> = {
+          ...currentUploadedImages,
           [activeTab]: reader.result as string,
-        }));
+        };
+        setUploadedImages(newImages);
       };
       reader.readAsDataURL(file);
     }
@@ -44,14 +66,15 @@ export const UploadCategoryCards = () => {
   };
 
   const handleRemoveImage = () => {
-    setUploadedImages((prev) => ({
-      ...prev,
+    const newImages: Record<string, string | null> = {
+      ...currentUploadedImages,
       [activeTab]: null,
-    }));
+    };
+    setUploadedImages(newImages);
   };
 
   const renderUploadContent = () => {
-    const currentImage = uploadedImages[activeTab];
+    const currentImage = currentUploadedImages[activeTab];
 
     if (currentImage) {
       // Show uploaded image with remove option
@@ -134,7 +157,7 @@ export const UploadCategoryCards = () => {
                   strokeWidth={1.5}
                 />
                 {/* Badge showing uploaded status - check icon with green background */}
-                {uploadedImages[item.label] && (
+                {currentUploadedImages[item.label] && (
                   <div className="absolute -top-2 -right-2 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                     <Check size={12} className="text-white" strokeWidth={3} />
                   </div>
