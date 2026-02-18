@@ -43,3 +43,4 @@ coverage/
 # lockfiles (optional)
 # package-lock.json
 # yarn.lock
+.vercel

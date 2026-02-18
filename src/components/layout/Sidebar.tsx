@@ -17,6 +17,8 @@ export function Sidebar({ open, setOpen }: Props) {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    // Close sidebar on mobile/tablet when navigating
+    setOpen(false);
   };
 
   return (
