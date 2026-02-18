@@ -17,7 +17,7 @@ export function PhotoCaptureCard({
   onDelete,
 }: PhotoCaptureCardProps) {
   return (
-    <div className="bg-[#eff1f5] rounded-[10px] p-4 sm:p-5 flex flex-col gap-4 sm:gap-5 items-center w-full sm:w-65 md:w-67.5">
+    <div className="bg-[#eff1f5] rounded-[10px] p-4 sm:p-5 flex flex-col gap-4 sm:gap-5 items-center w-full ">
       {/* Title */}
       <p className="text-[14px] sm:text-[16px] text-[#333] text-center">
         {title}
