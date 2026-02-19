@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, User, Car, Phone, Mail, Search, Plus, X, Check } from "lucide-react";
+import { ArrowRight, User, Car, Phone, Mail, Search, Plus, X, Check, Loader2 } from "lucide-react";
 import { Breadcrumb } from "../../components/common/Breadcrumb";
 import Button from "../../components/common/Button";
 import { ROUTES } from "../../constants/routes";
+import { searchCustomers, type CustomerSearchItem } from "../../api/customer.api";
+import { addVehicle } from "../../api/vehicle.api";
 
 interface CustomerData {
   firstName: string;
@@ -13,35 +15,26 @@ interface CustomerData {
   vehicleNumber: string;
   vehicleMake: string;
   vehicleModel: string;
+  vin: string;
+  manufacturingYear: string;
+  odometerLast: string;
 }
-
-interface Customer {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string;
-}
-
-// Mock existing customers for demo
-const mockCustomers: Customer[] = [
-  { id: "1", firstName: "Ravi", lastName: "Varma", phoneNumber: "9876543210", email: "ravi@example.com" },
-  { id: "2", firstName: "John", lastName: "Smith", phoneNumber: "9876543211", email: "john@example.com" },
-  { id: "3", firstName: "Priya", lastName: "Sharma", phoneNumber: "9876543212", email: "priya@example.com" },
-  { id: "4", firstName: "Amit", lastName: "Kumar", phoneNumber: "9876543213", email: "amit@example.com" },
-  { id: "5", firstName: "Sneha", lastName: "Patel", phoneNumber: "9876543214", email: "sneha@example.com" },
-];
 
 const AddCustomer: React.FC = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerSearchItem | null>(null);
   const [showNewCustomerForm, setShowNewCustomerForm] = useState(false);
-  
+  const [searchResults, setSearchResults] = useState<CustomerSearchItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [formData, setFormData] = useState<CustomerData>({
     firstName: "",
     lastName: "",
@@ -50,20 +43,50 @@ const AddCustomer: React.FC = () => {
     vehicleNumber: "",
     vehicleMake: "",
     vehicleModel: "",
+    vin: "",
+    manufacturingYear: "",
+    odometerLast: "",
   });
 
   const [errors, setErrors] = useState<Partial<CustomerData>>({});
 
-  // Filter customers based on search
-  const filteredCustomers = mockCustomers.filter(customer => {
-    const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-    const query = searchQuery.toLowerCase();
-    return (
-      fullName.includes(query) ||
-      customer.phoneNumber.includes(query) ||
-      customer.email.toLowerCase().includes(query)
-    );
-  });
+  // Debounced search customers API call
+  const debouncedSearch = useCallback((query: string) => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!query.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const res = await searchCustomers(query.trim());
+        if (res.status) {
+          setSearchResults(res.data);
+        } else {
+          setSearchResults([]);
+        }
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -77,20 +100,22 @@ const AddCustomer: React.FC = () => {
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
     setIsDropdownOpen(true);
     setSelectedCustomer(null);
+    debouncedSearch(value);
   };
 
-  const handleSelectCustomer = (customer: Customer) => {
+  const handleSelectCustomer = (customer: CustomerSearchItem) => {
     setSelectedCustomer(customer);
     setSearchQuery(`${customer.firstName} ${customer.lastName}`);
     setFormData(prev => ({
       ...prev,
       firstName: customer.firstName,
       lastName: customer.lastName,
-      phoneNumber: customer.phoneNumber,
-      email: customer.email,
+      phoneNumber: "",
+      email: customer.primaryEmail || "",
     }));
     setIsDropdownOpen(false);
     setShowNewCustomerForm(false);
@@ -108,13 +133,15 @@ const AddCustomer: React.FC = () => {
       vehicleNumber: "",
       vehicleMake: "",
       vehicleModel: "",
+      vin: "",
+      manufacturingYear: "",
+      odometerLast: "",
     });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     if (errors[name as keyof CustomerData]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -134,8 +161,8 @@ const AddCustomer: React.FC = () => {
     } else if (!/^\d{10}$/.test(formData.phoneNumber.replace(/\s/g, ""))) {
       newErrors.phoneNumber = "Enter a valid 10-digit phone number";
     }
-    if (!formData.vehicleNumber.trim()) {
-      newErrors.vehicleNumber = "Vehicle number is required";
+    if (!formData.vin.trim()) {
+      newErrors.vin = "VIN is required";
     }
     if (!formData.vehicleMake.trim()) {
       newErrors.vehicleMake = "Vehicle make is required";
@@ -143,19 +170,70 @@ const AddCustomer: React.FC = () => {
     if (!formData.vehicleModel.trim()) {
       newErrors.vehicleModel = "Vehicle model is required";
     }
+    if (!formData.manufacturingYear.trim()) {
+      newErrors.manufacturingYear = "Manufacturing year is required";
+    } else if (!/^\d{4}$/.test(formData.manufacturingYear)) {
+      newErrors.manufacturingYear = "Enter a valid 4-digit year";
+    }
+    if (!formData.odometerLast.trim()) {
+      newErrors.odometerLast = "Odometer reading is required";
+    } else if (isNaN(Number(formData.odometerLast))) {
+      newErrors.odometerLast = "Enter a valid number";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      // In a real app, you would save the customer data to backend
-      // For now, we'll store it in sessionStorage and proceed to AddVehicle
-      sessionStorage.setItem("customerData", JSON.stringify(formData));
-      navigate(ROUTES.ADD_VEHICLE);
+    setSubmitError(null);
+
+    if (!validateForm()) return;
+
+    // Must have a selected customer (from search) to get customerId
+    if (!selectedCustomer) {
+      setSubmitError("Please search and select a customer first.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await addVehicle({
+        customerId: selectedCustomer.id,
+        vin: formData.vin.trim(),
+        brand: formData.vehicleMake.trim(),
+        model: formData.vehicleModel.trim(),
+        manufacturingYear: parseInt(formData.manufacturingYear, 10),
+        odometerLast: parseInt(formData.odometerLast, 10),
+        registrationNumber: formData.vehicleNumber.trim() || undefined,
+      });
+
+      if (res.status) {
+        // Store customer + vehicle data for AddVehicle screen
+        sessionStorage.setItem("customerData", JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phoneNumber: formData.phoneNumber,
+          email: formData.email,
+          vehicleNumber: res.data.registrationNumber || formData.vehicleNumber,
+          vehicleMake: formData.vehicleMake,
+          vehicleModel: formData.vehicleModel,
+        }));
+        sessionStorage.setItem("vehicleId", res.data.id);
+        navigate(ROUTES.ADD_VEHICLE);
+      } else {
+        setSubmitError(res.message || "Failed to add vehicle");
+      }
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosErr = err as { response?: { data?: { message?: string } } };
+        setSubmitError(axiosErr.response?.data?.message || "Failed to add vehicle. Please try again.");
+      } else {
+        setSubmitError("Failed to add vehicle. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -166,6 +244,7 @@ const AddCustomer: React.FC = () => {
   const clearSelection = () => {
     setSelectedCustomer(null);
     setSearchQuery("");
+    setSearchResults([]);
     setShowNewCustomerForm(false);
     setFormData({
       firstName: "",
@@ -175,6 +254,9 @@ const AddCustomer: React.FC = () => {
       vehicleNumber: "",
       vehicleMake: "",
       vehicleModel: "",
+      vin: "",
+      manufacturingYear: "",
+      odometerLast: "",
     });
   };
 
@@ -208,7 +290,7 @@ const AddCustomer: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                onFocus={() => setIsDropdownOpen(true)}
+                onFocus={() => searchQuery.trim() && setIsDropdownOpen(true)}
                 placeholder="Search by name, phone number, or email..."
                 className="w-full h-12 border border-[#e5e7eb] rounded-[10px] pl-10 pr-10 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none focus:border-[#04c397] transition-colors"
               />
@@ -226,8 +308,12 @@ const AddCustomer: React.FC = () => {
             {/* Dropdown */}
             {isDropdownOpen && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-[#e5e7eb] rounded-[10px] shadow-lg max-h-60 overflow-y-auto">
-                {filteredCustomers.length > 0 ? (
-                  filteredCustomers.map((customer) => (
+                {isSearching ? (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((customer) => (
                     <button
                       key={customer.id}
                       type="button"
@@ -243,13 +329,13 @@ const AddCustomer: React.FC = () => {
                             {customer.firstName} {customer.lastName}
                           </p>
                           <p className="text-[#999] text-[12px]">
-                            {customer.phoneNumber} • {customer.email}
+                            {customer.primaryEmail || "No email"}
                           </p>
                         </div>
                       </div>
                     </button>
                   ))
-                ) : (
+                ) : searchQuery.trim() ? (
                   <div className="px-4 py-3 text-center">
                     <p className="text-[#999] text-[13px] mb-2">No customer found</p>
                     <button
@@ -261,7 +347,7 @@ const AddCustomer: React.FC = () => {
                       Add New Customer
                     </button>
                   </div>
-                )}
+                ) : null}
               </div>
             )}
           </div>
@@ -293,7 +379,7 @@ const AddCustomer: React.FC = () => {
                       {selectedCustomer.firstName} {selectedCustomer.lastName}
                     </p>
                     <p className="text-[#999] text-[12px]">
-                      {selectedCustomer.phoneNumber}
+                      {selectedCustomer.primaryEmail || "No email"}
                     </p>
                   </div>
                 </div>
@@ -320,7 +406,7 @@ const AddCustomer: React.FC = () => {
               Customer Details
               {selectedCustomer && <span className="text-[#04c397] text-[12px]">(Existing Customer)</span>}
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* First Name */}
               <div>
@@ -332,10 +418,13 @@ const AddCustomer: React.FC = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
+                  readOnly={!!selectedCustomer}
                   placeholder="Enter first name"
                   className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
-                    errors.firstName 
-                      ? "border-red-500 focus:border-red-500" 
+                    selectedCustomer ? "bg-[#f9f9f9] cursor-not-allowed" : ""
+                  } ${
+                    errors.firstName
+                      ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
                   }`}
                 />
@@ -354,10 +443,13 @@ const AddCustomer: React.FC = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
+                  readOnly={!!selectedCustomer}
                   placeholder="Enter last name"
                   className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
-                    errors.lastName 
-                      ? "border-red-500 focus:border-red-500" 
+                    selectedCustomer ? "bg-[#f9f9f9] cursor-not-allowed" : ""
+                  } ${
+                    errors.lastName
+                      ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
                   }`}
                 />
@@ -380,8 +472,8 @@ const AddCustomer: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Enter phone number"
                     className={`w-full h-11 sm:h-12 border rounded-[10px] pl-10 pr-3 sm:pr-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
-                      errors.phoneNumber 
-                        ? "border-red-500 focus:border-red-500" 
+                      errors.phoneNumber
+                        ? "border-red-500 focus:border-red-500"
                         : "border-[#e5e7eb] focus:border-[#04c397]"
                     }`}
                   />
@@ -403,8 +495,11 @@ const AddCustomer: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    readOnly={!!selectedCustomer}
                     placeholder="Enter email address"
-                    className="w-full h-11 sm:h-12 border border-[#e5e7eb] rounded-[10px] pl-10 pr-3 sm:pr-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none focus:border-[#04c397] transition-colors"
+                    className={`w-full h-11 sm:h-12 border border-[#e5e7eb] rounded-[10px] pl-10 pr-3 sm:pr-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none focus:border-[#04c397] transition-colors ${
+                      selectedCustomer ? "bg-[#f9f9f9] cursor-not-allowed" : ""
+                    }`}
                   />
                 </div>
               </div>
@@ -417,12 +512,34 @@ const AddCustomer: React.FC = () => {
               <Car className="w-4 h-4 text-[#ff4f31]" />
               Vehicle Details
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Vehicle Number */}
+              {/* VIN */}
               <div>
                 <label className="block text-[#333] text-[13px] font-medium mb-1.5">
-                  Vehicle Number <span className="text-red-500">*</span>
+                  VIN <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="vin"
+                  value={formData.vin}
+                  onChange={handleChange}
+                  placeholder="e.g., WBAPH5C52BA123456"
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors uppercase ${
+                    errors.vin
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-[#e5e7eb] focus:border-[#04c397]"
+                  }`}
+                />
+                {errors.vin && (
+                  <p className="text-red-500 text-[11px] mt-1">{errors.vin}</p>
+                )}
+              </div>
+
+              {/* Vehicle Number / Registration */}
+              <div>
+                <label className="block text-[#333] text-[13px] font-medium mb-1.5">
+                  Registration Number <span className="text-[#999]">(Optional)</span>
                 </label>
                 <input
                   type="text"
@@ -430,18 +547,11 @@ const AddCustomer: React.FC = () => {
                   value={formData.vehicleNumber}
                   onChange={handleChange}
                   placeholder="e.g., BL 00 MY ZN"
-                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors uppercase ${
-                    errors.vehicleNumber 
-                      ? "border-red-500 focus:border-red-500" 
-                      : "border-[#e5e7eb] focus:border-[#04c397]"
-                  }`}
+                  className="w-full h-11 sm:h-12 border border-[#e5e7eb] rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none focus:border-[#04c397] transition-colors uppercase"
                 />
-                {errors.vehicleNumber && (
-                  <p className="text-red-500 text-[11px] mt-1">{errors.vehicleNumber}</p>
-                )}
               </div>
 
-              {/* Vehicle Make */}
+              {/* Vehicle Make / Brand */}
               <div>
                 <label className="block text-[#333] text-[13px] font-medium mb-1.5">
                   Vehicle Make <span className="text-red-500">*</span>
@@ -451,10 +561,10 @@ const AddCustomer: React.FC = () => {
                   name="vehicleMake"
                   value={formData.vehicleMake}
                   onChange={handleChange}
-                  placeholder="e.g., Maruti, Hyundai, Toyota"
+                  placeholder="e.g., BMW, Toyota, Honda"
                   className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
-                    errors.vehicleMake 
-                      ? "border-red-500 focus:border-red-500" 
+                    errors.vehicleMake
+                      ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
                   }`}
                 />
@@ -473,10 +583,10 @@ const AddCustomer: React.FC = () => {
                   name="vehicleModel"
                   value={formData.vehicleModel}
                   onChange={handleChange}
-                  placeholder="e.g., Swift, Creta, Innova"
+                  placeholder="e.g., 3 Series, Camry, Civic"
                   className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
-                    errors.vehicleModel 
-                      ? "border-red-500 focus:border-red-500" 
+                    errors.vehicleModel
+                      ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
                   }`}
                 />
@@ -484,8 +594,60 @@ const AddCustomer: React.FC = () => {
                   <p className="text-red-500 text-[11px] mt-1">{errors.vehicleModel}</p>
                 )}
               </div>
+
+              {/* Manufacturing Year */}
+              <div>
+                <label className="block text-[#333] text-[13px] font-medium mb-1.5">
+                  Manufacturing Year <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="manufacturingYear"
+                  value={formData.manufacturingYear}
+                  onChange={handleChange}
+                  placeholder="e.g., 2024"
+                  maxLength={4}
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                    errors.manufacturingYear
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-[#e5e7eb] focus:border-[#04c397]"
+                  }`}
+                />
+                {errors.manufacturingYear && (
+                  <p className="text-red-500 text-[11px] mt-1">{errors.manufacturingYear}</p>
+                )}
+              </div>
+
+              {/* Odometer Reading */}
+              <div>
+                <label className="block text-[#333] text-[13px] font-medium mb-1.5">
+                  Odometer Reading (KM) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="odometerLast"
+                  value={formData.odometerLast}
+                  onChange={handleChange}
+                  placeholder="e.g., 15000"
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                    errors.odometerLast
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-[#e5e7eb] focus:border-[#04c397]"
+                  }`}
+                />
+                {errors.odometerLast && (
+                  <p className="text-red-500 text-[11px] mt-1">{errors.odometerLast}</p>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Submit Error */}
+          {submitError && (
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-[10px]">
+              <p className="text-red-600 text-[13px]">{submitError}</p>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
@@ -500,10 +662,11 @@ const AddCustomer: React.FC = () => {
             <Button
               type="submit"
               variant="gradient"
-              icon={<ArrowRight className="w-5 h-5" />}
+              icon={isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
               className="w-full sm:w-auto"
+              disabled={isSubmitting}
             >
-              Continue to Photo Capture
+              {isSubmitting ? "Adding Vehicle..." : "Continue to Photo Capture"}
             </Button>
           </div>
         </form>
@@ -513,4 +676,3 @@ const AddCustomer: React.FC = () => {
 };
 
 export default AddCustomer;
-

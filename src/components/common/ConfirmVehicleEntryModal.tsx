@@ -1,4 +1,4 @@
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import Button from './Button';
 
 interface ConfirmVehicleEntryModalProps {
@@ -9,6 +9,8 @@ interface ConfirmVehicleEntryModalProps {
   owner: string;
   photosCaptured: string;
   entryTime: string;
+  isConfirming?: boolean;
+  error?: string | null;
 }
 
 export function ConfirmVehicleEntryModal({
@@ -18,7 +20,9 @@ export function ConfirmVehicleEntryModal({
   registration,
   owner,
   photosCaptured,
-  entryTime
+  entryTime,
+  isConfirming = false,
+  error,
 }: ConfirmVehicleEntryModalProps) {
   if (!isOpen) return null;
 
@@ -51,20 +55,28 @@ export function ConfirmVehicleEntryModal({
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[10px]">
+            <p className="text-red-600 text-[13px]">{error}</p>
+          </div>
+        )}
+
         {/* Horizontal Line */}
         <div className="border-t border-[#CACACA] my-6"></div>
 
         {/* Action Buttons */}
         <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isConfirming}>
             Cancel
           </Button>
-          <Button 
-            variant="gradient" 
+          <Button
+            variant="gradient"
             onClick={onConfirm}
-            icon={<CheckCircle className="w-5 h-5" />}
+            disabled={isConfirming}
+            icon={isConfirming ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
           >
-            Confirm Entry!
+            {isConfirming ? "Confirming..." : "Confirm Entry!"}
           </Button>
         </div>
       </div>

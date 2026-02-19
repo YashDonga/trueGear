@@ -1,95 +1,29 @@
-import { Edit2, Trash2, MoreHorizontal } from "lucide-react";
+import { Edit2, Trash2, MoreHorizontal, Loader2 } from "lucide-react";
 import truck from "../../assets/truck.png";
 import { Pagination } from "../common/Pagination";
 import Button from "../common/Button";
 import { DatePicker } from "../common/DatePicker";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../../constants/routes";
+import {
+  listVehicles,
+  searchVehicles,
+  type VehicleItem,
+  type SearchVehicleItem,
+} from "../../api/vehicle.api";
 
-interface Vehicle {
+interface DisplayVehicle {
   id: string;
   registration: string;
   model: string;
   odometer: string;
-  jobCard: string;
+  brand: string;
   entryTime: string;
   date: string;
   status: "In Queue" | "Ready" | "Completed" | "In Service";
+  customerName?: string;
 }
-
-const vehicles: Vehicle[] = [
-  {
-    id: "1",
-    registration: "BL 00 MY ZN",
-    model: "Vehicle Model Name",
-    odometer: "91308 KM",
-    jobCard: "JC - 99830",
-    entryTime: "10:30 AM",
-    date: "30 JAN 26",
-    status: "In Queue",
-  },
-  {
-    id: "2",
-    registration: "BL 01 MY ZN",
-    model: "Model X",
-    odometer: "45612 KM",
-    jobCard: "JC - 99831",
-    entryTime: "11:00 AM",
-    date: "30 JAN 26",
-    status: "Ready",
-  },
-  {
-    id: "3",
-    registration: "BL 02 MY ZN",
-    model: "SUV Y",
-    odometer: "12345 KM",
-    jobCard: "JC - 99832",
-    entryTime: "11:30 AM",
-    date: "30 JAN 26",
-    status: "Completed",
-  },
-  {
-    id: "4",
-    registration: "BL 03 MY ZN",
-    model: "Coupe Z",
-    odometer: "87654 KM",
-    jobCard: "JC - 99833",
-    entryTime: "12:00 PM",
-    date: "30 JAN 26",
-    status: "In Queue",
-  },
-  {
-    id: "5",
-    registration: "BL 04 MY ZN",
-    model: "Hatchback A",
-    odometer: "32109 KM",
-    jobCard: "JC - 99834",
-    entryTime: "12:30 PM",
-    date: "30 JAN 26",
-    status: "In Service",
-  },
-  {
-    id: "6",
-    registration: "BL 05 MY ZN",
-    model: "Convertible B",
-    odometer: "65432 KM",
-    jobCard: "JC - 99835",
-    entryTime: "01:00 PM",
-    date: "30 JAN 26",
-    status: "Completed",
-  },
-  {
-    id: "7",
-    registration: "BL 06 MY ZN",
-    model: "Minivan C",
-    odometer: "78901 KM",
-    jobCard: "JC - 99836",
-    entryTime: "01:30 PM",
-    date: "30 JAN 26",
-    status: "In Queue",
-  },
-];
 
 const statusConfig = {
   "In Queue": { color: "text-[#0066FF]", bg: "bg-[#0066FF]" },
@@ -104,79 +38,133 @@ interface VehicleTableProps {
   searchQuery?: string;
 }
 
+function formatEntryTime(isoString: string): { time: string; date: string } {
+  const d = new Date(isoString);
+  const time = d.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const date = d
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "2-digit",
+    })
+    .toUpperCase();
+  return { time, date };
+}
+
+function mapVehicleItem(v: VehicleItem): DisplayVehicle {
+  const { time, date } = formatEntryTime(v.entryTime);
+  return {
+    id: v.id,
+    registration: v.registrationNumber || v.vin,
+    model: `${v.brand} ${v.model}`,
+    odometer: v.odometerLast ? `${v.odometerLast.toLocaleString()} KM` : "N/A",
+    brand: v.brand,
+    entryTime: time,
+    date,
+    status: v.status,
+    customerName: v.customerName,
+  };
+}
+
+function mapSearchItem(v: SearchVehicleItem): DisplayVehicle {
+  const { time, date } = formatEntryTime(v.entryTime);
+  return {
+    id: v.id,
+    registration: v.registrationNumber || v.vin,
+    model: `${v.brand} ${v.model}`,
+    odometer: "N/A",
+    brand: v.brand,
+    entryTime: time,
+    date,
+    status: v.status,
+    customerName: v.customer?.fullName,
+  };
+}
+
 export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
+  const [vehicles, setVehicles] = useState<DisplayVehicle[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
-  const [selectedDate, setSelectedDate] = useState<string>("2026-01-30");
-  const itemsPerPage = 5;
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
-  // Status categories for filtering
-  const insideStatuses = ["In Queue", "Ready", "In Service"];
+  const fetchVehicles = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // If there's a search query, use the Search Vehicle API
+      if (searchQuery.trim()) {
+        const res = await searchVehicles(searchQuery.trim());
+        if (res.status) {
+          setVehicles(res.data.map(mapSearchItem));
+          setTotalPages(1);
+          setTotalItems(res.data.length);
+        } else {
+          setVehicles([]);
+          setTotalPages(1);
+          setTotalItems(0);
+        }
+        return;
+      }
 
-  // Helper function to convert date format from "30 JAN 26" to "YYYY-MM-DD"
-  const convertDateFormat = (dateStr: string): string => {
-    const months: Record<string, string> = {
-      JAN: "01",
-      FEB: "02",
-      MAR: "03",
-      APR: "04",
-      MAY: "05",
-      JUN: "06",
-      JUL: "07",
-      AUG: "08",
-      SEP: "09",
-      OCT: "10",
-      NOV: "11",
-      DEC: "12",
-    };
+      // Otherwise, use List Vehicles API with filters
+      const params: Record<string, string | number> = {
+        page: currentPage,
+        limit: itemsPerPage,
+        sortOrder: "desc",
+      };
 
-    const parts = dateStr.split(" ");
-    if (parts.length !== 3) return "";
+      // Status filter mapping
+      if (statusFilter === "Pending Exit") {
+        params.status = "Completed";
+      } else if (statusFilter === "Inside") {
+        params.status = "In Queue";
+      }
 
-    const day = parts[0].padStart(2, "0");
-    const month = months[parts[1]] || "01";
-    const year = "20" + parts[2];
+      // Date filter
+      if (selectedDate) {
+        params.dateFrom = selectedDate;
+        params.dateTo = selectedDate;
+      }
 
-    return `${year}-${month}-${day}`;
-  };
+      const res = await listVehicles(params);
+      if (res.status) {
+        setVehicles(res.data.map(mapVehicleItem));
+        setTotalPages(res.pagination.totalPages);
+        setTotalItems(res.pagination.total);
+      } else {
+        setVehicles([]);
+        setTotalPages(1);
+        setTotalItems(0);
+      }
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to fetch vehicles";
+      setError(message);
+      setVehicles([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, statusFilter, selectedDate, searchQuery, itemsPerPage]);
 
-  // Filter vehicles based on search query, status filter, and date filter
-  const filteredVehicles = vehicles.filter((vehicle) => {
-    const matchesSearch = searchQuery
-      ? vehicle.registration.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
-
-    const matchesStatus =
-      statusFilter === "All"
-        ? true
-        : statusFilter === "Inside"
-          ? insideStatuses.includes(vehicle.status)
-          : statusFilter === "Pending Exit"
-            ? vehicle.status === "Completed"
-            : true;
-
-    const matchesDate = selectedDate
-      ? convertDateFormat(vehicle.date) === selectedDate
-      : true;
-
-    return matchesSearch && matchesStatus && matchesDate;
-  });
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedVehicles = filteredVehicles.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
-  const isEmpty = filteredVehicles.length === 0;
+  useEffect(() => {
+    fetchVehicles();
+  }, [fetchVehicles]);
 
   // Reset to page 1 when search or filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter]);
+  }, [searchQuery, statusFilter, selectedDate]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -187,26 +175,14 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
   };
 
   const handleAddVehicle = () => {
-    // Navigate to Add Customer first for new vehicles
     navigate(ROUTES.ADD_CUSTOMER);
   };
 
-  const handleEditVehicle = (vehicle: Vehicle) => {
-    // Create customer data from vehicle for editing
-    const customerData = {
-      firstName: "Existing", // In real app, this would come from backend
-      lastName: "Customer",
-      phoneNumber: "",
-      email: "",
-      vehicleNumber: vehicle.registration,
-      vehicleMake: vehicle.model.split(" ")[0] || "",
-      vehicleModel: vehicle.model.split(" ").slice(1).join(" ") || "",
-    };
-    // Store in sessionStorage for AddVehicle to use
-    sessionStorage.setItem("customerData", JSON.stringify(customerData));
-    sessionStorage.setItem("isEditing", "true");
-    navigate(ROUTES.ADD_VEHICLE);
+  const handleEditVehicle = (vehicle: DisplayVehicle) => {
+    navigate(`${ROUTES.ADD_VEHICLE}?vehicleId=${vehicle.id}`);
   };
+
+  const isEmpty = vehicles.length === 0 && !loading;
 
   return (
     <div className="bg-white rounded-xl p-4 md:p-5">
@@ -265,15 +241,35 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
         />
       </div>
 
-      {/* Empty State or Desktop / Tablet Table ===== */}
-      {isEmpty ? (
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && !loading && (
+        <div className="flex flex-col items-center justify-center py-12 gap-4">
+          <p className="text-red-500 text-sm">{error}</p>
+          <Button variant="secondary" onClick={fetchVehicles}>
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {isEmpty && !error && (
         <div className="flex flex-col items-center justify-center py-12 gap-4">
           <p className="text-black text-base">No Vehicle Found!</p>
           <Button variant="secondary" onClick={handleAddVehicle}>
             + Add New Vehicle
           </Button>
         </div>
-      ) : (
+      )}
+
+      {/* Table Content */}
+      {!loading && !error && vehicles.length > 0 && (
         <>
           {/* ===== Desktop Table ===== */}
           <div className="hidden md:block overflow-x-auto">
@@ -282,7 +278,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                 <tr className="border-b border-[#e5e7eb] text-sm text-[#666]">
                   <th className="text-left py-3">Vehicle Details</th>
                   <th className="text-left py-3">Odometer</th>
-                  <th className="text-left py-3">Job Card</th>
+                  <th className="text-left py-3">Customer</th>
                   <th className="text-left py-3">Entry Time</th>
                   <th className="text-left py-3">Status</th>
                   <th className="text-left py-3">Actions</th>
@@ -290,7 +286,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
               </thead>
 
               <tbody>
-                {paginatedVehicles.map((vehicle) => (
+                {vehicles.map((vehicle) => (
                   <tr
                     key={vehicle.id}
                     className="border-b border-[#E5E7EB] hover:bg-gray-50 text-sm"
@@ -312,7 +308,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                     </td>
 
                     <td>{vehicle.odometer}</td>
-                    <td>{vehicle.jobCard}</td>
+                    <td>{vehicle.customerName || "-"}</td>
 
                     <td>
                       <p>{vehicle.entryTime}</p>
@@ -322,9 +318,9 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                     <td>
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-2 h-2 rounded-full ${statusConfig[vehicle.status].bg}`}
+                          className={`w-2 h-2 rounded-full ${statusConfig[vehicle.status]?.bg || "bg-gray-400"}`}
                         />
-                        <span className={statusConfig[vehicle.status].color}>
+                        <span className={statusConfig[vehicle.status]?.color || "text-gray-500"}>
                           {vehicle.status}
                         </span>
                       </div>
@@ -361,7 +357,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
 
           {/* ===== Mobile / Tablet Card Layout ===== */}
           <div className="sm:block md:hidden space-y-3 mt-4">
-            {paginatedVehicles.map((vehicle) => (
+            {vehicles.map((vehicle) => (
               <div key={vehicle.id} className="border rounded-xl p-3">
                 {/* Top Row */}
                 <div className="flex justify-between items-start">
@@ -382,7 +378,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                   </div>
 
                   <div className="flex gap-1">
-                    <button 
+                    <button
                       onClick={() => handleEditVehicle(vehicle)}
                       className="p-1 hover:bg-gray-100 rounded"
                     >
@@ -405,8 +401,8 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                   </div>
 
                   <div>
-                    <p className="text-[#999] text-xs">Job Card</p>
-                    <p>{vehicle.jobCard}</p>
+                    <p className="text-[#999] text-xs">Customer</p>
+                    <p>{vehicle.customerName || "-"}</p>
                   </div>
 
                   <div>
@@ -419,10 +415,10 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                     <p className="text-[#999] text-xs">Status</p>
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-2 h-2 rounded-full ${statusConfig[vehicle.status].bg}`}
+                        className={`w-2 h-2 rounded-full ${statusConfig[vehicle.status]?.bg || "bg-gray-400"}`}
                       />
                       <span
-                        className={`text-sm ${statusConfig[vehicle.status].color}`}
+                        className={`text-sm ${statusConfig[vehicle.status]?.color || "text-gray-500"}`}
                       >
                         {vehicle.status}
                       </span>
@@ -435,12 +431,12 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
         </>
       )}
 
-      {/* Pagination */}
-      {!isEmpty && (
+      {/* Pagination - only show for list mode (not search) */}
+      {!loading && !error && vehicles.length > 0 && !searchQuery.trim() && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={filteredVehicles.length}
+          totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
         />

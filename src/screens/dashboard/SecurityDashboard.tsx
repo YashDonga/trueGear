@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { StatCard } from "../../components/cards/StatCard.tsx";
 import { VehicleLookup } from "../../components/cards/VehicleLookup.tsx";
 import { Truck } from "lucide-react";
@@ -7,7 +7,6 @@ import { VehicleTable } from "../../components/cards/VehicleTable.tsx.tsx";
 import { ROUTES } from "../../constants/routes.ts";
 
 const SecurityDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -16,10 +15,6 @@ const SecurityDashboard: React.FC = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     console.log("Search triggered with query:", query);
-  };
-
-  const handleAddVehicle = () => {
-    navigate(ROUTES.ADD_CUSTOMER);
   };
 
   return (
@@ -59,7 +54,6 @@ const SecurityDashboard: React.FC = () => {
           <div className="mb-6 lg:mb-7.5">
             <VehicleLookup
               onSearch={handleSearch}
-              onAddVehicle={handleAddVehicle}
             />
           </div>
 

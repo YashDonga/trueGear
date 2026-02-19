@@ -1,0 +1,240 @@
+import api from "./axios";
+
+export interface VehicleListParams {
+  page?: number;
+  limit?: number;
+  sortOrder?: "asc" | "desc";
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  vin?: string;
+}
+
+export interface VehicleItem {
+  id: string;
+  vin: string;
+  registrationNumber: string;
+  brand: string;
+  model: string;
+  manufacturingYear: number;
+  odometerLast: number;
+  status: "In Queue" | "Ready" | "Completed" | "In Service";
+  entryTime: string;
+  customerName: string;
+  imageCount: number;
+}
+
+export interface VehiclePagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface VehicleListResponse {
+  status: boolean;
+  message: string;
+  data: VehicleItem[];
+  pagination: VehiclePagination;
+}
+
+export interface SearchVehicleItem {
+  id: string;
+  vin: string;
+  registrationNumber: string;
+  brand: string;
+  model: string;
+  manufacturingYear: number;
+  status: "In Queue" | "Ready" | "Completed" | "In Service";
+  entryTime: string;
+  customer: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  imageCount: number;
+}
+
+export interface SearchVehicleResponse {
+  status: boolean;
+  message: string;
+  data: SearchVehicleItem[];
+}
+
+export const listVehicles = async (
+  params: VehicleListParams = {}
+): Promise<VehicleListResponse> => {
+  const { data } = await api.get("/vehicles", { params });
+  return data;
+};
+
+export const searchVehicles = async (
+  vin: string
+): Promise<SearchVehicleResponse> => {
+  const { data } = await api.get("/vehicles/search", { params: { vin } });
+  return data;
+};
+
+export interface AddVehiclePayload {
+  customerId: string;
+  vin: string;
+  brand: string;
+  model: string;
+  manufacturingYear: number;
+  registrationNumber?: string;
+  odometerLast?: number;
+  modelVariant?: string;
+  engineNumber?: string;
+  extColour?: string;
+  intColour?: string;
+  fuelType?: string;
+  transmissionType?: string;
+  bodyType?: string;
+  noOfDoors?: number;
+  noOfPassengers?: number;
+  condition?: string;
+}
+
+export interface AddVehicleResponse {
+  status: boolean;
+  message: string;
+  data: {
+    id: string;
+    customerId: string;
+    vin: string;
+    brand: string;
+    model: string;
+    manufacturingYear: number;
+    odometerLast: number;
+    registrationNumber: string;
+    status: string;
+    entryTime: string;
+  };
+}
+
+export const addVehicle = async (
+  payload: AddVehiclePayload
+): Promise<AddVehicleResponse> => {
+  const { data } = await api.post("/vehicles", payload);
+  return data;
+};
+
+export interface VehicleDetailCustomer {
+  id: string;
+  crmReferenceNo: string;
+  customerType: string;
+  firstName: string;
+  lastName: string;
+  companyName: string | null;
+  primaryEmail: string;
+  fullName: string;
+}
+
+export interface VehicleDetailData {
+  vehicle: {
+    id: string;
+    vin: string;
+    brand: string;
+    model: string;
+    manufacturingYear: number;
+    registrationNumber: string;
+    odometerLast: number;
+    status: string;
+    entryTime: string;
+  };
+  customer: VehicleDetailCustomer;
+  images: { id: string; vehicleId: string; imagePath: string; createdAt: string }[];
+  imageCount: number;
+}
+
+export interface VehicleDetailResponse {
+  status: boolean;
+  message: string;
+  data: VehicleDetailData;
+}
+
+export const getVehicleDetails = async (
+  vehicleId: string
+): Promise<VehicleDetailResponse> => {
+  const { data } = await api.get(`/vehicles/${vehicleId}`);
+  return data;
+};
+
+// ---- Vehicle Images ----
+
+export interface UploadedImage {
+  id: string;
+  vehicleId: string;
+  imagePath: string;
+  createdAt: string;
+}
+
+export interface UploadImagesResponse {
+  status: boolean;
+  message: string;
+  data: {
+    uploaded: UploadedImage[];
+    photosCaptured: string;
+  };
+}
+
+export const uploadVehicleImages = async (
+  vehicleId: string,
+  files: File[]
+): Promise<UploadImagesResponse> => {
+  const formData = new FormData();
+  files.forEach((file) => formData.append("images", file));
+  const { data } = await api.post(`/vehicles/${vehicleId}/images`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export interface ReplaceImageResponse {
+  status: boolean;
+  message: string;
+  data: UploadedImage;
+}
+
+export const replaceVehicleImage = async (
+  vehicleId: string,
+  imageId: string,
+  file: File
+): Promise<ReplaceImageResponse> => {
+  const formData = new FormData();
+  formData.append("images", file);
+  const { data } = await api.put(
+    `/vehicles/${vehicleId}/images/${imageId}`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } }
+  );
+  return data;
+};
+
+export const deleteVehicleImage = async (
+  vehicleId: string,
+  imageId: string
+): Promise<{ status: boolean; message: string }> => {
+  const { data } = await api.delete(`/vehicles/${vehicleId}/images/${imageId}`);
+  return data;
+};
+
+// ---- Confirm Entry ----
+
+export interface ConfirmEntryResponse {
+  status: boolean;
+  message: string;
+  data: {
+    registration: string;
+    owner: string;
+    photosCaptured: string;
+    entryTime: string;
+  };
+}
+
+export const confirmVehicleEntry = async (
+  vehicleId: string
+): Promise<ConfirmEntryResponse> => {
+  const { data } = await api.post(`/vehicles/${vehicleId}/confirm`);
+  return data;
+};
