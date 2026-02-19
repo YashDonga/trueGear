@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, FileCheckCorner } from "lucide-react";
+import { CheckCircle, FileCheckCorner, User, Car, ArrowLeft } from "lucide-react";
 import { Breadcrumb } from "../../components/common/Breadcrumb";
 import Button from "../../components/common/Button";
 import { PhotoCaptureCard } from "../../components/cards/PhotoCaptureCard";
@@ -16,12 +16,43 @@ interface PhotoSlot {
   capturedImage?: string;
 }
 
+interface CustomerData {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  vehicleNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
+}
+
 const AddVehicle: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [validationError, setValidationError] = useState<string>("");
+  const [customerData, setCustomerData] = useState<CustomerData | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Load customer data from sessionStorage on mount
+  useEffect(() => {
+    const storedCustomer = sessionStorage.getItem("customerData");
+    const storedIsEditing = sessionStorage.getItem("isEditing");
+    
+    if (storedCustomer) {
+      try {
+        setCustomerData(JSON.parse(storedCustomer));
+      } catch (e) {
+        console.error("Error parsing customer data:", e);
+      }
+    }
+    
+    // Check if we're in editing mode
+    if (storedIsEditing === "true") {
+      setIsEditing(true);
+    }
+  }, []);
 
   const [photoSlots, setPhotoSlots] = useState<PhotoSlot[]>([
     {
@@ -98,8 +129,24 @@ const AddVehicle: React.FC = () => {
 
   const handleModalConfirm = () => {
     setIsModalOpen(false);
-    // Navigate to success screen
-    navigate(ROUTES.VEHICLE_ENTRY_SUCCESS);
+    // Clear customer data from session after successful entry
+    sessionStorage.removeItem("customerData");
+    sessionStorage.removeItem("isEditing");
+    // Navigate to success screen or back to dashboard
+    if (isEditing) {
+      navigate(ROUTES.SECURITY_DASHBOARD);
+    } else {
+      navigate(ROUTES.VEHICLE_ENTRY_SUCCESS);
+    }
+  };
+
+  const handleBack = () => {
+    // Navigate back based on mode
+    if (isEditing) {
+      navigate(ROUTES.SECURITY_DASHBOARD);
+    } else {
+      navigate(ROUTES.ADD_CUSTOMER);
+    }
   };
 
   return (
@@ -116,8 +163,76 @@ const AddVehicle: React.FC = () => {
 
       {/* Breadcrumb */}
       <Breadcrumb
-        items={[{ label: "Security Guard" }, { label: "Vehicle Details" }]}
+        items={[
+          { label: "Security Guard", onClick: () => navigate(ROUTES.SECURITY_DASHBOARD) }, 
+          isEditing 
+            ? { label: "Edit Vehicle" }
+            : { label: "Customer Details", onClick: handleBack },
+          { label: "Vehicle Photos" }
+        ]}
       />
+
+      {/* Customer Info Card */}
+      {customerData && (
+        <div className="bg-white rounded-[10px] p-4 sm:p-5 md:p-6 mb-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[#333] text-[14px] sm:text-[15px] font-medium flex items-center gap-2">
+              <User className="w-4 h-4 text-[#ff4f31]" />
+              Customer Information
+            </h3>
+            <button 
+              onClick={handleBack}
+              className="text-[#0066FF] text-[13px] flex items-center gap-1 hover:underline"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Edit
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Customer Name */}
+            <div className="bg-[#f9f9f9] rounded-[8px] p-3">
+              <p className="text-[#999] text-[11px] mb-1">Customer Name</p>
+              <p className="text-[#333] text-[14px] font-medium">
+                {customerData.firstName} {customerData.lastName}
+              </p>
+            </div>
+            
+            {/* Phone Number */}
+            <div className="bg-[#f9f9f9] rounded-[8px] p-3">
+              <p className="text-[#999] text-[11px] mb-1">Phone Number</p>
+              <p className="text-[#333] text-[14px] font-medium">
+                {customerData.phoneNumber}
+              </p>
+            </div>
+            
+            {/* Email */}
+            <div className="bg-[#f9f9f9] rounded-[8px] p-3">
+              <p className="text-[#999] text-[11px] mb-1">Email</p>
+              <p className="text-[#333] text-[14px] font-medium">
+                {customerData.email || "N/A"}
+              </p>
+            </div>
+            
+            {/* Vehicle Number */}
+            <div className="bg-[#f9f9f9] rounded-[8px] p-3">
+              <p className="text-[#999] text-[11px] mb-1">Vehicle Number</p>
+              <p className="text-[#333] text-[14px] font-medium uppercase">
+                {customerData.vehicleNumber}
+              </p>
+            </div>
+            
+            {/* Vehicle Make & Model */}
+            <div className="bg-[#f9f9f9] rounded-[8px] p-3 sm:col-span-2">
+              <p className="text-[#999] text-[11px] mb-1">Vehicle</p>
+              <p className="text-[#333] text-[14px] font-medium flex items-center gap-2">
+                <Car className="w-4 h-4 text-[#666]" />
+                {customerData.vehicleMake} {customerData.vehicleModel}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Photo Section */}
       <div className="bg-white rounded-[10px] p-4 sm:p-5 md:p-6 mb-5">
@@ -201,7 +316,7 @@ const AddVehicle: React.FC = () => {
             onClick={handleConfirmEntry}
             disabled={!isValid}
           >
-            Confirm Entry!
+            {isEditing ? "Update Entry" : "Confirm Entry!"}
           </Button>
         </div>
       </div>
@@ -211,9 +326,9 @@ const AddVehicle: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleModalConfirm}
-        registration="BL 00 MY ZN"
-        owner="Ravi Varma"
-        photosCaptured="08/08"
+        registration={customerData?.vehicleNumber || "BL 00 MY ZN"}
+        owner={customerData ? `${customerData.firstName} ${customerData.lastName}` : "Ravi Varma"}
+        photosCaptured={`${capturedCount}/8`}
         entryTime="09:30 AM"
       />
     </>

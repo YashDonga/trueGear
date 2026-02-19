@@ -8,6 +8,7 @@ import QualityCheckInspection from '../screens/dashboard/QualityCheckInspection.
 import ServiceAdvisorDashboard from '../screens/dashboard/ServiceAdvisorDashboard.tsx';
 import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehicleDetail.tsx';
 import Profile from '../screens/profile/Profile';
+import AddCustomer from '../screens/customers/AddCustomer.tsx';
 import AddVehicle from '../screens/vehicles/AddVehicle';
 import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
 import CreateJobCard from '../screens/vehicles/CreateJobCard';
@@ -20,6 +21,7 @@ const AppRoutes: React.FC = () => (
       <Route path={ROUTES.HOME} element={<MainLayout />}>
         <Route index element={<Navigate to={ROUTES.SECURITY_DASHBOARD} replace />} />
         <Route path={ROUTES.SECURITY_DASHBOARD.slice(1)} element={<SecurityDashboard />}>
+          <Route path="add-customer" element={<AddCustomer />} />
           <Route path="add-vehicle" element={<AddVehicle />} />
           <Route path="vehicle-entry-success" element={<VehicleEntrySuccess />} />
         </Route>

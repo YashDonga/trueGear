@@ -19,7 +19,7 @@ const SecurityDashboard: React.FC = () => {
   };
 
   const handleAddVehicle = () => {
-    navigate(ROUTES.ADD_VEHICLE);
+    navigate(ROUTES.ADD_CUSTOMER);
   };
 
   return (

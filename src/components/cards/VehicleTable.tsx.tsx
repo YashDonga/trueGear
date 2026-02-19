@@ -187,6 +187,24 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
   };
 
   const handleAddVehicle = () => {
+    // Navigate to Add Customer first for new vehicles
+    navigate(ROUTES.ADD_CUSTOMER);
+  };
+
+  const handleEditVehicle = (vehicle: Vehicle) => {
+    // Create customer data from vehicle for editing
+    const customerData = {
+      firstName: "Existing", // In real app, this would come from backend
+      lastName: "Customer",
+      phoneNumber: "",
+      email: "",
+      vehicleNumber: vehicle.registration,
+      vehicleMake: vehicle.model.split(" ")[0] || "",
+      vehicleModel: vehicle.model.split(" ").slice(1).join(" ") || "",
+    };
+    // Store in sessionStorage for AddVehicle to use
+    sessionStorage.setItem("customerData", JSON.stringify(customerData));
+    sessionStorage.setItem("isEditing", "true");
     navigate(ROUTES.ADD_VEHICLE);
   };
 
@@ -317,6 +335,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                         <Button
                           variant="custom"
                           className="p-2! h-10! hover:bg-gray-100 bg-[#FBFBFB] border border-[#EBEBEB] rounded-md"
+                          onClick={() => handleEditVehicle(vehicle)}
                         >
                           <Edit2 size={16} />
                         </Button>
@@ -363,9 +382,18 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
                   </div>
 
                   <div className="flex gap-1">
-                    <Edit2 size={16} />
-                    <Trash2 size={16} />
-                    <MoreHorizontal size={16} />
+                    <button 
+                      onClick={() => handleEditVehicle(vehicle)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Trash2 size={16} />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <MoreHorizontal size={16} />
+                    </button>
                   </div>
                 </div>
 

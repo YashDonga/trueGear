@@ -8,6 +8,7 @@ export const ROUTES = {
   SERVICE_ADVISOR_DASHBOARD: '/service-advisor-dashboard',
   SERVICE_ADVISOR_VEHICLE_DETAIL: '/service-advisor-dashboard/vehicle/:id',
   PROFILE: '/profile',
+  ADD_CUSTOMER: '/security-dashboard/add-customer',
   ADD_VEHICLE: '/security-dashboard/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
   CREATE_JOB_CARD: '/service-advisor-dashboard/job-card/:vehicleId',
