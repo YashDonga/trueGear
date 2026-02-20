@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, CheckCircle, ShieldUser, ClipboardList } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser, ClipboardList, BadgeCheck } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 
 interface Props {
@@ -95,6 +95,18 @@ export function Sidebar({ open, setOpen }: Props) {
           onClick={() => handleNavigation(ROUTES.SERVICE_ADVISOR_DASHBOARD)}
         >
           <ClipboardList className={isActive(ROUTES.SERVICE_ADVISOR_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Customer Approval Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)}
+        >
+          <BadgeCheck className={isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
       </aside>
     </>

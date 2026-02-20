@@ -43,7 +43,7 @@ const mockVehicleData = {
 
 const CreateJobCard: React.FC = () => {
   const navigate = useNavigate();
-  const { vehicleId } = useParams<{ vehicleId: string }>();
+  const { vehicleId: _vehicleId } = useParams<{ vehicleId: string }>();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
 
   const addJob = () => {
@@ -100,8 +100,7 @@ const CreateJobCard: React.FC = () => {
   };
 
   const handleShareEstimate = () => {
-    // TODO: Implement share estimate functionality
-    console.log("Share estimate clicked");
+    navigate('../send-estimate');
   };
 
   return (

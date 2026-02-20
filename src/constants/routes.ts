@@ -7,10 +7,12 @@ export const ROUTES = {
   QUALITY_CHECK_INSPECTION: '/quality-check-dashboard/quality-check-inspection',
   SERVICE_ADVISOR_DASHBOARD: '/service-advisor-dashboard',
   SERVICE_ADVISOR_VEHICLE_DETAIL: '/service-advisor-dashboard/vehicle/:id',
+  CUSTOMER_APPROVAL_DASHBOARD: '/customer-approval-dashboard',
   PROFILE: '/profile',
   ADD_VEHICLE: '/security-dashboard/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
   CREATE_JOB_CARD: '/service-advisor-dashboard/job-card/:vehicleId',
+  SEND_ESTIMATE: '/service-advisor-dashboard/send-estimate',
 };
 
 export default ROUTES;

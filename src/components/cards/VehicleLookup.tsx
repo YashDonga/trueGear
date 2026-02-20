@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search } from "lucide-react";
 import Button from "../common/Button";
 import Input from "../common/Input";
 
@@ -8,7 +8,7 @@ interface VehicleLookupProps {
   onAddVehicle?: () => void;
 }
 
-export function VehicleLookup({ onSearch, onAddVehicle }: VehicleLookupProps) {
+export function VehicleLookup({ onSearch }: VehicleLookupProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = () => {
@@ -52,15 +52,6 @@ export function VehicleLookup({ onSearch, onAddVehicle }: VehicleLookupProps) {
           onClick={handleSearch}
         >
           Search
-        </Button>
-
-        {/* Add Vehicle Button */}
-        <Button 
-          variant="secondary"
-          onClick={onAddVehicle}
-          icon={<Plus className="w-5 h-5" />}
-        >
-          Add New Vehicle
         </Button>
       </div>
     </div>
