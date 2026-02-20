@@ -8,6 +8,7 @@ import QualityCheckInspection from '../screens/dashboard/QualityCheckInspection.
 import ServiceAdvisorDashboard from '../screens/dashboard/ServiceAdvisorDashboard.tsx';
 import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehicleDetail.tsx';
 import CustomerApprovalDashboard from '../screens/dashboard/CustomerApprovalDashboard.tsx';
+import CustomerProfileDashboard from '../screens/dashboard/CustomerProfileDashboard.tsx';
 import Profile from '../screens/profile/Profile';
 import AddVehicle from '../screens/vehicles/AddVehicle';
 import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => (
           <Route path="send-estimate/:vehicleId?" element={<SendEstimate />} />
         </Route>
         <Route path={ROUTES.CUSTOMER_APPROVAL_DASHBOARD.slice(1)} element={<CustomerApprovalDashboard />} />
+        <Route path={ROUTES.CUSTOMER_PROFILE_DASHBOARD.slice(1)} element={<CustomerProfileDashboard />} />
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
       </Route>
 

@@ -3,7 +3,7 @@
 interface StatCardProps {
   title: string;
   value: string;
-  change: string;
+  change?: string;
   icon?: React.ReactNode;
 }
 
@@ -16,10 +16,12 @@ export function StatCard({ title, value, change, icon }: StatCardProps) {
             <p className="text-[#999] text-[14px]">{title}</p>
             <p className="text-[#333] text-[32px]">{value}</p>
           </div>
+          {change && (  
           <p className="text-[12px]">
             <span className="text-[#3aa400]">{change}</span>{' '}
             <span className="text-[#999] font-light">vs yesterday</span>
           </p>
+          )}
         </div>
         {icon && (
           <div className="bg-[#fbfbfb] border border-[#bfbfbf] rounded-[10px] p-3.25 opacity-60 w-12.5 h-12.5 flex items-center justify-center">

@@ -8,6 +8,7 @@ export const ROUTES = {
   SERVICE_ADVISOR_DASHBOARD: '/service-advisor-dashboard',
   SERVICE_ADVISOR_VEHICLE_DETAIL: '/service-advisor-dashboard/vehicle/:id',
   CUSTOMER_APPROVAL_DASHBOARD: '/customer-approval-dashboard',
+  CUSTOMER_PROFILE_DASHBOARD: '/customer-profile-dashboard',
   PROFILE: '/profile',
   ADD_VEHICLE: '/security-dashboard/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
