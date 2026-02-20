@@ -8,8 +8,8 @@ interface CustomerInfoProps {
 
 export function CustomerInfo({ customerName, customerPhone }: CustomerInfoProps) {
   return (
-    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-5">
-      <div className="flex items-center justify-between">
+    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
         {/* Customer Details */}
         <div className="flex items-center gap-3">
           {/* Customer Avatar */}
@@ -31,8 +31,8 @@ export function CustomerInfo({ customerName, customerPhone }: CustomerInfoProps)
         </div>
 
         {/* Call Button */}
-        <button className="flex items-center gap-3 px-2.5 py-3.25 rounded-[10px] border border-[#e5e7eb] hover:bg-[#f9f9f9] transition-colors">
-         <Phone size={24} color="#333" />
+        <button className="flex items-center justify-center gap-3 px-2.5 py-3.25 rounded-[10px] border border-[#e5e7eb] hover:bg-[#f9f9f9] transition-colors">
+         <Phone size={20} color="#333" />
           <span className="text-[16px] font-medium text-[#333]">Call</span>
         </button>
       </div>

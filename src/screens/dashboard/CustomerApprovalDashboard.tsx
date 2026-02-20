@@ -120,29 +120,29 @@ interface ActionButtonsProps {
 
 function ActionButtons({ selectedCount, total, onRequestModification, onApprove }: ActionButtonsProps) {
   return (
-    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-5">
-      <div className="flex items-center justify-between">
+    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div className="flex flex-col gap-1.5">
-          <p className="text-[16px] font-semibold text-[#333]">{selectedCount} job(s) selected</p>
+          <p className="text-[14px] sm:text-[16px] font-semibold text-[#333]">{selectedCount} job(s) selected</p>
           <p className="text-[12px] text-[#999]">Total: ₹{total.toLocaleString()}</p>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6 w-full sm:w-auto">
           <button
             onClick={onRequestModification}
-            className="bg-white flex items-center gap-1.5 px-5 py-2.5 rounded-[5px] border border-[#e5e7eb] hover:bg-gray-50 transition-colors"
+            className="bg-white flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2.5 rounded-[5px] border border-[#e5e7eb] hover:bg-gray-50 transition-colors"
           >
-            <SquarePen size={24} color="#333" />
-            <span className="text-[16px] font-medium text-[#333]">Request Modification</span>
+            <SquarePen size={20} color="#333" />
+            <span className="text-[14px] sm:text-[16px] font-medium text-[#333]">Request Modification</span>
           </button>
           <button
             onClick={onApprove}
             disabled={selectedCount === 0}
-            className={`bg-[#1db401] flex items-center gap-2.5 px-8 py-3.25 rounded-[10px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] transition-all ${
+            className={`bg-[#1db401] flex items-center justify-center gap-2.5 px-5 sm:px-8 py-3 sm:py-3.25 rounded-[10px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] transition-all ${
               selectedCount === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#19a001]"
             }`}
           >
-            <Check size={24} color="#fff" />
-            <span className="text-[16px] font-medium text-white">Approve Selected Jobs</span>
+            <Check size={20} color="#fff" />
+            <span className="text-[14px] sm:text-[16px] font-medium text-white">Approve Selected Jobs</span>
           </button>
         </div>
       </div>
@@ -163,7 +163,7 @@ function RequestModificationScreen({ onBack, onSubmit }: RequestModificationScre
   const [notes, setNotes] = useState("");
 
   return (
-    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-6 space-y-6">
+    <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Notes Textarea */}
       <div>
         <label className="text-[14px] font-medium text-[#333] block mb-2">Modification Notes</label>
@@ -176,7 +176,7 @@ function RequestModificationScreen({ onBack, onSubmit }: RequestModificationScre
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <Button variant="outline" className="flex-1 rounded-[5px]" onClick={onBack}>
           Cancel
         </Button>
@@ -196,50 +196,50 @@ interface ApproveScreenProps {
 
 function ApproveScreen({ selectedJobs, total }: ApproveScreenProps) {
   return (
-    <div className="bg-white min-h-screen flex items-center justify-center p-8">
+    <div className="bg-white min-h-screen flex items-center justify-center p-4 sm:p-8">
       <div className="flex flex-col items-center max-w-292 w-full">
         {/* Success Icon */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           <SuccessIcon />
         </div>
 
         {/* Heading */}
         <div className="text-center mb-2">
-          <h1 className="text-[24px] font-semibold text-[#333]">
+          <h1 className="text-[20px] sm:text-[24px] font-semibold text-[#333]">
             Approval confirmed
           </h1>
         </div>
 
         {/* Description */}
-        <div className="text-center mb-12">
-          <p className="text-[18px] text-[#999] leading-[1.3]">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-[16px] sm:text-[18px] text-[#999] leading-[1.3]">
             Thank you for approving the service.
           </p>
-          <p className="text-[18px] text-[#999] leading-[1.3]">
+          <p className="text-[16px] sm:text-[18px] text-[#999] leading-[1.3]">
             Your vehicle service will begin shortly.
           </p>
         </div>
 
         {/* Jobs Approved Button */}
-        <div className="bg-[#1db401] px-8 py-3.25 rounded-[10px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] mb-12">
-          <p className="text-[16px] font-medium text-white">
+        <div className="bg-[#1db401] px-6 sm:px-8 py-3 sm:py-3.25 rounded-[10px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] mb-8 sm:mb-12">
+          <p className="text-[14px] sm:text-[16px] font-medium text-white">
             {selectedJobs.length} Jobs Approved
           </p>
         </div>
 
         {/* Approved Total */}
-        <div className="flex items-center justify-between w-full max-w-83.5 mb-10">
-          <p className="text-[16px] font-medium text-[#333]">
+        <div className="flex items-center justify-between w-full max-w-83.5 mb-8 sm:mb-10">
+          <p className="text-[14px] sm:text-[16px] font-medium text-[#333]">
             Approved Total
           </p>
-          <p className="text-[16px] font-medium text-[#333]">
+          <p className="text-[14px] sm:text-[16px] font-medium text-[#333]">
             ₹{total.toLocaleString()}
           </p>
         </div>
 
         {/* SMS Updates Message */}
         <div className="text-center">
-          <p className="text-[18px] text-[#999] leading-[1.3]">
+          <p className="text-[16px] sm:text-[18px] text-[#999] leading-[1.3]">
             You will receive updates on your service progress via SMS
           </p>
         </div>
@@ -324,13 +324,13 @@ function CustomerApprovalDashboard() {
   // Render the appropriate screen based on currentScreen state
   if (currentScreen === 'requestModification' && selectedApproval) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <div className="mb-5">
+          <div className="mb-4 sm:mb-5">
             <h2 className="text-[14px] font-semibold text-[#333] mb-1">Pending Approvals</h2>
             <p className="text-[12px] text-[#999]">Estimates awaiting customer confirmation</p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {pendingApprovals.map(function(approval) {
               return (
                 <PendingApprovalCard
@@ -359,13 +359,13 @@ function CustomerApprovalDashboard() {
 
   if (currentScreen === 'approve' && selectedApproval) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <div className="mb-5">
+          <div className="mb-4 sm:mb-5">
             <h2 className="text-[14px] font-semibold text-[#333] mb-1">Pending Approvals</h2>
             <p className="text-[12px] text-[#999]">Estimates awaiting customer confirmation</p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {pendingApprovals.map(function(approval) {
               return (
                 <PendingApprovalCard
@@ -390,13 +390,13 @@ function CustomerApprovalDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <div className="mb-5">
+        <div className="mb-4 sm:mb-5">
           <h2 className="text-[14px] font-semibold text-[#333] mb-1">Pending Approvals</h2>
           <p className="text-[12px] text-[#999]">Estimates awaiting customer confirmation</p>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {pendingApprovals.map(function(approval) {
             return (
               <PendingApprovalCard
@@ -415,15 +415,15 @@ function CustomerApprovalDashboard() {
 
       {selectedApproval && (
         <>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-0">
             <div className="mb-3">
               <h2 className="text-[16px] font-semibold text-[#333] mb-1">Service Estimate</h2>
               <p className="text-[12px] text-[#999]">
                 {selectedApproval.vehicleNumber} – {selectedApproval.vehicleModel}
               </p>
             </div>
-            <div className="bg-[#ffe1b7] inline-block px-6 py-2 rounded-[5px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] mb-3">
-              <p className="text-[16px] font-semibold text-[#e89d00]">Pending Approval</p>
+            <div className="bg-[#ffe1b7] inline-block px-4 sm:px-6 py-2 rounded-[5px] shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] mb-3 sm:mb-0">
+              <p className="text-[14px] sm:text-[16px] font-semibold text-[#e89d00]">Pending Approval</p>
             </div>
           </div>
 
@@ -432,14 +432,14 @@ function CustomerApprovalDashboard() {
             customerPhone={selectedApproval.customerPhone}
           />
 
-          <div className="flex items-center gap-3 text-[14px] text-[#999]">
-            <Clock size={24} color="#999999" />
+          <div className="flex items-center gap-3 text-[12px] sm:text-[14px] text-[#999]">
+            <Clock size={20} color="#999999" />
             <p>Estimate sent on: {selectedApproval.sentDate} at {selectedApproval.sentTime}</p>
           </div>
 
-          <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-5">
-            <h3 className="text-[16px] font-semibold text-[#333] mb-8">Select jobs to approve:</h3>
-            <div className="space-y-8">
+          <div className="bg-white rounded-[10px] border border-[#e5e7eb] p-4 sm:p-5">
+            <h3 className="text-[14px] sm:text-[16px] font-semibold text-[#333] mb-6 sm:mb-8">Select jobs to approve:</h3>
+            <div className="space-y-4 sm:space-y-8">
               {jobs.map(function(job) {
                 return (
                   <JobCard
