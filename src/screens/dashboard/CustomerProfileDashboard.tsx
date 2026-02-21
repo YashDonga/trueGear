@@ -352,7 +352,7 @@ function CustomerProfileDashboard() {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="mb-4">
-        <button className="text-[12px] text-[#676879] hover:text-[#333]">
+        <button className="text-[11px] sm:text-[12px] text-[#676879] hover:text-[#333]">
           Back to List
         </button>
       </div>
@@ -370,97 +370,95 @@ function CustomerProfileDashboard() {
       </div>
 
       {/* Tabs - Filter Style */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex flex-wrap gap-2 bg-[#EDEDED] p-1.5 rounded-[10px] border border-[#DBDBDB]">
-          {tabs.map((tab) => (
-            <Button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              variant="secondary"
-              className={`rounded-lg px-4 h-10! py-2 text-sm transition-colors focus:outline-none ${
-                activeTab === tab.id
-                  ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
-                  : "bg-[#EDEDED]! text-gray-700! hover:bg-[#EDEDED]!"
-              }`}
-            >
-              {tab.label}
-            </Button>
-          ))}
-        </div>
+      <div className="flex gap-1.5 sm:gap-2 bg-[#EDEDED] p-1 rounded-[10px] border border-[#DBDBDB] overflow-x-auto md:w-fit">
+        {tabs.map((tab) => (
+          <Button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            variant="secondary"
+            className={`rounded-lg px-2.5 sm:px-3 md:px-4 h-8 sm:h-9 md:h-10! py-1.5 sm:py-2 text-xs sm:text-sm transition-colors focus:outline-none whitespace-nowrap ${
+              activeTab === tab.id
+                ? "bg-white border border-[#e5e7eb] shadow-sm text-gray-700! hover:bg-white"
+                : "bg-[#EDEDED]! text-gray-700! hover:bg-[#EDEDED]!"
+            }`}
+          >
+            {tab.label}
+          </Button>
+        ))}
       </div>
 
       {/* Tab Content */}
       {activeTab === "overview" && (
         <>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <h3 className="text-[16px] font-semibold text-[#333] mb-4">
+            <div className="p-4 md:p-5 sm:p-6">
+              <h3 className="text-[14px] md:text-[16px] font-semibold text-[#333] mb-4">
                 Identity & Contact Information
               </h3>
               <div className="space-y-4">
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Customer ID
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     CUST-2024-1847
                   </span>
                 </div>
 
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Account Number
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     DMS-ACC-9876543
                   </span>
                 </div>
 
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Full Name/Business
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Anderson Automotive Solutions Inc,
                   </span>
                 </div>
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Primary Contact
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Michael Anderson
                   </span>
                 </div>
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Email (Primary)
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1 break-all">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     michaelanderson@andersonauto.com
                   </span>
                 </div>
-                <div className="grid grid-cols-12 items-center py-3 border-b border-[#E5E7EB]">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 border-b border-[#E5E7EB] gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Phone (Primary)
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     +1 (555) 123-4567
                   </span>
                 </div>
 
-                <div className="grid grid-cols-12 items-center py-3">
-                  <span className="col-span-6 text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:items-center py-2 sm:py-3 gap-0.5 sm:gap-0">
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                     Alternate Phone
                   </span>
-                  <span className="col-span-6 text-[16px] font-medium text-[#333] flex items-center gap-1">
-                    <Lock size={24} color="#999999" />
+                  <span className="sm:w-1/2 text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     +1 (555) 123-4568
                   </span>
                 </div>
@@ -468,28 +466,30 @@ function CustomerProfileDashboard() {
             </div>
           </div>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <div className="flex justify-between">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-4">
+            <div className="p-4 md:p-5 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-4">
+                <h3 className="text-[14px] md:text-[16px] font-semibold text-[#333]">
                   Addresses & Location
                 </h3>
                 <Button
                   variant="outline"
                   onClick={() => setIsEditAddressesOpen(true)}
+                  className="text-xs md:text-sm self-start sm:self-auto"
                 >
-                  <Pen size={24} />
-                  Edit Addresses
+                  <Pen className="w-4 h-4 md:w-6 md:h-6" />
+                  <span className="hidden sm:inline">Edit Addresses</span>
+                  <span className="sm:hidden">Edit</span>
                 </Button>
               </div>
               <div className="space-y-4">
-                <div className="grid grid-cols-12 items-center py-3 gap-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   {addressFields.map((field, index) => (
-                    <div className="col-span-6 " key={index}>
-                      <span className=" text-[14px] text-[#333] flex items-center gap-2 mb-3">
+                    <div key={index}>
+                      <span className="text-[11px] sm:text-[12px] md:text-[14px] text-[#333] flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 md:mb-3">
                         {field.icon}
                         {field.label}
                       </span>
-                      <span className="text-[14px] font-medium text-[#999999] ">
+                      <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#999999] block break-words">
                         {field.value}
                       </span>
                     </div>
@@ -499,9 +499,9 @@ function CustomerProfileDashboard() {
             </div>
           </div>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
+            <div className="p-4 md:p-5 sm:p-6">
               <div className="flex justify-between">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-4">
+                <h3 className="text-[14px] md:text-[16px] font-semibold text-[#333] mb-4">
                   Relationship & Marketing
                 </h3>
               </div>
@@ -509,19 +509,19 @@ function CustomerProfileDashboard() {
                 {relationshipFields.map((field, index) => (
                   <div
                     key={index}
-                    className="py-3 border-b border-[#E5E7EB] flex gap-3"
+                    className="py-2 sm:py-3 border-b border-[#E5E7EB] flex flex-col sm:flex-row sm:gap-3 gap-1.5"
                   >
-                    <span className=" text-[16px] text-[#999999]">
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       {field.icon}
                     </span>
                     <div className="flex flex-col">
-                      <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                      <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-1.5 sm:mb-2 md:mb-3">
                         {field.label}
                       </span>
-                      <span className=" text-[14px] font-medium text-[#333]">
+                      <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#333]">
                         {field.label === "Customer Type / Segment" ||
                         field.label === "Loyalty Program Status" ? (
-                          <span className="px-2.5 py-1.5 bg-[#F6F6F6] text-[#333] rounded-[5px] text-[12px] font-medium">
+                          <span className="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-[#F6F6F6] text-[#333] rounded-[5px] text-[10px] sm:text-[11px] md:text-[12px] font-medium inline-block">
                             {field.value}
                           </span>
                         ) : (
@@ -532,27 +532,28 @@ function CustomerProfileDashboard() {
                   </div>
                 ))}
               </div>
-              <div className="py-3 border-b border-[#E5E7EB] last:border-b-0 flex gap-3">
-                <span className=" text-[16px] text-[#999999]">
-                  <FileText />
+              <div className="py-2 sm:py-3 border-b border-[#E5E7EB] last:border-b-0 flex flex-col sm:flex-row sm:gap-3 gap-1.5">
+                <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                 </span>
-                <div className="flex flex-col ">
-                  <div className="flex justify-between mb-3">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-2 mb-2 sm:mb-3">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-1 sm:mb-3">
                       Internal Notes
                     </span>
                     <Button
                       variant="outline"
                       onClick={() => setIsAddNotesOpen(true)}
+                      className="text-[10px] sm:text-xs self-start"
                     >
                       + Add Notes
                     </Button>
                   </div>
-                  <div className="bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] p-2.5">
-                    <p className="text-[#8C8C8C] text-[12px] mb-2.5">
+                  <div className="bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] p-2 sm:p-2.5">
+                    <p className="text-[#8C8C8C] text-[10px] sm:text-[11px] md:text-[12px] mb-1.5 sm:mb-2">
                       Jan 15, 2024 at 10:30 AM
                     </p>
-                    <p className="text-[#333333] text-[14px]">
+                    <p className="text-[#333333] text-[11px] sm:text-[12px] md:text-[14px]">
                       Preferred customer - Fleet account with 12 vehicles.
                       Requires detailed service reports for each vehicle.
                       Monthly billing cycle. Contact via email for all
@@ -565,54 +566,60 @@ function CustomerProfileDashboard() {
             </div>
           </div>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <div className="mb-8">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-1.5">
+            <div className="p-4 md:p-5 sm:p-6">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-1 sm:mb-1.5">
                   Communication Preferences & Consent
                 </h3>
-                <p className="text-[#999999] text-[12px]">
+                <p className="text-[#999999] text-[10px] sm:text-[11px] md:text-[12px]">
                   Communication Preferences & Consent
                 </p>
               </div>
               {/* First Row - Communication Preferences */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-5 mb-6 border-b border-[#E5E7EB] pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-5 mb-4 sm:mb-6 border-b border-[#E5E7EB] pb-4 sm:pb-6">
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Mail size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Preferred Contact Method
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Email
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Globe size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Preferred Language
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     English
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <History size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <History
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Best Time to Contact
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     9 AM - 5 PM (Business Hours)
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <History size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <History
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Consent Source
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                  <div className="flex gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       UI
                     </p>
-                    <p className="text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       v2.1
                     </p>
                   </div>
@@ -620,20 +627,24 @@ function CustomerProfileDashboard() {
               </div>
               {/* Second Row - Marketing Consent */}
               <div>
-                <p className="text-[12px] text-[#999] mb-3">
+                <p className="text-[10px] sm:text-[11px] md:text-[12px] text-[#999] mb-2 sm:mb-3">
                   Marketing Consent
                 </p>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="flex-col">
                     <div
-                      className={`flex items-start gap-2 px-4 py-3 rounded-[5px] border ${
+                      className={`flex items-start gap-1.5 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-2.5 sm:py-3 rounded-[5px] border ${
                         marketingConsent.email
                           ? "bg-[#e8f5e9] border-[#4caf50]"
                           : "bg-[#f5f5f5] border-[#e0e0e0]"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <svg className="size-5" fill="none" viewBox="0 0 20 20">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <svg
+                          className="size-3.5 sm:size-4 md:size-5"
+                          fill="none"
+                          viewBox="0 0 20 20"
+                        >
                           <path
                             d="M3.33333 5.83333H16.6667V14.1667C16.6667 14.6087 16.4911 15.0326 16.1785 15.3452C15.866 15.6577 15.442 15.8333 15 15.8333H5C4.55797 15.8333 4.13405 15.6577 3.82149 15.3452C3.50893 15.0326 3.33333 14.6087 3.33333 14.1667V5.83333Z"
                             stroke={marketingConsent.email ? "#4caf50" : "#999"}
@@ -650,27 +661,31 @@ function CustomerProfileDashboard() {
                           />
                         </svg>
                         <span
-                          className={`text-[14px] font-medium ${marketingConsent.email ? "text-[#2e7d32]" : "text-[#999]"}`}
+                          className={`text-[11px] sm:text-[12px] md:text-[14px] font-medium ${marketingConsent.email ? "text-[#2e7d32]" : "text-[#999]"}`}
                         >
                           Email
                         </span>
                       </div>
                     </div>
-                    <span className="text-[12px] text-[#666]">
+                    <span className="text-[10px] sm:text-[11px] md:text-[12px] text-[#666]">
                       Email Consent: 2024-01-15
                     </span>
                   </div>
 
-                  <div className="flex-col ">
+                  <div className="flex-col">
                     <div
-                      className={`flex items-start gap-2 px-4 py-3 rounded-[5px] border ${
+                      className={`flex items-start gap-1.5 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-2.5 sm:py-3 rounded-[5px] border ${
                         marketingConsent.sms
                           ? "bg-[#e8f5e9] border-[#4caf50]"
                           : "bg-[#f5f5f5] border-[#e0e0e0]"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <svg className="size-5" fill="none" viewBox="0 0 20 20">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <svg
+                          className="size-3.5 sm:size-4 md:size-5"
+                          fill="none"
+                          viewBox="0 0 20 20"
+                        >
                           <path
                             d="M5.83333 3.33333H14.1667C15.0871 3.33333 15.8333 4.07953 15.8333 5V12.5C15.8333 13.4205 15.0871 14.1667 14.1667 14.1667H7.5L3.33333 16.6667V5C3.33333 4.07953 4.07953 3.33333 5 3.33333H5.83333Z"
                             stroke={marketingConsent.sms ? "#4caf50" : "#999"}
@@ -680,26 +695,30 @@ function CustomerProfileDashboard() {
                           />
                         </svg>
                         <span
-                          className={`text-[14px] font-medium ${marketingConsent.sms ? "text-[#2e7d32]" : "text-[#999]"}`}
+                          className={`text-[11px] sm:text-[12px] md:text-[14px] font-medium ${marketingConsent.sms ? "text-[#2e7d32]" : "text-[#999]"}`}
                         >
                           SMS
                         </span>
                       </div>
                     </div>
-                    <span className="text-[12px] text-[#666]">
+                    <span className="text-[10px] sm:text-[11px] md:text-[12px] text-[#666]">
                       SMS Consent: 2024-01-15
                     </span>
                   </div>
-                  <div className="flex-col ">
+                  <div className="flex-col">
                     <div
-                      className={`flex items-start gap-2 px-4 py-3 rounded-[5px] border ${
+                      className={`flex items-start gap-1.5 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-2.5 sm:py-3 rounded-[5px] border ${
                         marketingConsent.marketing
                           ? "bg-[#e8f5e9] border-[#4caf50]"
                           : "bg-[#f5f5f5] border-[#e0e0e0]"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <svg className="size-5" fill="none" viewBox="0 0 20 20">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <svg
+                          className="size-3.5 sm:size-4 md:size-5"
+                          fill="none"
+                          viewBox="0 0 20 20"
+                        >
                           <path
                             d="M15 5.83333L9.16667 10L15 14.1667"
                             stroke={
@@ -720,13 +739,13 @@ function CustomerProfileDashboard() {
                           />
                         </svg>
                         <span
-                          className={`text-[14px] font-medium ${marketingConsent.marketing ? "text-[#2e7d32]" : "text-[#999]"}`}
+                          className={`text-[11px] sm:text-[12px] md:text-[14px] font-medium ${marketingConsent.marketing ? "text-[#2e7d32]" : "text-[#999]"}`}
                         >
                           Marketing
                         </span>
                       </div>
                     </div>
-                    <span className="text-[12px] text-[#666]">
+                    <span className="text-[10px] sm:text-[11px] md:text-[12px] text-[#666]">
                       Marketing Consent: 2024-01-15
                     </span>
                   </div>
@@ -740,86 +759,91 @@ function CustomerProfileDashboard() {
       {activeTab === "service" && (
         <>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <div className="mb-8">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-1.5">
+            <div className="p-3 sm:p-4 md:p-5">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-1 sm:mb-1.5">
                   Service History
                 </h3>
-                <p className="text-[#999999] text-[12px]">
+                <p className="text-[#999999] text-[10px] sm:text-[11px] md:text-[12px]">
                   Complete service and maintenance records
                 </p>
               </div>
-              {/* First Row - Communication Preferences */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-5 mb-6 border-b border-[#E5E7EB] pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-5 mb-4 sm:mb-6 border-b border-[#E5E7EB] pb-4 sm:pb-6">
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] mb-3">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] mb-2 sm:mb-3 block">
                     Service History
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     47 Service Records
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] mb-3">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] mb-2 sm:mb-3 block">
                     Last Visit Reason
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Warranty Claim Engine Diagnostics
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] mb-3">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] mb-2 sm:mb-3 block">
                     Last Service Advisor
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Sarah Mitchell
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] mb-3">
-                    Sarah Mitchell
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] mb-2 sm:mb-3 block">
+                    Visit Advisor
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Sarah Mitchell
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] font-medium text-[#999] mb-3">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] mb-2 sm:mb-3 block">
                     Preferred Technician
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     David Chen
                   </p>
                 </div>
                 <div></div>
-                <div className="col-span-2">
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <History size={24} color="#999999" />
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <History
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Active Job Cards
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       JOB-2024-001
                     </p>
-                    <p className="text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block bg-[#F6F6F6] border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       JOB-2024-001
                     </p>
                   </div>
                 </div>
                 <div></div>
-                <div className="col-span-2">
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Calendar size={24} color="#999999" />
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Calendar
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Next Recommended Services
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       Oil Change
                     </p>
-                    <p className="text-[14px] inline-block  border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       Tire Rotation
                     </p>
-                    <p className="text-[14px] inline-block  border border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       Brake Inspection
                     </p>
                   </div>
@@ -828,80 +852,91 @@ function CustomerProfileDashboard() {
             </div>
           </div>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <div className="mb-8">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-1.5">
-                  Service History
+            <div className="p-3 sm:p-4 md:p-5">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-1 sm:mb-1.5">
+                  Service Preferences
                 </h3>
-                <p className="text-[#999999] text-[12px]">
+                <p className="text-[#999999] text-[10px] sm:text-[11px] md:text-[12px]">
                   Complete service and maintenance records
                 </p>
               </div>
-              {/* First Row - Communication Preferences */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-5 mb-6 border-b border-[#E5E7EB] pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-5 mb-4 sm:mb-6 border-b border-[#E5E7EB] pb-4 sm:pb-6">
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <TriangleAlert size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <TriangleAlert
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Priority Level
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block border bg-[#FE306C] border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-white font-medium">
+                  <div className="flex gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#FE3066] border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-white font-medium">
                       High
                     </p>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Car size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Car className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Loaner Car Required
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-white font-medium">
+                  <div className="flex gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-white font-medium">
                       Yes
                     </p>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Car size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Car className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Courtesy Vehicle Entitlement
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-white font-medium">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-white font-medium">
                       Eligible
                     </p>
-                    <p className="text-[14px] inline-block border bg-white border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-white border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                       Premium SUV
                     </p>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Calendar size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Calendar
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Appointment Preference
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Drop-off (Morning 8-10 AM)
                   </p>
                 </div>
-                <div className="col-span-2">
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <BellRing size={24} color="#999999" />
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <BellRing
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Service Reminder Opt-in
                   </span>
-                  <div className="flex gap-3">
-                    <p className="text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-5 py-2.5 text-white font-medium">
+                  <div className="flex gap-1.5 sm:gap-2 md:gap-3">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#0061FF] border-[#E5E7EB] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-white font-medium">
                       Enabled
                     </p>
                   </div>
                 </div>
                 <div></div>
-                <div className="col-span-2">
-                  <span className="text-[16px] font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <FileText size={24} color="#999999" />
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <FileText
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Special Handling Notes
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     Customer requires wheelchair accessible facility. Prefers
                     morning appointments
                   </p>
@@ -914,17 +949,17 @@ function CustomerProfileDashboard() {
 
       {activeTab === "assets" && (
         <div className="bg-white rounded-[10px] border border-[#e5e7eb]">
-          <div className="p-5 sm:p-6">
-            <h3 className="text-[16px] font-semibold text-[#333] mb-4">
+          <div className="p-3 sm:p-4 md:p-5 lg:p-6">
+            <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-3 sm:mb-4">
               Asset Management
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-7.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-7.5">
               <StatCard
                 title="Total Vehicles"
                 value="03"
                 icon={
                   <Truck
-                    className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]"
+                    className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#BFBFBF]"
                     strokeWidth={1.5}
                   />
                 }
@@ -934,7 +969,7 @@ function CustomerProfileDashboard() {
                 value="Nov 8,2024"
                 icon={
                   <Truck
-                    className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]"
+                    className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#BFBFBF]"
                     strokeWidth={1.5}
                   />
                 }
@@ -944,36 +979,36 @@ function CustomerProfileDashboard() {
                 value="Feb 8, 2025"
                 icon={
                   <Truck
-                    className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]"
+                    className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#BFBFBF]"
                     strokeWidth={1.5}
                   />
                 }
               />
             </div>
-            <div className="flex justify-between mb-4">
-              <h3 className="text-[16px] font-semibold text-[#333] ">
+            <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-0 mb-3 sm:mb-4">
+              <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333]">
                 Owned Vehicles
               </h3>
-              <Button variant="outline">
-                <Pen size={24} />+ Add Vehicle
+              <Button variant="outline" className="text-[11px] sm:text-xs md:text-sm self-start sm:self-auto">
+                + Add Vehicle
               </Button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {mockVehicles.map((vehicle) => (
-                <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-linear-to-b from-[#ff4f31] to-[#fe2b73] flex items-center justify-center text-white shadow-md shadow-red-100 shrink-0">
+                <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-sm">
+                  <div className="flex items-center gap-2.5 sm:gap-3 md:gap-4">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-linear-to-b from-[#ff4f31] to-[#fe2b73] flex items-center justify-center text-white shadow-md shadow-red-100 shrink-0">
                       <CarIcon
-                        size={18}
+                        size={16}
                         strokeWidth={2}
-                        className="md:w-5 md:h-5"
+                        className="sm:w-4.5 sm:h-4.5 md:w-5 md:h-5"
                       />
                     </div>
                     <div>
-                      <h4 className="text-sm md:text-base font-semibold text-gray-800">
+                      <h4 className="text-xs sm:text-sm md:text-base font-semibold text-gray-800">
                         {vehicle.vehicleModel}
                       </h4>
-                      <p className="text-xs text-gray-400 mt-0.5 md:mt-1">
+                      <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 md:mt-1">
                         {vehicle.vehicleNumber}
                       </p>
                     </div>
@@ -982,9 +1017,9 @@ function CustomerProfileDashboard() {
                   <div className="text-left sm:text-right">
                     <Button
                       variant="outline"
-                      className="text-sm h-auto py-1.5 px-3 border-0!"
+                      className="text-[11px] sm:text-xs md:text-sm h-auto py-1 sm:py-1.5 px-2.5 sm:px-3 border-0!"
                     >
-                      <SquareArrowOutUpRight size={16} />
+                      <SquareArrowOutUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       View History
                     </Button>
                   </div>
@@ -998,74 +1033,74 @@ function CustomerProfileDashboard() {
       {activeTab === "financial" && (
         <>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <h3 className="text-[16px] font-semibold text-[#333] mb-4">
-                Identity & Contact Information
+            <div className="p-3 sm:p-4 md:p-5">
+              <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-3 sm:mb-4">
+                Financial Information
               </h3>
-              <div className="space-y-2.5">
-                <div className="flex justify-between items-center py-3 border-b border-[#f0f0f0]">
-                  <div className="flex items-center gap-3">
-                    <CreditCard />
-                    <span className="text-[16px] text-[#999999]">
+              <div className="space-y-2 sm:space-y-2.5">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 border-b border-[#f0f0f0] gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       Preferred Payment Method
                     </span>
                   </div>
-                  <span className="text-[16px] font-medium text-[#333]">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] ml-5 sm:ml-0">
                     Direct Debit (Monthly)
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#f0f0f0]">
-                  <div className="flex items-center gap-3">
-                    <BadgeDollarSign />
-                    <span className="text-[16px] text-[##999999]">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 border-b border-[#f0f0f0] gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <BadgeDollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       $Total Lifetime Value (LTV)
                     </span>
                   </div>
-                  <span className="text-[14px] font-medium text-[#00BF06]">
+                  <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#00BF06] ml-5 sm:ml-0">
                     $47,823.00
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#f0f0f0]">
-                  <div className="flex items-center gap-3">
-                    <ReceiptText />
-                    <span className="text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 border-b border-[#f0f0f0] gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <ReceiptText className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       Tax ID/VAT No.
                     </span>
                   </div>
-                  <span className="text-[16px] font-medium text-[#333]">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] ml-5 sm:ml-0">
                     US-VAT-987654321
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#f0f0f0]">
-                  <div className="flex items-center gap-3">
-                    <Calendar />
-                    <span className="text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 border-b border-[#f0f0f0] gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       Last Invoice Date
                     </span>
                   </div>
-                  <span className="text-[16px] font-medium text-[#333]">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] ml-5 sm:ml-0">
                     November 1, 2024
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#f0f0f0]">
-                  <div className="flex items-center gap-3">
-                    <Calendar />
-                    <span className="text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 border-b border-[#f0f0f0] gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       Last Payment Date
                     </span>
                   </div>
-                  <span className="text-[16px] font-medium text-[#333]">
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#333] ml-5 sm:ml-0">
                     November 5, 2024
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 ">
-                  <div className="flex items-center gap-3">
-                    <Landmark />
-                    <span className="text-[16px] text-[#999999]">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                    <Landmark className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" />
+                    <span className="text-[12px] sm:text-[14px] md:text-[16px] text-[#999999]">
                       Payment Status
                     </span>
                   </div>
-                  <p className="text-[14px] inline-block border bg-[#00BF061A] border-[#00BF06] rounded-[25px] px-5 py-2.5 text-[#00BF06] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#00BF061A] border-[#00BF06] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-1.5 md:py-2.5 text-[#00BF06] font-medium ml-5 sm:ml-0 w-fit">
                     Up to Date
                   </p>
                 </div>
@@ -1073,59 +1108,67 @@ function CustomerProfileDashboard() {
             </div>
           </div>
           <div className="bg-white rounded-[10px] border border-[#e5e7eb] mb-6">
-            <div className="p-5 sm:p-6">
-              <div className="mb-8">
-                <h3 className="text-[16px] font-semibold text-[#333] mb-1.5">
+            <div className="p-3 sm:p-4 md:p-5">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-1 sm:mb-1.5">
                   Insurance & Agreements
                 </h3>
-                <p className="text-[#999999] text-[12px]">
+                <p className="text-[#999999] text-[10px] sm:text-[11px] md:text-[12px]">
                   Policy details auto-populated from DMS
                 </p>
               </div>
-              {/* First Row - Communication Preferences */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-5 mb-6 border-b border-[#E5E7EB] pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-5 mb-4 sm:mb-6 border-b border-[#E5E7EB] pb-4 sm:pb-6">
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Shield size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Insurance Provider
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     State Farm Insurance
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <FileText size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <FileText
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Policy Number
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     SF-AUTO-987654321
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Calendar size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Calendar
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     Policy Expiry
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     December 31, 2025
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <Stamp size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Stamp className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0" color="#999999" />
                     Fleet Agreement ID
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     FLEET-CONTRACT-2024-789
                   </p>
                 </div>
                 <div>
-                  <span className="text-[16px] col-span-2 font-medium text-[#999] flex items-center gap-2 mb-3">
-                    <CircleQuestionMark size={24} color="#999999" />
+                  <span className="text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#999] flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <CircleQuestionMark
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6 shrink-0"
+                      color="#999999"
+                    />
                     SLA/Response Time
                   </span>
-                  <p className="text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-5 py-2.5 text-[#333] font-medium">
+                  <p className="text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] border border-[#E5E7EB] rounded-[5px] px-2.5 sm:px-3 md:px-5 py-2 sm:py-2.5 text-[#333] font-medium">
                     24 hours
                   </p>
                 </div>
@@ -1137,74 +1180,74 @@ function CustomerProfileDashboard() {
 
       {activeTab === "integration" && (
         <div className="bg-white rounded-[10px] border border-[#e5e7eb]">
-          <div className="p-5 sm:p-6">
-            <h3 className="text-[16px] font-semibold text-[#333] mb-4">
+          <div className="p-3 sm:p-4 md:p-5">
+            <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-semibold text-[#333] mb-3 sm:mb-4">
               Integration
             </h3>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2">
-                <div className="py-3 flex gap-3">
-                  <Database />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-1 sm:gap-y-0">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       DMS System
                     </span>
-                    <span className=" text-[14px] font-medium text-[#333]">
+                    <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#333] truncate">
                       CDK Global
                     </span>
                   </div>
                 </div>
-                <div className="py-3 flex gap-3">
-                  <Database />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       Sync Status
                     </span>
-                    <p className="text-[14px] inline-block border bg-[#00BF061A] border-[#00BF06] rounded-[25px] px-5 py-2.5 text-[#00BF06] font-medium">
+                    <p className="text-[11px] sm:text-[12px] md:text-[14px] inline-block border bg-[#00BF061A] border-[#00BF06] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-1 sm:py-1.5 md:py-2.5 text-[#00BF06] font-medium w-fit">
                       Synced
                     </p>
                   </div>
                 </div>
-                <div className="py-3 flex gap-3">
-                  <GitFork />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <GitFork className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       Branch/Dealer Code
                     </span>
-                    <span className=" text-[14px] font-medium text-[#333]">
+                    <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#333] truncate">
                       SF-MAIN-001
                     </span>
                   </div>
                 </div>
-                <div className="py-3 flex gap-3">
-                  <Rows3 />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <Rows3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       Source of Truth
                     </span>
-                   <p className="w-fit self-start text-[14px] bg-[#F6F6F6] rounded-[25px] px-5 py-2.5 text-[#333] font-medium">
-  DMS
-</p>
+                    <p className="w-fit self-start text-[11px] sm:text-[12px] md:text-[14px] bg-[#F6F6F6] rounded-[25px] px-2.5 sm:px-3 md:px-5 py-1 sm:py-1.5 md:py-2.5 text-[#333] font-medium">
+                      DMS
+                    </p>
                   </div>
                 </div>
-                <div className="py-3 flex gap-3">
-                  <History />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       Last Sync Timestamp
                     </span>
-                    <span className=" text-[14px] font-medium text-[#333]">
+                    <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#333] truncate">
                       2024-11-14 09:23:45 UTC
                     </span>
                   </div>
                 </div>
-                <div className="py-3 flex gap-3">
-                  <SquareCode />
-                  <div className="flex flex-col">
-                    <span className=" text-[16px] font-medium text-[#999999] mb-3">
+                <div className="py-1.5 sm:py-2 md:py-3 flex gap-1.5 sm:gap-2 md:gap-3">
+                  <SquareCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] sm:text-[12px] md:text-[16px] font-medium text-[#999999] mb-0.5 sm:mb-1">
                       Integration Version
                     </span>
-                    <span className=" text-[14px] font-medium text-[#333]">
+                    <span className="text-[11px] sm:text-[12px] md:text-[14px] font-medium text-[#333]">
                       v2.4.1
                     </span>
                   </div>
@@ -1222,9 +1265,9 @@ function CustomerProfileDashboard() {
         title="Edit Profile"
         size="md"
       >
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Full Name / Business
             </label>
             <input
@@ -1233,11 +1276,11 @@ function CustomerProfileDashboard() {
               onChange={(e) =>
                 setProfileForm({ ...profileForm, fullName: e.target.value })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-[8px] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Primary Contact
             </label>
             <input
@@ -1249,11 +1292,11 @@ function CustomerProfileDashboard() {
                   primaryContact: e.target.value,
                 })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-[8px] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Email (Primary)
             </label>
             <input
@@ -1262,11 +1305,11 @@ function CustomerProfileDashboard() {
               onChange={(e) =>
                 setProfileForm({ ...profileForm, email: e.target.value })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-[8px] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Phone (Primary)
             </label>
             <input
@@ -1275,11 +1318,11 @@ function CustomerProfileDashboard() {
               onChange={(e) =>
                 setProfileForm({ ...profileForm, phone: e.target.value })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-[8px] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Alternate Phone
             </label>
             <input
@@ -1291,19 +1334,21 @@ function CustomerProfileDashboard() {
                   alternatePhone: e.target.value,
                 })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-[8px] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
           </div>
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
             <Button
               variant="outline"
               onClick={() => setIsEditProfileOpen(false)}
+              className="text-xs sm:text-sm"
             >
               Cancel
             </Button>
             <Button
               variant="gradient"
               onClick={() => setIsEditProfileOpen(false)}
+              className="text-xs sm:text-sm"
             >
               Save Changes
             </Button>
@@ -1318,9 +1363,9 @@ function CustomerProfileDashboard() {
         title="Edit Addresses"
         size="lg"
       >
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Service Address
             </label>
             <textarea
@@ -1332,11 +1377,11 @@ function CustomerProfileDashboard() {
                 })
               }
               rows={3}
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Shipping/Delivery Address
             </label>
             <textarea
@@ -1348,11 +1393,11 @@ function CustomerProfileDashboard() {
                 })
               }
               rows={3}
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Geo Coordinates
             </label>
             <input
@@ -1364,43 +1409,45 @@ function CustomerProfileDashboard() {
                   geoCoordinates: e.target.value,
                 })
               }
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
             />
-            <p className="text-xs text-[#8C8C8C] mt-1">
+            <p className="text-[10px] sm:text-xs text-[#8C8C8C] mt-1">
               <span className="font-semibold">Format:</span> latitude° N/S,
               longitude® E/W
             </p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Address Search & Location
             </label>
-            <div className="bg-[#F6F6F6] border border-[#E5E7EB] p-5">
-              <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <div className="bg-[#F6F6F6] border border-[#E5E7EB] p-3 sm:p-5">
+              <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
                 Google Maps API Key
               </label>
               <input
                 type="text"
                 placeholder="Enter your Google Maps API key"
-                className="w-full px-4 py-2.5 border bg-white border-[#E5E7EB] rounded-lg text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border bg-white border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent"
               />
-              <p className="text-xs text-[#8C8C8C] mt-1">
+              <p className="text-[10px] sm:text-xs text-[#8C8C8C] mt-1">
                 Get your API key from
                 <span className="text-[#0061FF]">Google Cloud Console</span>
                 and enable Places API
               </p>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
             <Button
               variant="outline"
               onClick={() => setIsEditAddressesOpen(false)}
+              className="text-xs sm:text-sm"
             >
               Cancel
             </Button>
             <Button
               variant="gradient"
               onClick={() => setIsEditAddressesOpen(false)}
+              className="text-xs sm:text-sm"
             >
               Save Changes
             </Button>
@@ -1415,9 +1462,9 @@ function CustomerProfileDashboard() {
         title="Add Internal Notes"
         size="md"
       >
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#333] mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-[#333] mb-1 sm:mb-1.5">
               Notes
             </label>
             <textarea
@@ -1427,18 +1474,18 @@ function CustomerProfileDashboard() {
               }
               rows={6}
               placeholder="Enter internal notes here..."
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[#E5E7EB] rounded-lg text-xs sm:text-sm text-[#333] focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent resize-none"
             />
-            <p className="text-xs text-[#999] mt-1">
+            <p className="text-[10px] sm:text-xs text-[#999] mt-1">
               Maximum 1000 characters. This note will be timestamped and added
               to the customer record.
             </p>
           </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline" onClick={() => setIsAddNotesOpen(false)}>
+          <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
+            <Button variant="outline" onClick={() => setIsAddNotesOpen(false)} className="text-xs sm:text-sm">
               Cancel
             </Button>
-            <Button variant="gradient" onClick={() => setIsAddNotesOpen(false)}>
+            <Button variant="gradient" onClick={() => setIsAddNotesOpen(false)} className="text-xs sm:text-sm">
               Add Notes
             </Button>
           </div>
