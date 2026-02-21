@@ -3,9 +3,8 @@ import truck from "../../assets/truck.png";
 import { Pagination } from "../common/Pagination";
 import Button from "../common/Button";
 import { DatePicker } from "../common/DatePicker";
+import Input from "../common/Input";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import ROUTES from "../../constants/routes";
 
 interface Vehicle {
   id: string;
@@ -108,9 +107,8 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [selectedDate, setSelectedDate] = useState<string>("2026-01-30");
+  const [showAddVehicleInput, setShowAddVehicleInput] = useState(false);
   const itemsPerPage = 5;
-
-  const navigate = useNavigate();
 
   // Status categories for filtering
   const insideStatuses = ["In Queue", "Ready", "In Service"];
@@ -176,6 +174,7 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
   // Reset to page 1 when search or filters change
   useEffect(() => {
     setCurrentPage(1);
+    setShowAddVehicleInput(false);
   }, [searchQuery, statusFilter]);
 
   const handlePageChange = (page: number) => {
@@ -184,10 +183,6 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
 
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setStatusFilter(filter);
-  };
-
-  const handleAddVehicle = () => {
-    navigate(ROUTES.ADD_VEHICLE);
   };
 
   return (
@@ -249,11 +244,33 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
 
       {/* Empty State or Desktop / Tablet Table ===== */}
       {isEmpty ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <p className="text-black text-base">No Vehicle Found!</p>
-          <Button variant="secondary" onClick={handleAddVehicle}>
-            + Add New Vehicle
-          </Button>
+        <div className="mt-4">
+          <div className="border-b border-[#e5e7eb] pb-3 mb-6">
+            <h3 className="text-[#333] text-[14px] sm:text-[15px] font-semibold">
+              Vehicle Details
+            </h3>
+          </div>
+          {showAddVehicleInput ? (
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12 gap-4">
+              <p className="text-[#333] text-[15px] sm:text-[16px] font-medium">
+                Enter the vehicle number
+              </p>
+              <div className="w-full max-w-xs sm:max-w-sm">
+                <Input
+                  type="text"
+                  placeholder="Vehicle number"
+                  className="text-center! text-[13px] sm:text-[14px] text-[#333]! placeholder:text-[#bfbfbf]! border-[#e5e7eb]! bg-white! rounded-lg! px-4! py-2.5!"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12 gap-4">
+              <p className="text-black text-base">No Vehicle Found!</p>
+              <Button variant="secondary" onClick={() => setShowAddVehicleInput(true)}>
+                + Add New Vehicle
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <>
