@@ -1,4 +1,4 @@
-import { StickyNote } from 'lucide-react';
+import { Camera, StickyNote } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Button from '../common/Button';
 
@@ -31,9 +31,13 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3.75 px-5 border-b border-[#ebebeb] last:border-0 gap-3 sm:gap-0">
-      <div className="flex-1 w-full sm:w-auto">
-        <p className="text-[#333] text-[14px] mb-0.5">{label}</p>
-        {description && <p className="text-[#999] text-[12px]">{description}</p>}
+      {/* Checkbox + Label */}
+      <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
+        <div className="w-5 h-5 rounded border-2 border-[#D9D9D9] shrink-0 cursor-pointer hover:border-[#999]" />
+        <div>
+          <p className="text-[#333] text-[14px] mb-0.5">{label}</p>
+          {description && <p className="text-[#999] text-[12px]">{description}</p>}
+        </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
@@ -74,7 +78,15 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
           </Button>
         </div>
 
-        {/* Camera Icon */}
+        {/* Camera Button */}
+        <Button
+          variant="custom"
+          className="h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
+        >
+          <Camera size={20} color="#CACACA" />
+        </Button>
+
+        {/* Notes Button */}
         <Button
           variant="custom"
           className="h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
