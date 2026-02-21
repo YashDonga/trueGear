@@ -71,16 +71,16 @@ function mapVehicleItem(v: VehicleItem): DisplayVehicle {
 }
 
 function mapSearchItem(v: SearchVehicleItem): DisplayVehicle {
-  const { time, date } = formatEntryTime(v.entryTime);
+  const { time, date } = formatEntryTime(v.vehicle.entryTime);
   return {
-    id: v.id,
-    registration: v.registrationNumber || v.vin,
-    model: `${v.brand} ${v.model}`,
-    odometer: "N/A",
-    brand: v.brand,
+    id: v.vehicle.id,
+    registration: v.vehicle.registrationNumber || v.vehicle.vin,
+    model: `${v.vehicle.brand} ${v.vehicle.model}`,
+    odometer: v.vehicle.odometerLast ? `${v.vehicle.odometerLast.toLocaleString()} KM` : "N/A",
+    brand: v.vehicle.brand,
     entryTime: time,
     date,
-    status: v.status,
+    status: v.vehicle.status,
     customerName: v.customer?.fullName,
   };
 }

@@ -39,19 +39,23 @@ export interface VehicleListResponse {
 }
 
 export interface SearchVehicleItem {
-  id: string;
-  vin: string;
-  registrationNumber: string;
-  brand: string;
-  model: string;
-  manufacturingYear: number;
-  status: "In Queue" | "Ready" | "Completed" | "In Service";
-  entryTime: string;
+  vehicle: {
+    id: string;
+    vin: string;
+    registrationNumber: string | null;
+    brand: string;
+    model: string;
+    manufacturingYear: number;
+    odometerLast: number | null;
+    status: "In Queue" | "Ready" | "Completed" | "In Service";
+    entryTime: string;
+  };
   customer: {
     id: string;
     fullName: string;
-    email: string;
+    primaryEmail: string;
   };
+  images: { id: string; vehicleId: string; imagePath: string; createdAt: string }[];
   imageCount: number;
 }
 
