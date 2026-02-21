@@ -1,5 +1,5 @@
-import { StickyNote } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Camera, StickyNote, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button';
 
 interface ChecklistItemProps {
@@ -7,11 +7,15 @@ interface ChecklistItemProps {
   description?: string;
   status?: 'pass' | 'fail' | 'na' | null;
   onStatusChange?: (status: 'pass' | 'fail' | 'na' | null) => void;
+  onPhotoUpload?: (file: File) => Promise<void>;
+  photoCount?: number;
 }
 
-export function ChecklistItem({ label, description, status: externalStatus, onStatusChange }: ChecklistItemProps) {
+export function ChecklistItem({ label, description, status: externalStatus, onStatusChange, onPhotoUpload, photoCount = 0 }: ChecklistItemProps) {
   const [internalStatus, setInternalStatus] = useState<'pass' | 'fail' | 'na' | null>(externalStatus || null);
-  
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Sync internal state with external status prop
   useEffect(() => {
     if (externalStatus !== undefined) {
@@ -29,11 +33,36 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
     onStatusChange?.(updatedStatus);
   };
 
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onPhotoUpload) return;
+    setUploading(true);
+    try {
+      await onPhotoUpload(file);
+    } catch (err) {
+      console.error("Failed to upload photo:", err);
+    } finally {
+      setUploading(false);
+      // Reset input so the same file can be re-selected
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3.75 px-5 border-b border-[#ebebeb] last:border-0 gap-3 sm:gap-0">
-      <div className="flex-1 w-full sm:w-auto">
-        <p className="text-[#333] text-[14px] mb-0.5">{label}</p>
-        {description && <p className="text-[#999] text-[12px]">{description}</p>}
+      {/* Checkbox + Label */}
+      <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
+        <div className="w-5 h-5 rounded border-2 border-[#D9D9D9] shrink-0 cursor-pointer hover:border-[#999]" />
+        <div>
+          <p className="text-[#333] text-[14px] mb-0.5">{label}</p>
+          {description && <p className="text-[#999] text-[12px]">{description}</p>}
+        </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
@@ -74,7 +103,33 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
           </Button>
         </div>
 
-        {/* Camera Icon */}
+        {/* Camera Button */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        <Button
+          variant="custom"
+          onClick={handleCameraClick}
+          disabled={uploading}
+          className="relative h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
+        >
+          {uploading ? (
+            <Loader2 size={20} className="animate-spin text-[#CACACA]" />
+          ) : (
+            <Camera size={20} color="#CACACA" />
+          )}
+          {photoCount > 0 && !uploading && (
+            <span className="absolute -top-1.5 -right-1.5 bg-[#136dec] text-white text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center">
+              {photoCount}
+            </span>
+          )}
+        </Button>
+
+        {/* Notes Button */}
         <Button
           variant="custom"
           className="h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
@@ -85,4 +140,3 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
     </div>
   );
 }
-

@@ -10,6 +10,7 @@ export interface CustomerSearchItem {
   companyName: string | null;
   primaryEmail: string;
   activeCustomer: boolean;
+  contactNumber: string | null;
 }
 
 export interface CustomerSearchResponse {

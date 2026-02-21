@@ -17,6 +17,7 @@ export function Sidebar({ open, setOpen }: Props) {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    setOpen(false);
   };
 
   return (

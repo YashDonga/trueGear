@@ -11,6 +11,7 @@ import {
   searchVehicles,
   type VehicleItem,
   type SearchVehicleItem,
+  type VehicleStats,
 } from "../../api/vehicle.api";
 
 interface DisplayVehicle {
@@ -36,6 +37,7 @@ type StatusFilter = "All" | "Inside" | "Pending Exit";
 
 interface VehicleTableProps {
   searchQuery?: string;
+  onStatsLoaded?: (stats: VehicleStats) => void;
 }
 
 function formatEntryTime(isoString: string): { time: string; date: string } {
@@ -85,7 +87,7 @@ function mapSearchItem(v: SearchVehicleItem): DisplayVehicle {
   };
 }
 
-export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
+export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTableProps) {
   const [vehicles, setVehicles] = useState<DisplayVehicle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,6 +144,9 @@ export function VehicleTable({ searchQuery = "" }: VehicleTableProps) {
         setVehicles(res.data.map(mapVehicleItem));
         setTotalPages(res.pagination.totalPages);
         setTotalItems(res.pagination.total);
+        if (res.stats) {
+          onStatsLoaded?.(res.stats);
+        }
       } else {
         setVehicles([]);
         setTotalPages(1);

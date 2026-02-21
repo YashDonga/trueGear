@@ -5,7 +5,7 @@ import { Breadcrumb } from "../../components/common/Breadcrumb";
 import Button from "../../components/common/Button";
 import { ROUTES } from "../../constants/routes";
 import { searchCustomers, type CustomerSearchItem } from "../../api/customer.api";
-import { addVehicle } from "../../api/vehicle.api";
+import { addVehicle, listMakes, listModelsByMake, type VehicleMake, type VehicleModel } from "../../api/vehicle.api";
 
 interface CustomerData {
   firstName: string;
@@ -34,6 +34,13 @@ const AddCustomer: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Makes & Models state
+  const [makes, setMakes] = useState<VehicleMake[]>([]);
+  const [models, setModels] = useState<VehicleModel[]>([]);
+  const [selectedMakeId, setSelectedMakeId] = useState<string>("");
+  const [loadingMakes, setLoadingMakes] = useState(false);
+  const [loadingModels, setLoadingModels] = useState(false);
 
   const [formData, setFormData] = useState<CustomerData>({
     firstName: "",
@@ -88,6 +95,76 @@ const AddCustomer: React.FC = () => {
     };
   }, []);
 
+  // Fetch makes on mount
+  useEffect(() => {
+    const fetchMakes = async () => {
+      setLoadingMakes(true);
+      try {
+        const res = await listMakes();
+        if (res.status) {
+          setMakes(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch makes:", err);
+      } finally {
+        setLoadingMakes(false);
+      }
+    };
+    fetchMakes();
+  }, []);
+
+  // Fetch models when make changes
+  useEffect(() => {
+    if (!selectedMakeId) {
+      setModels([]);
+      return;
+    }
+    const fetchModels = async () => {
+      setLoadingModels(true);
+      try {
+        const res = await listModelsByMake(selectedMakeId);
+        if (res.status) {
+          setModels(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch models:", err);
+      } finally {
+        setLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [selectedMakeId]);
+
+  const handleMakeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const makeId = e.target.value;
+    const make = makes.find((m) => m.id === makeId);
+    setSelectedMakeId(makeId);
+    setFormData((prev) => ({
+      ...prev,
+      vehicleMake: make?.name || "",
+      vehicleModel: "",
+    }));
+    setModels([]);
+    if (errors.vehicleMake) {
+      setErrors((prev) => ({ ...prev, vehicleMake: "" }));
+    }
+    if (errors.vehicleModel) {
+      setErrors((prev) => ({ ...prev, vehicleModel: "" }));
+    }
+  };
+
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const modelId = e.target.value;
+    const model = models.find((m) => m.id === modelId);
+    setFormData((prev) => ({
+      ...prev,
+      vehicleModel: model?.name || "",
+    }));
+    if (errors.vehicleModel) {
+      setErrors((prev) => ({ ...prev, vehicleModel: "" }));
+    }
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -114,7 +191,7 @@ const AddCustomer: React.FC = () => {
       ...prev,
       firstName: customer.firstName,
       lastName: customer.lastName,
-      phoneNumber: "",
+      phoneNumber: customer.contactNumber || "",
       email: customer.primaryEmail || "",
     }));
     setIsDropdownOpen(false);
@@ -125,6 +202,8 @@ const AddCustomer: React.FC = () => {
     setSelectedCustomer(null);
     setSearchQuery("");
     setShowNewCustomerForm(true);
+    setSelectedMakeId("");
+    setModels([]);
     setFormData({
       firstName: "",
       lastName: "",
@@ -246,6 +325,8 @@ const AddCustomer: React.FC = () => {
     setSearchQuery("");
     setSearchResults([]);
     setShowNewCustomerForm(false);
+    setSelectedMakeId("");
+    setModels([]);
     setFormData({
       firstName: "",
       lastName: "",
@@ -470,8 +551,11 @@ const AddCustomer: React.FC = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
+                    readOnly={!!selectedCustomer?.contactNumber}
                     placeholder="Enter phone number"
                     className={`w-full h-11 sm:h-12 border rounded-[10px] pl-10 pr-3 sm:pr-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                      selectedCustomer?.contactNumber ? "bg-[#f9f9f9] cursor-not-allowed" : ""
+                    } ${
                       errors.phoneNumber
                         ? "border-red-500 focus:border-red-500"
                         : "border-[#e5e7eb] focus:border-[#04c397]"
@@ -556,18 +640,21 @@ const AddCustomer: React.FC = () => {
                 <label className="block text-[#333] text-[13px] font-medium mb-1.5">
                   Vehicle Make <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  name="vehicleMake"
-                  value={formData.vehicleMake}
-                  onChange={handleChange}
-                  placeholder="e.g., BMW, Toyota, Honda"
-                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                <select
+                  value={selectedMakeId}
+                  onChange={handleMakeChange}
+                  disabled={loadingMakes}
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] outline-none transition-colors bg-white ${
                     errors.vehicleMake
                       ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
-                  }`}
-                />
+                  } ${!selectedMakeId ? "text-[#bfbfbf]" : ""}`}
+                >
+                  <option value="">{loadingMakes ? "Loading makes..." : "Select Vehicle Make"}</option>
+                  {makes.map((make) => (
+                    <option key={make.id} value={make.id}>{make.name}</option>
+                  ))}
+                </select>
                 {errors.vehicleMake && (
                   <p className="text-red-500 text-[11px] mt-1">{errors.vehicleMake}</p>
                 )}
@@ -578,18 +665,29 @@ const AddCustomer: React.FC = () => {
                 <label className="block text-[#333] text-[13px] font-medium mb-1.5">
                   Vehicle Model <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  name="vehicleModel"
-                  value={formData.vehicleModel}
-                  onChange={handleChange}
-                  placeholder="e.g., 3 Series, Camry, Civic"
-                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                <select
+                  value={models.find((m) => m.name === formData.vehicleModel)?.id || ""}
+                  onChange={handleModelChange}
+                  disabled={!selectedMakeId || loadingModels}
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] outline-none transition-colors bg-white ${
                     errors.vehicleModel
                       ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
+                  } ${!formData.vehicleModel ? "text-[#bfbfbf]" : ""} ${
+                    !selectedMakeId ? "bg-[#f9f9f9] cursor-not-allowed" : ""
                   }`}
-                />
+                >
+                  <option value="">
+                    {!selectedMakeId
+                      ? "Select a make first"
+                      : loadingModels
+                        ? "Loading models..."
+                        : "Select Vehicle Model"}
+                  </option>
+                  {models.map((model) => (
+                    <option key={model.id} value={model.id}>{model.name}</option>
+                  ))}
+                </select>
                 {errors.vehicleModel && (
                   <p className="text-red-500 text-[11px] mt-1">{errors.vehicleModel}</p>
                 )}
@@ -600,19 +698,26 @@ const AddCustomer: React.FC = () => {
                 <label className="block text-[#333] text-[13px] font-medium mb-1.5">
                   Manufacturing Year <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <select
                   name="manufacturingYear"
                   value={formData.manufacturingYear}
-                  onChange={handleChange}
-                  placeholder="e.g., 2024"
-                  maxLength={4}
-                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none transition-colors ${
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, manufacturingYear: e.target.value }));
+                    if (errors.manufacturingYear) {
+                      setErrors((prev) => ({ ...prev, manufacturingYear: "" }));
+                    }
+                  }}
+                  className={`w-full h-11 sm:h-12 border rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] outline-none transition-colors bg-white ${
                     errors.manufacturingYear
                       ? "border-red-500 focus:border-red-500"
                       : "border-[#e5e7eb] focus:border-[#04c397]"
-                  }`}
-                />
+                  } ${!formData.manufacturingYear ? "text-[#bfbfbf]" : ""}`}
+                >
+                  <option value="">Select Year</option>
+                  {Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                    <option key={year} value={String(year)}>{year}</option>
+                  ))}
+                </select>
                 {errors.manufacturingYear && (
                   <p className="text-red-500 text-[11px] mt-1">{errors.manufacturingYear}</p>
                 )}

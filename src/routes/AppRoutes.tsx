@@ -26,7 +26,7 @@ const AppRoutes: React.FC = () => (
           <Route path="vehicle-entry-success" element={<VehicleEntrySuccess />} />
         </Route>
         <Route path={ROUTES.QUALITY_CHECK_DASHBOARD.slice(1)} element={<QualityCheckDashboard />}>
-          <Route path="quality-check-inspection" element={<QualityCheckInspection />} />
+          <Route path="quality-check-inspection/:inspectionId" element={<QualityCheckInspection />} />
         </Route>
         <Route path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)} element={<ServiceAdvisorDashboard />}>
           <Route path="vehicle/:id" element={<ServiceAdvisorVehicleDetail />} />

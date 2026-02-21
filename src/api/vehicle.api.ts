@@ -31,10 +31,18 @@ export interface VehiclePagination {
   totalPages: number;
 }
 
+export interface VehicleStats {
+  pendingInspection: number;
+  inProgress: number;
+  completed: number;
+  avgTimeInside: string;
+}
+
 export interface VehicleListResponse {
   status: boolean;
   message: string;
   data: VehicleItem[];
+  stats: VehicleStats;
   pagination: VehiclePagination;
 }
 
@@ -220,6 +228,38 @@ export const deleteVehicleImage = async (
   imageId: string
 ): Promise<{ status: boolean; message: string }> => {
   const { data } = await api.delete(`/vehicles/${vehicleId}/images/${imageId}`);
+  return data;
+};
+
+// ---- Vehicle Makes & Models ----
+
+export interface VehicleMake {
+  id: string;
+  name: string;
+}
+
+export interface VehicleModel {
+  id: string;
+  name: string;
+}
+
+export const listMakes = async (): Promise<{
+  status: boolean;
+  message: string;
+  data: VehicleMake[];
+}> => {
+  const { data } = await api.get("/vehicles/makes");
+  return data;
+};
+
+export const listModelsByMake = async (
+  makeId: string
+): Promise<{
+  status: boolean;
+  message: string;
+  data: VehicleModel[];
+}> => {
+  const { data } = await api.get(`/vehicles/makes/${makeId}/models`);
   return data;
 };
 

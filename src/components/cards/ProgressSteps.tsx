@@ -16,8 +16,7 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
     { id: 2, label: "Interior", icon: Armchair },
     { id: 3, label: "Brake", icon: Gauge },
     { id: 4, label: "Findings", icon: ClipboardList },
-    { id: 5, label: "Photos", icon: Camera },
-    { id: 6, label: "Submit", icon: CheckSquare },
+    { id: 5, label: "Submit", icon: CheckSquare },
   ];
 
   return (
