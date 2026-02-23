@@ -61,7 +61,7 @@ export function JobChecklist({ items, onToggle }: JobChecklistProps) {
             </div>
 
             {/* Title */}
-            <span className="font-medium text-[16px] text-[#333] flex-1 text-left">
+            <span className={`font-medium text-[16px] flex-1 text-left ${item.completed ? 'line-through text-[#999]' : 'text-[#333]'}`}>
               {item.title}
             </span>
 

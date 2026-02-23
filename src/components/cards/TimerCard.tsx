@@ -1,12 +1,13 @@
-import { Clock, Play } from "lucide-react";
+import { Clock, Play, Pause } from "lucide-react";
 
 interface TimerCardProps {
   time: string;
   status: string;
+  isRunning?: boolean;
   onStart?: () => void;
 }
 
-export function TimerCard({ time, status, onStart }: TimerCardProps) {
+export function TimerCard({ time, status, isRunning = false, onStart }: TimerCardProps) {
   return (
     <div className="bg-white border border-[#e5e7eb] rounded-[10px] shadow-[2px_3px_20px_0px_rgba(0,0,0,0.04)] p-5 flex items-center justify-between">
       {/* Timer Info */}
@@ -28,12 +29,12 @@ export function TimerCard({ time, status, onStart }: TimerCardProps) {
       </div>
 
       {/* Start Button */}
-      <button 
+      <button
         onClick={onStart}
-        className="bg-[#00bf06] text-white rounded-[5px] px-6 h-10 flex items-center gap-2 shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] font-semibold text-[16px] hover:bg-[#00a005] transition-colors"
+        className={`${isRunning ? 'bg-[#4F8EF6] hover:bg-[#3a7ae0]' : 'bg-[#00bf06] hover:bg-[#00a005]'} text-white rounded-[5px] px-6 h-10 flex items-center gap-2 shadow-[2px_4px_8px_0px_rgba(0,0,0,0.15)] font-semibold text-[16px] transition-colors cursor-pointer`}
       >
-        <Play size={16} fill="white" />
-        Start
+        {isRunning ? <Pause size={16} fill="white" /> : <Play size={16} fill="white" />}
+        {isRunning ? 'Pause' : 'Start'}
       </button>
     </div>
   );

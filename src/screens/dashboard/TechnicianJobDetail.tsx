@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BackButton } from "../../components/cards/BackButton";
 import { ArrowLeft } from "lucide-react";
 import { VehicleCard } from "../../components/cards/VehicleCard";
@@ -26,7 +26,7 @@ interface JobDetail {
   tasks: Task[];
 }
 
-// Mock data - in real app, this would come from API
+// Mock data - replace with API call when backend is ready
 const mockJobData: Record<string, JobDetail> = {
   "1": {
     id: "1",
@@ -123,27 +123,75 @@ const mockJobData: Record<string, JobDetail> = {
   },
 };
 
+const statusConfig = {
+  pending: { label: "Pending", bg: "bg-[#ffe1b7]", text: "text-[#e89d00]" },
+  progress: { label: "In Progress", bg: "bg-[#b7d4ff]", text: "text-[#0061FF]" },
+  completed: { label: "Completed", bg: "bg-[#b3ffbd]", text: "text-[#00bf06]" },
+};
+
+const formatTime = (seconds: number): string => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  if (hrs > 0) return `${hrs}h ${mins}m ${secs}s`;
+  return `${mins}m ${secs}s`;
+};
+
 const TechnicianJobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const job = id ? mockJobData[id] : null;
 
-  const [checklistItems, setChecklistItems] = useState([
-    { id: "1", title: "AC Gas Refill & Cooling Check", completed: true },
-    { id: "2", title: "AC Compressor Inspection", completed: false },
-    { id: "3", title: "AC Performance test", completed: false },
-  ]);
+  // Timer state
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const intervalRef = useRef<number | null>(null);
 
-  const handleToggleItem = (id: string) => {
+  // Checklist derived from job tasks
+  const [checklistItems, setChecklistItems] = useState<
+    { id: string; title: string; completed: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    if (job) {
+      setChecklistItems(
+        job.tasks.map((task) => ({
+          id: task.id,
+          title: task.name,
+          completed: task.isCompleted,
+        })),
+      );
+    }
+  }, [id]);
+
+  // Timer interval
+  useEffect(() => {
+    if (isTimerRunning) {
+      intervalRef.current = window.setInterval(() => {
+        setElapsedSeconds((prev) => prev + 1);
+      }, 1000);
+    } else if (intervalRef.current !== null) {
+      window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    return () => {
+      if (intervalRef.current !== null) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isTimerRunning]);
+
+  const handleToggleItem = (itemId: string) => {
     setChecklistItems((items) =>
       items.map((item) =>
-        item.id === id ? { ...item, completed: !item.completed } : item,
+        item.id === itemId ? { ...item, completed: !item.completed } : item,
       ),
     );
   };
 
-  const handleStartTimer = () => {
-    console.log("Timer started");
+  const handleToggleTimer = () => {
+    setIsTimerRunning((prev) => !prev);
   };
 
   if (!job) {
@@ -157,10 +205,15 @@ const TechnicianJobDetail: React.FC = () => {
     );
   }
 
+  const status = statusConfig[job.status];
+
   return (
     <>
       {/* Back to Jobs */}
-      <button className="flex items-center gap-2 mb-5 text-[#999] hover:text-[#333] transition-colors">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 mb-5 text-[#999] hover:text-[#333] transition-colors"
+      >
         <ArrowLeft size={16} />
         <span className="font-normal text-[14px]">Back to Jobs</span>
       </button>
@@ -169,17 +222,17 @@ const TechnicianJobDetail: React.FC = () => {
       <div className="flex items-center justify-between mb-7.5">
         <div>
           <h2 className="font-semibold text-[24px] text-[#333] leading-[1.2] mb-1.25">
-            KA-01-AB-1234
+            {job.vehicleNumber}
           </h2>
           <p className="font-normal text-[16px] text-[#999] leading-[1.2]">
-            Toyota Innova Crysta
+            {job.vehicleModel}
           </p>
         </div>
 
         {/* Status Badge */}
-        <div className="bg-[#ffe1b7] px-6 py-2.5 rounded-lg">
-          <span className="font-semibold text-[16px] text-[#e89d00]">
-            Pending
+        <div className={`${status.bg} px-6 py-2.5 rounded-lg`}>
+          <span className={`font-semibold text-[16px] ${status.text}`}>
+            {status.label}
           </span>
         </div>
       </div>
@@ -187,26 +240,27 @@ const TechnicianJobDetail: React.FC = () => {
       {/* Vehicle Cards Row */}
       <div className="grid grid-cols-2 gap-6 mb-7.5">
         <VehicleCard
-          vehicleNumber="KA-01-AB-1234"
-          vehicleName="Toyota Innova Crysta"
+          vehicleNumber={job.vehicleNumber}
+          vehicleName={job.vehicleModel}
         />
         <VehicleCard
-          vehicleNumber="KA-01-AB-1234"
-          vehicleName="Toyota Innova Crysta"
+          vehicleNumber={job.vehicleNumber}
+          vehicleName={job.vehicleModel}
         />
       </div>
 
       {/* Timer Card */}
       <div className="mb-7.5">
         <TimerCard
-          time="0m 0s"
-          status="Timer paused"
-          onStart={handleStartTimer}
+          time={formatTime(elapsedSeconds)}
+          status={isTimerRunning ? "Timer running" : "Timer paused"}
+          isRunning={isTimerRunning}
+          onStart={handleToggleTimer}
         />
       </div>
       {/* Job Checklist */}
-        <JobChecklist 
-          items={checklistItems} 
+        <JobChecklist
+          items={checklistItems}
           onToggle={handleToggleItem}
         />
     </>
