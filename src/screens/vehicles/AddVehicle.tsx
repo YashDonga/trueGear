@@ -46,7 +46,13 @@ const AddVehicle: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [entryTime, setEntryTime] = useState<string>("--");
+  const [entryTime, setEntryTime] = useState<string>(
+    new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+  );
   const [vehicleId, setVehicleId] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
@@ -79,7 +85,7 @@ const AddVehicle: React.FC = () => {
             setCustomerData({
               firstName: customer.firstName,
               lastName: customer.lastName,
-              phoneNumber: "",
+              phoneNumber: customer.contactNumber || "",
               email: customer.primaryEmail || "",
               vehicleNumber: vehicle.registrationNumber || vehicle.vin,
               vehicleMake: vehicle.brand,

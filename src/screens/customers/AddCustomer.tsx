@@ -18,6 +18,7 @@ interface CustomerData {
   vin: string;
   manufacturingYear: string;
   odometerLast: string;
+  priority: string;
 }
 
 const AddCustomer: React.FC = () => {
@@ -53,6 +54,7 @@ const AddCustomer: React.FC = () => {
     vin: "",
     manufacturingYear: "",
     odometerLast: "",
+    priority: "STANDARD",
   });
 
   const [errors, setErrors] = useState<Partial<CustomerData>>({});
@@ -215,6 +217,7 @@ const AddCustomer: React.FC = () => {
       vin: "",
       manufacturingYear: "",
       odometerLast: "",
+      priority: "STANDARD",
     });
   };
 
@@ -285,7 +288,8 @@ const AddCustomer: React.FC = () => {
         model: formData.vehicleModel.trim(),
         manufacturingYear: parseInt(formData.manufacturingYear, 10),
         odometerLast: parseInt(formData.odometerLast, 10),
-        registrationNumber: formData.vehicleNumber.trim() || undefined,
+        registrationNumber: formData.vehicleNumber.trim() || formData.vin.trim(),
+        priority: formData.priority,
       });
 
       if (res.status) {
@@ -295,7 +299,7 @@ const AddCustomer: React.FC = () => {
           lastName: formData.lastName,
           phoneNumber: formData.phoneNumber,
           email: formData.email,
-          vehicleNumber: res.data.registrationNumber || formData.vehicleNumber,
+          vehicleNumber: res.data.vin || formData.vehicleNumber,
           vehicleMake: formData.vehicleMake,
           vehicleModel: formData.vehicleModel,
         }));
@@ -338,6 +342,7 @@ const AddCustomer: React.FC = () => {
       vin: "",
       manufacturingYear: "",
       odometerLast: "",
+      priority: "STANDARD",
     });
   };
 
@@ -743,6 +748,26 @@ const AddCustomer: React.FC = () => {
                 {errors.odometerLast && (
                   <p className="text-red-500 text-[11px] mt-1">{errors.odometerLast}</p>
                 )}
+              </div>
+
+              {/* Priority */}
+              <div>
+                <label className="block text-[#333] text-[13px] font-medium mb-1.5">
+                  Priority
+                </label>
+                <select
+                  name="priority"
+                  value={formData.priority}
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, priority: e.target.value }));
+                  }}
+                  className="w-full h-11 sm:h-12 border border-[#e5e7eb] focus:border-[#04c397] rounded-[10px] px-3 sm:px-4 text-[14px] text-[#333] outline-none transition-colors bg-white"
+                >
+                  <option value="STANDARD">Standard</option>
+                  <option value="URGENT">Urgent</option>
+                  <option value="EXPRESS">Express</option>
+                  <option value="BASIC">Basic</option>
+                </select>
               </div>
             </div>
           </div>

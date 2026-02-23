@@ -12,15 +12,15 @@ const statusFilterToApi: Record<StatusFilter, "ALL" | "URGENT" | "DELAYED"> = {
   Delayed: "DELAYED",
 };
 
-type DisplayStatus = 'In Progress' | 'Scheduled' | 'Completed' | 'Pending';
+type DisplayStatus = 'QC In Progress' | 'QC Completed' | 'Ready' | 'Pending';
 type DisplayPriority = 'Standard' | 'Urgent' | 'Express' | 'Basic';
 
 function mapStatus(apiStatus: string): DisplayStatus {
-  switch (apiStatus.toUpperCase()) {
-    case 'IN_PROGRESS': return 'In Progress';
-    case 'COMPLETED': return 'Completed';
-    case 'SCHEDULED': return 'Scheduled';
-    case 'PENDING':
+  switch (apiStatus) {
+    case 'QC In Progress': return 'QC In Progress';
+    case 'QC Completed': return 'QC Completed';
+    case 'Ready':
+    case 'In Queue': return 'Ready';
     default: return 'Pending';
   }
 }
@@ -37,20 +37,22 @@ function mapPriority(apiPriority: string): DisplayPriority {
 
 function StatusBadge({ status }: { status: DisplayStatus }) {
   const styles = {
-    'In Progress': 'bg-[#e8f4ff] text-[#0066cc] border-[#b3d9ff]',
-    'Scheduled': 'bg-[#fff4e6] text-[#ff9500] border-[#ffd699]',
-    'Completed': 'bg-[#e6f7ed] text-[#00a651] border-[#99d9b8]',
+    'QC In Progress': 'bg-[#e8f4ff] text-[#0066cc] border-[#b3d9ff]',
+    'QC Completed': 'bg-[#e6f7ed] text-[#00a651] border-[#99d9b8]',
+    'Ready': 'bg-[#fff4e6] text-[#ff9500] border-[#ffd699]',
     'Pending': 'bg-[#ffe6e6] text-[#ff0000] border-[#ffb3b3]',
+  };
+
+  const dotColors = {
+    'QC In Progress': 'bg-[#0066cc]',
+    'QC Completed': 'bg-[#00a651]',
+    'Ready': 'bg-[#ff9500]',
+    'Pending': 'bg-[#ff0000]',
   };
 
   return (
     <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[20px] border ${styles[status]}`}>
-      <div className={`w-1.5 h-1.5 rounded-full ${
-        status === 'In Progress' ? 'bg-[#0066cc]' :
-        status === 'Scheduled' ? 'bg-[#ff9500]' :
-        status === 'Completed' ? 'bg-[#00a651]' :
-        'bg-[#ff0000]'
-      }`} />
+      <div className={`w-1.5 h-1.5 rounded-full ${dotColors[status]}`} />
       <span className="text-[14px]">{status}</span>
     </div>
   );

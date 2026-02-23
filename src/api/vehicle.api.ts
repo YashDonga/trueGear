@@ -105,6 +105,7 @@ export interface AddVehiclePayload {
   noOfDoors?: number;
   noOfPassengers?: number;
   condition?: string;
+  priority?: string;
 }
 
 export interface AddVehicleResponse {
@@ -139,6 +140,7 @@ export interface VehicleDetailCustomer {
   lastName: string;
   companyName: string | null;
   primaryEmail: string;
+  contactNumber: string | null;
   fullName: string;
 }
 
@@ -260,6 +262,15 @@ export const listModelsByMake = async (
   data: VehicleModel[];
 }> => {
   const { data } = await api.get(`/vehicles/makes/${makeId}/models`);
+  return data;
+};
+
+// ---- Delete Vehicle ----
+
+export const deleteVehicle = async (
+  vehicleId: string
+): Promise<{ status: boolean; message: string }> => {
+  const { data } = await api.delete(`/vehicles/${vehicleId}`);
   return data;
 };
 

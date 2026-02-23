@@ -9,10 +9,12 @@ import ROUTES from "../../constants/routes";
 import {
   listVehicles,
   searchVehicles,
+  deleteVehicle,
   type VehicleItem,
   type SearchVehicleItem,
   type VehicleStats,
 } from "../../api/vehicle.api";
+import { ConfirmDeleteModal } from "../common/ConfirmDeleteModal";
 
 interface DisplayVehicle {
   id: string;
@@ -187,6 +189,35 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
     navigate(`${ROUTES.ADD_VEHICLE}?vehicleId=${vehicle.id}`);
   };
 
+  const [deleteTarget, setDeleteTarget] = useState<DisplayVehicle | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleDeleteVehicle = (vehicle: DisplayVehicle) => {
+    setDeleteError(null);
+    setDeleteTarget(vehicle);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await deleteVehicle(deleteTarget.id);
+      if (res.status) {
+        setDeleteTarget(null);
+        fetchVehicles();
+      } else {
+        setDeleteError(res.message || "Failed to delete vehicle");
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete vehicle";
+      setDeleteError(message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const isEmpty = vehicles.length === 0 && !loading;
 
   return (
@@ -343,6 +374,7 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
                         <Button
                           variant="custom"
                           className="p-2! h-10! hover:bg-gray-100 bg-[#FBFBFB] border border-[#EBEBEB] rounded-md"
+                          onClick={() => handleDeleteVehicle(vehicle)}
                         >
                           <Trash2 size={16} />
                         </Button>
@@ -389,7 +421,10 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
                     >
                       <Edit2 size={16} />
                     </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
+                    <button
+                      className="p-1 hover:bg-gray-100 rounded"
+                      onClick={() => handleDeleteVehicle(vehicle)}
+                    >
                       <Trash2 size={16} />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
@@ -446,6 +481,16 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
           onPageChange={handlePageChange}
         />
       )}
+      {/* Delete Confirmation Modal */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        registration={deleteTarget?.registration || ""}
+        model={deleteTarget?.model || ""}
+        isDeleting={isDeleting}
+        error={deleteError}
+      />
     </div>
   );
 }
