@@ -9,6 +9,9 @@ import ServiceAdvisorDashboard from '../screens/dashboard/ServiceAdvisorDashboar
 import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehicleDetail.tsx';
 import CustomerApprovalDashboard from '../screens/dashboard/CustomerApprovalDashboard.tsx';
 import CustomerProfileDashboard from '../screens/dashboard/CustomerProfileDashboard.tsx';
+import SparePartsDashboard from '../screens/dashboard/SparePartsDashboard.tsx';
+import TechnicianDashboard from '../screens/dashboard/TechnicianDashboard.tsx';
+import TechnicianJobDetail from '../screens/dashboard/TechnicianJobDetail.tsx';
 import Profile from '../screens/profile/Profile';
 import AddVehicle from '../screens/vehicles/AddVehicle';
 import VehicleEntrySuccess from '../screens/vehicles/VehicleEntrySuccess';
@@ -36,6 +39,9 @@ const AppRoutes: React.FC = () => (
         </Route>
         <Route path={ROUTES.CUSTOMER_APPROVAL_DASHBOARD.slice(1)} element={<CustomerApprovalDashboard />} />
         <Route path={ROUTES.CUSTOMER_PROFILE_DASHBOARD.slice(1)} element={<CustomerProfileDashboard />} />
+        <Route path={ROUTES.SPARE_PARTS_DASHBOARD.slice(1)} element={<SparePartsDashboard />} />
+        <Route path={ROUTES.TECHNICIAN_DASHBOARD.slice(1)} element={<TechnicianDashboard />} />
+        <Route path="technician-dashboard/job/:id" element={<TechnicianJobDetail />} />
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
       </Route>
 

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, CheckCircle, ShieldUser, ClipboardList, BadgeCheck, User } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser, ClipboardList, BadgeCheck, User, Package, Wrench } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 
 interface Props {
@@ -119,6 +119,30 @@ export function Sidebar({ open, setOpen }: Props) {
           onClick={() => handleNavigation(ROUTES.CUSTOMER_PROFILE_DASHBOARD)}
         >
           <User className={isActive(ROUTES.CUSTOMER_PROFILE_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Spare Parts Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.SPARE_PARTS_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.SPARE_PARTS_DASHBOARD)}
+        >
+          <Package className={isActive(ROUTES.SPARE_PARTS_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Technician Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.TECHNICIAN_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.TECHNICIAN_DASHBOARD)}
+        >
+          <Wrench className={isActive(ROUTES.TECHNICIAN_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
       </aside>
     </>
