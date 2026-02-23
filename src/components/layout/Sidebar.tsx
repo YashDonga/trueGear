@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, CheckCircle, ShieldUser, ClipboardList, BadgeCheck, User, Package, Wrench } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser, ClipboardList, BadgeCheck, User, Package, Wrench, FileCheck, Receipt } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 
 interface Props {
@@ -36,9 +36,10 @@ export function Sidebar({ open, setOpen }: Props) {
           h-screen
           w-22.5 sm:w-25 lg:w-27.5
           bg-white border-r border-[#ebebeb]
-          flex flex-col items-center pt-5 gap-5
+          flex flex-col items-center pt-5
           transform transition-transform duration-300
-          
+          overflow-hidden
+
           ${open ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
         `}
@@ -53,13 +54,16 @@ export function Sidebar({ open, setOpen }: Props) {
         </button>
 
         {!open && (
-          <>
+          <div className="shrink-0 mb-5">
             {/* Menu Button */}
             <button className="bg-[#fbfbfb] border border-[#ebebeb] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center">
               <Menu className="w-6 h-6 text-[#333]" />
             </button>
-          </>
+          </div>
         )}
+
+        {/* Scrollable nav buttons */}
+        <div className="flex flex-col items-center gap-5 overflow-y-auto pb-5 w-full scrollbar-hide">
 
         {/* Security Dashboard - Active */}
         <button
@@ -83,6 +87,18 @@ export function Sidebar({ open, setOpen }: Props) {
           onClick={() => handleNavigation(ROUTES.QUALITY_CHECK_DASHBOARD)}
         >
           <CheckCircle className={isActive(ROUTES.QUALITY_CHECK_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Post-Service QC Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.POST_SERVICE_QC_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.POST_SERVICE_QC_DASHBOARD)}
+        >
+          <FileCheck className={isActive(ROUTES.POST_SERVICE_QC_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
 
         {/* Service Advisor Dashboard */}
@@ -144,6 +160,19 @@ export function Sidebar({ open, setOpen }: Props) {
         >
           <Wrench className={isActive(ROUTES.TECHNICIAN_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
+
+        {/* Finance & Billing Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.FINANCE_BILLING_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.FINANCE_BILLING_DASHBOARD)}
+        >
+          <Receipt className={isActive(ROUTES.FINANCE_BILLING_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+        </div>
       </aside>
     </>
   );

@@ -5,6 +5,8 @@ export const ROUTES = {
   SECURITY_DASHBOARD: '/security-dashboard',
   QUALITY_CHECK_DASHBOARD: '/quality-check-dashboard',
   QUALITY_CHECK_INSPECTION: '/quality-check-dashboard/quality-check-inspection',
+  POST_SERVICE_QC_DASHBOARD: '/post-service-qc',
+  POST_SERVICE_QC_INSPECTION: '/post-service-qc/inspection/:id',
   SERVICE_ADVISOR_DASHBOARD: '/service-advisor-dashboard',
   SERVICE_ADVISOR_VEHICLE_DETAIL: '/service-advisor-dashboard/vehicle/:id',
   CUSTOMER_APPROVAL_DASHBOARD: '/customer-approval-dashboard',
@@ -17,6 +19,8 @@ export const ROUTES = {
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
   CREATE_JOB_CARD: '/service-advisor-dashboard/job-card/:vehicleId',
   SEND_ESTIMATE: '/service-advisor-dashboard/send-estimate',
+  FINANCE_BILLING_DASHBOARD: '/finance-billing',
+  FINANCE_BILLING_INVOICE: '/finance-billing/invoice/:id',
 };
 
 export default ROUTES;

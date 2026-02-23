@@ -5,6 +5,10 @@ import Register from '../screens/auth/Register';
 import SecurityDashboard from '../screens/dashboard/SecurityDashboard.tsx';
 import QualityCheckDashboard from '../screens/dashboard/QualityCheckDashboard.tsx';
 import QualityCheckInspection from '../screens/dashboard/QualityCheckInspection.tsx';
+import PostServiceQCDashboard from '../screens/dashboard/PostServiceQCDashboard.tsx';
+import PostServiceQCInspection from '../screens/dashboard/PostServiceQCInspection.tsx';
+import FinanceBillingDashboard from '../screens/dashboard/FinanceBillingDashboard.tsx';
+import InvoiceDetail from '../screens/dashboard/InvoiceDetail.tsx';
 import ServiceAdvisorDashboard from '../screens/dashboard/ServiceAdvisorDashboard.tsx';
 import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehicleDetail.tsx';
 import CustomerApprovalDashboard from '../screens/dashboard/CustomerApprovalDashboard.tsx';
@@ -32,6 +36,8 @@ const AppRoutes: React.FC = () => (
         <Route path={ROUTES.QUALITY_CHECK_DASHBOARD.slice(1)} element={<QualityCheckDashboard />}>
           <Route path="quality-check-inspection" element={<QualityCheckInspection />} />
         </Route>
+        <Route path={ROUTES.POST_SERVICE_QC_DASHBOARD.slice(1)} element={<PostServiceQCDashboard />} />
+        <Route path="post-service-qc/inspection/:id" element={<PostServiceQCInspection />} />
         <Route path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)} element={<ServiceAdvisorDashboard />}>
           <Route path="vehicle/:id" element={<ServiceAdvisorVehicleDetail />} />
           <Route path="job-card/:vehicleId" element={<CreateJobCard />} />
@@ -40,6 +46,8 @@ const AppRoutes: React.FC = () => (
         <Route path={ROUTES.CUSTOMER_APPROVAL_DASHBOARD.slice(1)} element={<CustomerApprovalDashboard />} />
         <Route path={ROUTES.CUSTOMER_PROFILE_DASHBOARD.slice(1)} element={<CustomerProfileDashboard />} />
         <Route path={ROUTES.SPARE_PARTS_DASHBOARD.slice(1)} element={<SparePartsDashboard />} />
+        <Route path={ROUTES.FINANCE_BILLING_DASHBOARD.slice(1)} element={<FinanceBillingDashboard />} />
+        <Route path="finance-billing/invoice/:id" element={<InvoiceDetail />} />
         <Route path={ROUTES.TECHNICIAN_DASHBOARD.slice(1)} element={<TechnicianDashboard />} />
         <Route path="technician-dashboard/job/:id" element={<TechnicianJobDetail />} />
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
