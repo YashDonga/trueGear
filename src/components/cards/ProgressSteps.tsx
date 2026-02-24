@@ -1,4 +1,4 @@
-import { Truck, Armchair, Gauge, ClipboardList, Camera, CheckSquare, Check } from "lucide-react";
+import { Truck, Armchair, Gauge, ClipboardList, CheckSquare, Check } from "lucide-react";
 
 interface Step {
   id: number;

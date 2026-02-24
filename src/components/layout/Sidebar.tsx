@@ -55,9 +55,8 @@ export function Sidebar({ open, setOpen }: Props) {
           h-screen
           w-22.5 sm:w-25 lg:w-27.5
           bg-white border-r border-[#ebebeb]
-          flex flex-col items-center pt-5 gap-5
+          flex flex-col items-center pt-5
           transform transition-transform duration-300
-
           ${open ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
         `}
@@ -98,7 +97,6 @@ export function Sidebar({ open, setOpen }: Props) {
 
         {/* Spacer */}
         <div className="flex-1" />
-
         {/* Settings */}
         <button
           className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer mb-5 ${
@@ -110,6 +108,67 @@ export function Sidebar({ open, setOpen }: Props) {
         >
           <Settings className={isActive(ROUTES.SETTINGS) ? "text-white" : "text-gray-400"} />
         </button>
+
+        {/* Customer Approval Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)}
+        >
+          <BadgeCheck className={isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Customer Profile Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.CUSTOMER_PROFILE_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.CUSTOMER_PROFILE_DASHBOARD)}
+        >
+          <User className={isActive(ROUTES.CUSTOMER_PROFILE_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Spare Parts Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.SPARE_PARTS_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.SPARE_PARTS_DASHBOARD)}
+        >
+          <Package className={isActive(ROUTES.SPARE_PARTS_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Technician Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.TECHNICIAN_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.TECHNICIAN_DASHBOARD)}
+        >
+          <Wrench className={isActive(ROUTES.TECHNICIAN_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+
+        {/* Finance & Billing Dashboard */}
+        <button
+          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+            isActive(ROUTES.FINANCE_BILLING_DASHBOARD)
+              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+          }`}
+          onClick={() => handleNavigation(ROUTES.FINANCE_BILLING_DASHBOARD)}
+        >
+          <Receipt className={isActive(ROUTES.FINANCE_BILLING_DASHBOARD) ? "text-white" : "text-gray-400"} />
+        </button>
+        </div>
       </aside>
     </>
   );

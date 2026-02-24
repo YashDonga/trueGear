@@ -88,7 +88,6 @@ const Login: React.FC = () => {
               Login to access all your data
             </p>
           </div>
-
           {/* Error */}
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-400/30 text-white text-sm">

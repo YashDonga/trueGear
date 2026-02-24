@@ -115,7 +115,6 @@ const QualityCheckInspection: React.FC = () => {
   const [brakeStatus, setBrakeStatus] = useState<
     Record<number, ChecklistStatus>
   >({});
-
   // State for Step 4 (Findings)
   const [qcRating, setQcrating] = useState<string>("");
   const [finalRemarks, setFinalRemarks] = useState<string>("");
@@ -176,11 +175,9 @@ const QualityCheckInspection: React.FC = () => {
       setLoading(false);
     }
   }, [inspectionId]);
-
   useEffect(() => {
     fetchInspection();
   }, [fetchInspection]);
-
   // Validation functions for each step
   const validateStep = (step: number): boolean => {
     const newErrors: ValidationErrors = {};
@@ -196,7 +193,6 @@ const QualityCheckInspection: React.FC = () => {
           }
         }
         break;
-
       case 2:
         for (let i = 0; i < interiorItems.length; i++) {
           if (!seatsStatus[i]) {
@@ -207,7 +203,6 @@ const QualityCheckInspection: React.FC = () => {
           }
         }
         break;
-
       case 3:
         for (let i = 0; i < brakeItems.length; i++) {
           if (!brakeStatus[i]) {
@@ -232,7 +227,6 @@ const QualityCheckInspection: React.FC = () => {
     setErrors(newErrors);
     return isValid;
   };
-
   // Update all categories and statuses from save response
   const updateCategoriesFromResponse = (categories: {
     EXTERIOR: InspectionItem[];
@@ -364,7 +358,6 @@ const QualityCheckInspection: React.FC = () => {
       setSaving(false);
     }
   };
-
   // Photo upload handler
   const handlePhotoUpload = async (itemId: string, file: File) => {
     if (!inspectionId) return;

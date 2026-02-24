@@ -5,8 +5,17 @@ import Register from '../screens/auth/Register';
 import SecurityDashboard from '../screens/dashboard/SecurityDashboard.tsx';
 import QualityCheckDashboard from '../screens/dashboard/QualityCheckDashboard.tsx';
 import QualityCheckInspection from '../screens/dashboard/QualityCheckInspection.tsx';
+import PostServiceQCDashboard from '../screens/dashboard/PostServiceQCDashboard.tsx';
+import PostServiceQCInspection from '../screens/dashboard/PostServiceQCInspection.tsx';
+import FinanceBillingDashboard from '../screens/dashboard/FinanceBillingDashboard.tsx';
+import InvoiceDetail from '../screens/dashboard/InvoiceDetail.tsx';
 import ServiceAdvisorDashboard from '../screens/dashboard/ServiceAdvisorDashboard.tsx';
 import ServiceAdvisorVehicleDetail from '../screens/dashboard/ServiceAdvisorVehicleDetail.tsx';
+import CustomerApprovalDashboard from '../screens/dashboard/CustomerApprovalDashboard.tsx';
+import CustomerProfileDashboard from '../screens/dashboard/CustomerProfileDashboard.tsx';
+import SparePartsDashboard from '../screens/dashboard/SparePartsDashboard.tsx';
+import TechnicianDashboard from '../screens/dashboard/TechnicianDashboard.tsx';
+import TechnicianJobDetail from '../screens/dashboard/TechnicianJobDetail.tsx';
 import Profile from '../screens/profile/Profile';
 import AddCustomer from '../screens/customers/AddCustomer.tsx';
 import AddVehicle from '../screens/vehicles/AddVehicle';
@@ -17,6 +26,7 @@ import MainLayout from '../layouts/MainLayout.tsx';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '../constants/routes';
+import { SendEstimate } from '../screens/vehicles/SendEstimate.tsx';
 
 const ROLE_DEFAULT_ROUTES: Record<string, string> = {
   'security-gate-keeper': ROUTES.SECURITY_DASHBOARD,
@@ -75,7 +85,6 @@ const AppRoutes: React.FC = () => (
         >
           <Route path="quality-check-inspection/:inspectionId" element={<QualityCheckInspection />} />
         </Route>
-
         {/* Service Advisor / Customer routes */}
         <Route
           path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)}
@@ -87,8 +96,8 @@ const AppRoutes: React.FC = () => (
         >
           <Route path="vehicle/:id" element={<ServiceAdvisorVehicleDetail />} />
           <Route path="job-card/:vehicleId" element={<CreateJobCard />} />
+          <Route path="send-estimate/:vehicleId?" element={<SendEstimate />} />
         </Route>
-
         <Route path={ROUTES.PROFILE.slice(1)} element={<Profile />} />
         <Route path={ROUTES.SETTINGS.slice(1)} element={<Settings />} />
       </Route>

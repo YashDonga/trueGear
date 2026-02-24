@@ -22,7 +22,6 @@ export function InspectionSection({ title, description, progress, items, status 
 
   return (
     <div className="bg-white border border-[#ebebeb] rounded-[10px] mb-5">
-
       {/* Checklist Items */}
       <div>
         {items.map((item, index) => (

@@ -15,7 +15,6 @@ import {
   type VehicleStats,
 } from "../../api/vehicle.api";
 import { ConfirmDeleteModal } from "../common/ConfirmDeleteModal";
-
 interface DisplayVehicle {
   id: string;
   registration: string;
@@ -180,7 +179,6 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setStatusFilter(filter);
   };
-
   const handleAddVehicle = () => {
     navigate(ROUTES.ADD_CUSTOMER);
   };
@@ -219,7 +217,6 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
   };
 
   const isEmpty = vehicles.length === 0 && !loading;
-
   return (
     <div className="bg-white rounded-xl p-4 md:p-5">
       {/* Header */}
@@ -276,7 +273,6 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
           className="cursor-pointer"
         />
       </div>
-
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-12">

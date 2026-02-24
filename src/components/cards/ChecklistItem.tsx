@@ -1,3 +1,4 @@
+
 import { Camera, StickyNote, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button';
