@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, Settings, LogOut, Menu, ChevronDown } from "lucide-react";
-import user from "../../assets/user.jpg";
+import userAvatar from "../../assets/user.jpg";
 import Button from "../common/Button";
 import { ROUTES } from "../../constants/routes";
+import { useAuth } from "../../context/AuthContext";
 
 interface Props {
   toggleSidebar: () => void;
@@ -13,6 +14,12 @@ export function Header({ toggleSidebar }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate(ROUTES.LOGIN, { replace: true });
+  };
 
   const routeTitles: Record<string, { title: string; description: string }> = {
     [ROUTES.SECURITY_DASHBOARD]: {
@@ -71,14 +78,14 @@ export function Header({ toggleSidebar }: Props) {
         <div className="flex items-center gap-2">
           <div className="relative w-9 h-9 lg:w-10 lg:h-10 rounded-[10px] overflow-hidden">
             <img
-              src={user}
+              src={userAvatar}
               alt="User avatar"
               className="w-full h-full object-cover"
             />
           </div>
           <div className="hidden lg:block">
-            <p className="text-sm text-[#333]">Jothivelu</p>
-            <p className="text-[11px] text-[#999]">Senior Manager</p>
+            <p className="text-sm text-[#333]">{user?.username || 'User'}</p>
+            <p className="text-[11px] text-[#999]">{user?.role?.name || 'Staff'}</p>
           </div>
         </div>
 
@@ -98,6 +105,7 @@ export function Header({ toggleSidebar }: Props) {
           variant="outline"
           className="bg-[#faedee] p-2! h-10! border-[#ffc0d1] hover:bg-[#ffe5ed]"
           icon={<LogOut className="w-5 h-5 text-[#FE306C]" />}
+          onClick={handleLogout}
         />
       </div>
 
@@ -132,14 +140,14 @@ export function Header({ toggleSidebar }: Props) {
             <div className="flex items-center gap-3 pb-3 border-b border-[#ebebeb]">
               <div className="relative w-12 h-12 rounded-[10px] overflow-hidden">
                 <img
-                  src={user}
+                  src={userAvatar}
                   alt="User avatar"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div>
-                <p className="text-sm font-medium text-[#333]">Jothivelu</p>
-                <p className="text-xs text-[#999]">Senior Manager</p>
+                <p className="text-sm font-medium text-[#333]">{user?.username || 'User'}</p>
+                <p className="text-xs text-[#999]">{user?.role?.name || 'Staff'}</p>
               </div>
             </div>
 
@@ -163,6 +171,7 @@ export function Header({ toggleSidebar }: Props) {
               <Button
                 className="w-full justify-start gap-3 px-3 py-3! bg-[#faedee] hover:bg-[#ffe5ed]"
                 icon={<LogOut className="w-5 h-5 text-[#FE306C]" />}
+                onClick={handleLogout}
               >
                 <span className="text-sm text-[#FE306C]">Logout</span>
               </Button>

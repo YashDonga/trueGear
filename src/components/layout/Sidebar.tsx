@@ -1,24 +1,42 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, CheckCircle, ShieldUser, ClipboardList, Settings } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
+import { useAuth } from "../../context/AuthContext";
+import type { LucideIcon } from "lucide-react";
 
 interface Props {
   open: boolean;
   setOpen: (val: boolean) => void;
 }
 
+interface NavItem {
+  route: string;
+  icon: LucideIcon;
+  roles: string[];
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { route: ROUTES.SECURITY_DASHBOARD, icon: ShieldUser, roles: ['security-gate-keeper'] },
+  { route: ROUTES.QUALITY_CHECK_DASHBOARD, icon: CheckCircle, roles: ['qc-inspector'] },
+  { route: ROUTES.SERVICE_ADVISOR_DASHBOARD, icon: ClipboardList, roles: ['customer'] },
+];
+
 export function Sidebar({ open, setOpen }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
-  const isActive = (path: string) => {
-    return location.pathname.startsWith(path);
-  };
+  const roleSlug = user?.role?.slug || '';
+
+  const isActive = (path: string) => location.pathname.startsWith(path);
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setOpen(false);
   };
+
+  // Filter nav items by user's role
+  const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(roleSlug));
 
   return (
     <>
@@ -39,7 +57,7 @@ export function Sidebar({ open, setOpen }: Props) {
           bg-white border-r border-[#ebebeb]
           flex flex-col items-center pt-5 gap-5
           transform transition-transform duration-300
-          
+
           ${open ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
         `}
@@ -54,49 +72,29 @@ export function Sidebar({ open, setOpen }: Props) {
         </button>
 
         {!open && (
-          <>
-            {/* Menu Button */}
-            <button className="bg-[#fbfbfb] border border-[#ebebeb] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center">
-              <Menu className="w-6 h-6 text-[#333]" />
-            </button>
-          </>
+          <button className="bg-[#fbfbfb] border border-[#ebebeb] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center">
+            <Menu className="w-6 h-6 text-[#333]" />
+          </button>
         )}
 
-        {/* Security Dashboard - Active */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.SECURITY_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.SECURITY_DASHBOARD)}
-        >
-          <ShieldUser className={isActive(ROUTES.SECURITY_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Quality Check Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.QUALITY_CHECK_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.QUALITY_CHECK_DASHBOARD)}
-        >
-          <CheckCircle className={isActive(ROUTES.QUALITY_CHECK_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Service Advisor Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.SERVICE_ADVISOR_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.SERVICE_ADVISOR_DASHBOARD)}
-        >
-          <ClipboardList className={isActive(ROUTES.SERVICE_ADVISOR_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
+        {/* Role-based nav items */}
+        {visibleItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.route);
+          return (
+            <button
+              key={item.route}
+              className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+                active
+                  ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
+                  : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
+              }`}
+              onClick={() => handleNavigation(item.route)}
+            >
+              <Icon className={active ? "text-white" : "text-gray-400"} />
+            </button>
+          );
+        })}
 
         {/* Spacer */}
         <div className="flex-1" />
