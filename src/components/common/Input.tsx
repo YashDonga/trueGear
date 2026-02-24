@@ -1,24 +1,32 @@
 import React, { forwardRef } from "react";
 import { cn } from "../utils/cn";
 
-type Props = React.InputHTMLAttributes<HTMLInputElement> & { 
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
+  labelClassName?: string;
+  prefix?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onRightIconClick?: () => void;
 };
 
-const Input = forwardRef<HTMLInputElement, Props>(({ label, rightIcon, onRightIconClick, className, ...rest }, ref) => (
+const Input = forwardRef<HTMLInputElement, Props>(({ label, labelClassName, prefix, rightIcon, onRightIconClick, className, ...rest }, ref) => (
   <div className="w-full space-y-[8px] font-['Poppins']">
     {label && (
-      <label className="block text-base font-medium text-white leading-[25px]">
+      <label className={cn("block text-base font-medium text-white leading-[25px]", labelClassName)}>
         {label}
       </label>
     )}
     <div className="relative">
+      {prefix && (
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none">
+          {prefix}
+        </span>
+      )}
       <input
         ref={ref}
         className={cn(
           "flex w-full rounded-[20px] border border-white bg-transparent px-[20px] py-[19.5px] text-base font-medium text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50",
+          prefix && "pl-8",
           className
         )}
         {...rest}

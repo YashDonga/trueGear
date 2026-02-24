@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { JobCardActions } from "../../components/cards/JobCardActions";
 import { JobCardHeader } from "../../components/cards/JobCardHeader";
@@ -6,45 +6,78 @@ import { JobDetails, type Job } from "../../components/cards/JobDetails";
 import { SuggestedJobsChips } from "../../components/cards/SuggestedJobsChips";
 import { TotalsSummary } from "../../components/cards/TotalsSummary";
 import { VehicleSummaryCard } from "../../components/cards/VehicleSummaryCard";
-
-const initialJobs: Job[] = [
-  {
-    id: 1,
-    jobDescription: "AC Gas Refill & Cooling Check",
-    partsRequired: "Refrigerant Gas R134a",
-    partsCost: 1500,
-    labourCost: 500,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    jobDescription: "AC Compressor Inspection",
-    partsRequired: "Compressor Seal kit",
-    partsCost: 800,
-    labourCost: 1200,
-    quantity: 1,
-  },
-];
-
-const suggestedJobs = [
-  "AC Gas Refill",
-  "AC Compressor Check",
-  "Oil Filter Replacement",
-  "Brake fluid Top-up",
-  "Front Tyre Replacement",
-];
-
-// Mock vehicle data - in real app this would come from props or API
-const mockVehicleData = {
-  registration: "BL 00 MY ZN",
-  model: "Toyota innova Crysta",
-  customerName: "Vikram Mehta",
-};
+import {
+  getVehicleDetail,
+  getSuggestedJobs,
+  createJobCard,
+  type SASuggestedJob,
+} from "../../api/serviceAdvisor.api";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const CreateJobCard: React.FC = () => {
   const navigate = useNavigate();
-  const { vehicleId: _vehicleId } = useParams<{ vehicleId: string }>();
-  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  const { vehicleId } = useParams<{ vehicleId: string }>();
+  const { taxConfig } = useCurrency();
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [suggestedJobs, setSuggestedJobs] = useState<string[]>([]);
+  const [vehicleData, setVehicleData] = useState({
+    registration: "",
+    model: "",
+    customerName: "",
+  });
+  const [inspectionId, setInspectionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!vehicleId) return;
+
+    const fetchData = async () => {
+      try {
+        const [vehicleRes, suggestedRes] = await Promise.all([
+          getVehicleDetail(vehicleId),
+          getSuggestedJobs(vehicleId),
+        ]);
+
+        // Set vehicle info
+        const v = vehicleRes.data.vehicle;
+        const c = vehicleRes.data.customer;
+        setVehicleData({
+          registration: v.registrationNumber,
+          model: `${v.brand} ${v.model}`,
+          customerName: c.name || "",
+        });
+
+        // Set inspection ID if available
+        if (vehicleRes.data.latestInspection?.id) {
+          setInspectionId(vehicleRes.data.latestInspection.id);
+        }
+
+        // Set suggested jobs from QC failed/NA items
+        const suggestions = suggestedRes.data.suggestedJobs;
+        setSuggestedJobs(suggestions.map((s: SASuggestedJob) => s.suggestedDescription));
+
+        // Pre-populate jobs from failed QC items
+        if (suggestions.length > 0) {
+          const prefilledJobs: Job[] = suggestions.map((s: SASuggestedJob, idx: number) => ({
+            id: Date.now() + idx,
+            jobDescription: s.suggestedDescription,
+            partsRequired: "",
+            partsCost: 0,
+            labourCost: 0,
+            quantity: 1,
+          }));
+          setJobs(prefilledJobs);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [vehicleId]);
 
   const addJob = () => {
     const newJob: Job = {
@@ -71,6 +104,9 @@ const CreateJobCard: React.FC = () => {
   };
 
   const addSuggestedJob = (jobName: string) => {
+    // Prevent adding the same suggested job twice
+    if (jobs.some((j) => j.jobDescription === jobName)) return;
+
     const newJob: Job = {
       id: Date.now(),
       jobDescription: jobName,
@@ -87,21 +123,78 @@ const CreateJobCard: React.FC = () => {
   };
 
   const subtotal = jobs.reduce((sum, job) => sum + calculateLineTotal(job), 0);
-  const gst = subtotal * 0.18;
-  const total = subtotal + gst;
+  const taxAmount = subtotal * (taxConfig.percentage / 100);
+  const total = subtotal + taxAmount;
 
   const handleBackClick = () => {
-    navigate(-1)
+    navigate(-1);
   };
 
-  const handleSaveDraft = () => {
-    // TODO: Implement save draft functionality
-    console.log("Save draft clicked");
+  const handleSaveDraft = async () => {
+    if (!vehicleId || jobs.length === 0 || saving) return;
+
+    setSaving(true);
+    try {
+      const payload = {
+        inspectionId: inspectionId,
+        items: jobs.map((job) => ({
+          jobDescription: job.jobDescription,
+          partsRequired: job.partsRequired || null,
+          partsCost: job.partsCost,
+          labourCost: job.labourCost,
+          quantity: job.quantity,
+        })),
+        taxLabel: taxConfig.label,
+        taxPercentage: taxConfig.percentage,
+      };
+
+      const res = await createJobCard(vehicleId, payload);
+      if (res.status) {
+        navigate(`../send-estimate/${vehicleId}`);
+      }
+    } catch (error) {
+      console.error("Failed to create job card:", error);
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleShareEstimate = () => {
-    navigate('../send-estimate');
+  const handleShareEstimate = async () => {
+    if (!vehicleId || jobs.length === 0 || saving) return;
+
+    setSaving(true);
+    try {
+      const payload = {
+        inspectionId: inspectionId,
+        items: jobs.map((job) => ({
+          jobDescription: job.jobDescription,
+          partsRequired: job.partsRequired || null,
+          partsCost: job.partsCost,
+          labourCost: job.labourCost,
+          quantity: job.quantity,
+        })),
+        taxLabel: taxConfig.label,
+        taxPercentage: taxConfig.percentage,
+      };
+
+      const res = await createJobCard(vehicleId, payload);
+      if (res.status) {
+        navigate(`../send-estimate/${vehicleId}`);
+      }
+    } catch (error) {
+      console.error("Failed to create job card:", error);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff4f31]" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -111,14 +204,15 @@ const CreateJobCard: React.FC = () => {
 
         {/* Vehicle Summary Card */}
         <VehicleSummaryCard
-          registration={mockVehicleData.registration}
-          model={mockVehicleData.model}
-          customerName={mockVehicleData.customerName}
+          registration={vehicleData.registration}
+          model={vehicleData.model}
+          customerName={vehicleData.customerName}
         />
 
         {/* Suggested Jobs Chips */}
         <SuggestedJobsChips
           suggestedJobs={suggestedJobs}
+          addedJobs={jobs.map((j) => j.jobDescription)}
           onJobClick={addSuggestedJob}
         />
 
@@ -134,7 +228,7 @@ const CreateJobCard: React.FC = () => {
         {/* Totals Section */}
         <TotalsSummary
           subtotal={subtotal}
-          gst={gst}
+          taxAmount={taxAmount}
           total={total}
         />
 
@@ -151,4 +245,3 @@ const CreateJobCard: React.FC = () => {
 };
 
 export default CreateJobCard;
-

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, CheckCircle, ShieldUser, ClipboardList, Settings, BadgeCheck, User, Package, Wrench, Receipt } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser, ClipboardList, Settings } from "lucide-react";
+// import { BadgeCheck, User, Package, Wrench, Receipt } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../context/AuthContext";
 import type { LucideIcon } from "lucide-react";
@@ -71,7 +72,7 @@ export function Sidebar({ open, setOpen }: Props) {
         </button>
 
         {!open && (
-          <button className="bg-[#fbfbfb] border border-[#ebebeb] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center">
+          <button className="bg-[#fbfbfb] border border-[#ebebeb] rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center mb-5">
             <Menu className="w-6 h-6 text-[#333]" />
           </button>
         )}
@@ -83,7 +84,7 @@ export function Sidebar({ open, setOpen }: Props) {
           return (
             <button
               key={item.route}
-              className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
+              className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer mb-5 ${
                 active
                   ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
                   : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
@@ -95,9 +96,7 @@ export function Sidebar({ open, setOpen }: Props) {
           );
         })}
 
-        {/* Spacer */}
         <div className="flex-1" />
-        {/* Settings */}
         <button
           className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer mb-5 ${
             isActive(ROUTES.SETTINGS)
@@ -109,65 +108,13 @@ export function Sidebar({ open, setOpen }: Props) {
           <Settings className={isActive(ROUTES.SETTINGS) ? "text-white" : "text-gray-400"} />
         </button>
 
-        {/* Customer Approval Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)}
-        >
-          <BadgeCheck className={isActive(ROUTES.CUSTOMER_APPROVAL_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Customer Profile Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.CUSTOMER_PROFILE_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.CUSTOMER_PROFILE_DASHBOARD)}
-        >
-          <User className={isActive(ROUTES.CUSTOMER_PROFILE_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Spare Parts Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.SPARE_PARTS_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.SPARE_PARTS_DASHBOARD)}
-        >
-          <Package className={isActive(ROUTES.SPARE_PARTS_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Technician Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.TECHNICIAN_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.TECHNICIAN_DASHBOARD)}
-        >
-          <Wrench className={isActive(ROUTES.TECHNICIAN_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
-
-        {/* Finance & Billing Dashboard */}
-        <button
-          className={`rounded-[10px] p-3 w-12.5 h-12.5 flex items-center justify-center transition-all cursor-pointer ${
-            isActive(ROUTES.FINANCE_BILLING_DASHBOARD)
-              ? "bg-linear-to-b from-[#ff4f31] to-[#fe2b73] shadow-md"
-              : "bg-[#fbfbfb] border border-[#ebebeb] hover:bg-[#f5f5f5]"
-          }`}
-          onClick={() => handleNavigation(ROUTES.FINANCE_BILLING_DASHBOARD)}
-        >
-          <Receipt className={isActive(ROUTES.FINANCE_BILLING_DASHBOARD) ? "text-white" : "text-gray-400"} />
-        </button>
+        {/* Customer Approval, Customer Profile, Spare Parts, Technician, Finance & Billing — commented out for now
+        <button className="..." onClick={() => handleNavigation(ROUTES.CUSTOMER_APPROVAL_DASHBOARD)}><BadgeCheck /></button>
+        <button className="..." onClick={() => handleNavigation(ROUTES.CUSTOMER_PROFILE_DASHBOARD)}><User /></button>
+        <button className="..." onClick={() => handleNavigation(ROUTES.SPARE_PARTS_DASHBOARD)}><Package /></button>
+        <button className="..." onClick={() => handleNavigation(ROUTES.TECHNICIAN_DASHBOARD)}><Wrench /></button>
+        <button className="..." onClick={() => handleNavigation(ROUTES.FINANCE_BILLING_DASHBOARD)}><Receipt /></button>
+        */}
       </aside>
     </>
   );

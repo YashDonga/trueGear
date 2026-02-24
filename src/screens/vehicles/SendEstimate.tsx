@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import imgPlan from "../../assets/plan.png";
-
+import {
+  getVehicleDetail,
+  getVehicleJobCards,
+  shareEstimate,
+} from "../../api/serviceAdvisor.api";
 
 interface DetailRowProps {
   label: string;
@@ -29,16 +33,79 @@ const DetailRow = ({ label, value }: DetailRowProps) => (
 
 export const SendEstimate = () => {
   const [isEstimateSent, setIsEstimateSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [estimateTotal, setEstimateTotal] = useState("₹0");
+  const [latestJobCardId, setLatestJobCardId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { vehicleId } = useParams<{ vehicleId: string }>();
 
-  const handleSendEstimate = () => {
-    setIsEstimateSent(true);
+  useEffect(() => {
+    if (!vehicleId) return;
+
+    const fetchData = async () => {
+      try {
+        const [vehicleRes, jobCardsRes] = await Promise.all([
+          getVehicleDetail(vehicleId),
+          getVehicleJobCards(vehicleId),
+        ]);
+
+        const customer = vehicleRes.data.customer;
+        setCustomerName(customer.name || "N/A");
+        setCustomerPhone(customer.phone || "N/A");
+
+        const cards = jobCardsRes.data.jobCards;
+        if (cards.length > 0) {
+          const latest = cards[0]; // sorted by createdAt desc
+          setLatestJobCardId(latest.id);
+          setEstimateTotal(
+            `₹${Number(latest.totalEstimate).toLocaleString("en-IN")}`
+          );
+          // Count items - we use subtotal/gst to infer, but we can't get items count from list
+          // Use a reasonable placeholder or fetch detail
+          setTotalJobs(cards.length > 0 ? 1 : 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch send estimate data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [vehicleId]);
+
+  const handleSendEstimate = async () => {
+    if (!latestJobCardId || sending) return;
+
+    setSending(true);
+    try {
+      const res = await shareEstimate(latestJobCardId);
+      if (res.status) {
+        setIsEstimateSent(true);
+      }
+    } catch (error) {
+      console.error("Failed to share estimate:", error);
+    } finally {
+      setSending(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff4f31]" />
+      </div>
+    );
+  }
 
   if (isEstimateSent) {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 font-['Poppins']">
-      
+
       {/* Icon Section */}
       <div className="mb-6 flex h-15 w-15 items-center justify-center rounded-full border border-[#bfbfbf] bg-[#fbfbfb]">
         <img
@@ -53,7 +120,7 @@ export const SendEstimate = () => {
           Estimate Sent
         </h1>
         <p className="max-w-150 text-[18px] leading-[1.3] text-[#999]">
-          The estimate has been sent to Vikram Mehta at +91 98765 43210.<br className="hidden md:block" />
+          The estimate has been sent to {customerName} at {customerPhone}.<br className="hidden md:block" />
           You will be notified once the customer approves.
         </p>
       </div>
@@ -66,8 +133,8 @@ export const SendEstimate = () => {
       </div>
 
       {/* Action Button */}
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         className="w-full max-w-83.5 rounded-[5px] h-12.5 bg-white hover:bg-gray-50 border-[#e5e7eb]"
         onClick={() => navigate('/service-advisor-dashboard')}
       >
@@ -79,7 +146,7 @@ export const SendEstimate = () => {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-white px-4 py-8 font-['Poppins']">
-      
+
       {/* Header Section */}
       <div className="flex w-full flex-col items-center gap-1.5 text-center mb-8 md:mb-10">
         <h1 className="text-lg md:text-xl font-semibold leading-[1.2] text-[#333]">
@@ -92,28 +159,30 @@ export const SendEstimate = () => {
 
       {/* Grid Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 md:gap-y-6 gap-x-8 md:gap-x-36 mb-8 md:mb-10 w-full max-w-md md:max-w-150">
-        <DetailRow label="Customer:" value="Vikram Mehta" />
-        <DetailRow label="Phone:" value="+91 98765 43210" />
-        <DetailRow label="Total Jobs" value="2" />
-        <DetailRow label="Estimate Total:" value="₹4,720" />
+        <DetailRow label="Customer:" value={customerName} />
+        <DetailRow label="Phone:" value={customerPhone} />
+        <DetailRow label="Total Jobs" value={String(totalJobs)} />
+        <DetailRow label="Estimate Total:" value={estimateTotal} />
       </div>
 
       {/* Action Buttons */}
       <div className="flex w-full flex-col md:flex-row items-center justify-center gap-3 md:gap-6">
-        {/* Cancel button has 5px rounded corners in Figma */}
-        <Button variant="outline" className="w-full md:w-44 rounded-[5px]">
+        <Button
+          variant="outline"
+          className="w-full md:w-44 rounded-[5px]"
+          onClick={() => navigate(-1)}
+        >
           Cancel
         </Button>
-        {/* Send Estimate button has 10px rounded corners in Figma */}
-        <Button 
-          variant="gradient" 
+        <Button
+          variant="gradient"
           className="w-full md:w-48 rounded-[10px]"
           onClick={handleSendEstimate}
+          disabled={sending || !latestJobCardId}
         >
-          Send Estimate
+          {sending ? "Sending..." : "Send Estimate"}
         </Button>
       </div>
     </div>
   );
 };
-

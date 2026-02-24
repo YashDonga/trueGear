@@ -17,6 +17,19 @@ export const CURRENCIES: CurrencyOption[] = [
   { code: "AED", symbol: "د.إ", label: "UAE Dirham (د.إ)", locale: "ar-AE" },
 ];
 
+export interface TaxConfig {
+  label: string;
+  percentage: number;
+}
+
+const CURRENCY_TAX_MAP: Record<string, TaxConfig> = {
+  INR: { label: "GST", percentage: 18 },
+  AED: { label: "VAT", percentage: 5 },
+  USD: { label: "Tax", percentage: 10 },
+  EUR: { label: "VAT", percentage: 20 },
+  GBP: { label: "VAT", percentage: 20 },
+};
+
 const STORAGE_KEY = "truegear_currency";
 const RATES_STORAGE_KEY = "truegear_exchange_rates";
 const RATES_TTL = 60 * 60 * 1000; // 1 hour cache
@@ -62,6 +75,7 @@ interface CurrencyContextValue {
   setCurrency: (code: string) => void;
   formatCurrency: (amount: number) => string;
   currencyOption: CurrencyOption;
+  taxConfig: TaxConfig;
   ratesLoading: boolean;
 }
 
@@ -73,6 +87,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   const [ratesLoading, setRatesLoading] = useState(false);
 
   const currencyOption = CURRENCIES.find((c) => c.code === currency) || CURRENCIES[0];
+  const taxConfig = CURRENCY_TAX_MAP[currency] || { label: "Tax", percentage: 10 };
 
   // Fetch exchange rates from free API
   useEffect(() => {
@@ -114,28 +129,18 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   const formatCurrency = useCallback(
     (amount: number) => {
-      let converted = amount;
-
-      // Convert from base (INR) to target currency
-      if (currencyOption.code !== BASE_CURRENCY) {
-        const rate = rates[currencyOption.code];
-        if (rate) {
-          converted = amount * rate;
-        }
-      }
-
       return new Intl.NumberFormat(currencyOption.locale, {
         style: "currency",
         currency: currencyOption.code,
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
-      }).format(converted);
+      }).format(amount);
     },
-    [currencyOption, rates]
+    [currencyOption]
   );
 
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, formatCurrency, currencyOption, ratesLoading }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, formatCurrency, currencyOption, taxConfig, ratesLoading }}>
       {children}
     </CurrencyContext.Provider>
   );

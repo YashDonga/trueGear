@@ -192,8 +192,9 @@ export interface SAJobCard {
   inspectionId: string | null;
   status: string;
   subtotal: string;
-  gstPercentage: string;
-  gstAmount: string;
+  taxLabel: string;
+  taxPercentage: string;
+  taxAmount: string;
   totalEstimate: string;
   sharedAt: string | null;
   approvedAt: string | null;
@@ -213,5 +214,155 @@ export const getVehicleJobCards = async (
   vehicleId: string
 ): Promise<SAJobCardsResponse> => {
   const { data } = await api.get(`/service-advisor/vehicles/${vehicleId}/job-cards`);
+  return data;
+};
+
+// ─── Suggested Jobs ────────────────────────────────────────────────────────
+
+export interface SASuggestedJob {
+  itemCode: string;
+  itemLabel: string;
+  category: string;
+  result: string;
+  comment: string | null;
+  suggestedDescription: string;
+}
+
+export interface SASuggestedJobsResponse {
+  status: boolean;
+  message: string;
+  data: {
+    suggestedJobs: SASuggestedJob[];
+  };
+}
+
+export const getSuggestedJobs = async (
+  vehicleId: string
+): Promise<SASuggestedJobsResponse> => {
+  const { data } = await api.get(`/service-advisor/vehicles/${vehicleId}/suggested-jobs`);
+  return data;
+};
+
+// ─── Create Job Card ───────────────────────────────────────────────────────
+
+export interface CreateJobCardItem {
+  jobDescription: string;
+  partsRequired?: string | null;
+  partsCost: number;
+  labourCost: number;
+  quantity: number;
+}
+
+export interface CreateJobCardPayload {
+  inspectionId?: string | null;
+  items: CreateJobCardItem[];
+  taxLabel?: string;
+  taxPercentage?: number;
+}
+
+export interface CreateJobCardResponse {
+  status: boolean;
+  message: string;
+  data: {
+    jobCard: SAJobCard;
+    items: any[];
+  };
+}
+
+export const createJobCard = async (
+  vehicleId: string,
+  payload: CreateJobCardPayload
+): Promise<CreateJobCardResponse> => {
+  const { data } = await api.post(`/service-advisor/vehicles/${vehicleId}/job-cards`, payload);
+  return data;
+};
+
+// ─── Get Job Card Detail ───────────────────────────────────────────────────
+
+export interface SAJobCardDetailResponse {
+  status: boolean;
+  message: string;
+  data: {
+    jobCard: SAJobCard;
+    items: {
+      id: string;
+      jobCardId: string;
+      jobDescription: string;
+      partsRequired: string | null;
+      partsCost: string;
+      labourCost: string;
+      quantity: number;
+      lineTotal: string;
+      sortOrder: number;
+    }[];
+    vehicle: {
+      registrationNumber: string;
+      brand: string;
+      model: string;
+      customerName: string | null;
+    } | null;
+  };
+}
+
+export const getJobCardDetail = async (
+  jobCardId: string
+): Promise<SAJobCardDetailResponse> => {
+  const { data } = await api.get(`/service-advisor/job-cards/${jobCardId}`);
+  return data;
+};
+
+// ─── Update Job Card ───────────────────────────────────────────────────────
+
+export interface UpdateJobCardPayload {
+  items: CreateJobCardItem[];
+  taxLabel?: string;
+  taxPercentage?: number;
+}
+
+export const updateJobCard = async (
+  jobCardId: string,
+  payload: UpdateJobCardPayload
+): Promise<CreateJobCardResponse> => {
+  const { data } = await api.put(`/service-advisor/job-cards/${jobCardId}`, payload);
+  return data;
+};
+
+// ─── Share Estimate ────────────────────────────────────────────────────────
+
+export interface ShareEstimateResponse {
+  status: boolean;
+  message: string;
+  data: {
+    jobCardId: string;
+    status: string;
+    sharedAt: string;
+    vehicleStatus: string;
+  };
+}
+
+export const shareEstimate = async (
+  jobCardId: string
+): Promise<ShareEstimateResponse> => {
+  const { data } = await api.post(`/service-advisor/job-cards/${jobCardId}/share`);
+  return data;
+};
+
+// ─── Approve Job Card ──────────────────────────────────────────────────────
+
+export interface ApproveJobCardResponse {
+  status: boolean;
+  message: string;
+  data: {
+    jobCardId: string;
+    status: string;
+    approvedAt: string;
+    vehicleStatus: string;
+  };
+}
+
+export const approveJobCard = async (
+  jobCardId: string
+): Promise<ApproveJobCardResponse> => {
+  const { data } = await api.post(`/service-advisor/job-cards/${jobCardId}/approve`);
   return data;
 };

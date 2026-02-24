@@ -10,6 +10,7 @@ import { TabNavigation } from "../../components/cards/TabNavigation";
 import { QCReport } from "../../components/cards/QCReport";
 import { VehicleHistory } from "../../components/cards/VehicleHistory";
 import { JobCardEmpty } from "../../components/cards/JobCardEmpty";
+import { JobCardSummary } from "../../components/cards/JobCardSummary";
 import ROUTES from "../../constants/routes";
 import { useCurrency } from "../../context/CurrencyContext";
 import {
@@ -265,10 +266,9 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
           );
         }
         return (
-          <JobCardEmpty
-            title={`Job Card — ${jobCards[0].status}`}
-            buttonText="View Job Card"
-            onButtonClick={() =>
+          <JobCardSummary
+            jobCard={jobCards[0]}
+            onViewClick={() =>
               navigate(`${ROUTES.SERVICE_ADVISOR_DASHBOARD}/job-card/${id}`)
             }
           />

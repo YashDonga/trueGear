@@ -21,7 +21,10 @@ interface JobRowProps {
 }
 
 export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: JobRowProps) {
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, currencyOption } = useCurrency();
+  const symbol = currencyOption.symbol;
+
+  const labelClass = "text-gray-400 text-sm md:text-base";
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -49,6 +52,7 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
         <div className="w-full">
           <Input
             label="Job Description"
+            labelClassName={labelClass}
             type="text"
             value={job.jobDescription}
             onChange={(e) => onUpdate(job.id, "jobDescription", e.target.value)}
@@ -59,6 +63,7 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
         <div className="w-full">
           <Input
             label="Parts Required"
+            labelClassName={labelClass}
             type="text"
             value={job.partsRequired}
             onChange={(e) => onUpdate(job.id, "partsRequired", e.target.value)}
@@ -73,7 +78,9 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
         <div className="w-full">
           <Input
             label="Parts Cost"
+            labelClassName={labelClass}
             type="number"
+            prefix={symbol}
             value={job.partsCost}
             onChange={(e) => onUpdate(job.id, "partsCost", Number(e.target.value))}
             placeholder="0"
@@ -83,7 +90,9 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
         <div className="w-full">
           <Input
             label="Labour Cost"
+            labelClassName={labelClass}
             type="number"
+            prefix={symbol}
             value={job.labourCost}
             onChange={(e) => onUpdate(job.id, "labourCost", Number(e.target.value))}
             placeholder="0"
@@ -93,6 +102,7 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
         <div className="w-full">
           <Input
             label="Quantity"
+            labelClassName={labelClass}
             type="number"
             value={job.quantity}
             onChange={(e) => onUpdate(job.id, "quantity", Number(e.target.value))}

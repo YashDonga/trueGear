@@ -96,7 +96,7 @@ export function VehicleTable({ searchQuery = "", onStatsLoaded }: VehicleTablePr
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
