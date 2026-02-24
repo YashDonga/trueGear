@@ -63,7 +63,7 @@ export interface SearchVehicleItem {
     fullName: string;
     primaryEmail: string;
   };
-  images: { id: string; vehicleId: string; imagePath: string; createdAt: string }[];
+  images: { id: string; vehicleId: string; imageCategory: string | null; imagePath: string; createdAt: string }[];
   imageCount: number;
 }
 
@@ -157,7 +157,7 @@ export interface VehicleDetailData {
     entryTime: string;
   };
   customer: VehicleDetailCustomer;
-  images: { id: string; vehicleId: string; imagePath: string; createdAt: string }[];
+  images: { id: string; vehicleId: string; imageCategory: string | null; imagePath: string; createdAt: string }[];
   imageCount: number;
 }
 
@@ -179,6 +179,7 @@ export const getVehicleDetails = async (
 export interface UploadedImage {
   id: string;
   vehicleId: string;
+  imageCategory: string | null;
   imagePath: string;
   createdAt: string;
 }
@@ -194,10 +195,12 @@ export interface UploadImagesResponse {
 
 export const uploadVehicleImages = async (
   vehicleId: string,
-  files: File[]
+  files: File[],
+  category?: string
 ): Promise<UploadImagesResponse> => {
   const formData = new FormData();
   files.forEach((file) => formData.append("images", file));
+  if (category) formData.append("category", category);
   const { data } = await api.post(`/vehicles/${vehicleId}/images`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -213,10 +216,12 @@ export interface ReplaceImageResponse {
 export const replaceVehicleImage = async (
   vehicleId: string,
   imageId: string,
-  file: File
+  file: File,
+  category?: string
 ): Promise<ReplaceImageResponse> => {
   const formData = new FormData();
   formData.append("images", file);
+  if (category) formData.append("category", category);
   const { data } = await api.put(
     `/vehicles/${vehicleId}/images/${imageId}`,
     formData,

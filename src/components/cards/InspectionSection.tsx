@@ -6,7 +6,7 @@ interface InspectionSectionProps {
   title: string;
   description: string;
   progress: string;
-  items: Array<{ id: string; label: string; description?: string; photoCount?: number }>;
+  items: Array<{ id: string; label: string; description?: string; photoUrl?: string }>;
   status?: Record<number, ChecklistStatus>;
   onStatusChange?: (status: Record<number, ChecklistStatus>) => void;
   onPhotoUpload?: (itemId: string, file: File) => Promise<void>;
@@ -32,7 +32,7 @@ export function InspectionSection({ title, description, progress, items, status 
             description={item.description}
             status={status[index]}
             onStatusChange={(newStatus) => handleStatusChange(index, newStatus)}
-            photoCount={item.photoCount}
+            photoUrl={item.photoUrl}
             onPhotoUpload={onPhotoUpload ? (file) => onPhotoUpload(item.id, file) : undefined}
           />
         ))}

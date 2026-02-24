@@ -80,6 +80,7 @@ function mapApiToRating(apiValue: string): string {
 const QualityCheckInspection: React.FC = () => {
   const { inspectionId } = useParams<{ inspectionId: string }>();
   const [currentStep, setCurrentStep] = useState(1);
+  const [maxStep, setMaxStep] = useState(1);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -130,6 +131,7 @@ const QualityCheckInspection: React.FC = () => {
 
         setVehicle(vehicleData);
         setCurrentStep(inspection.currentStep);
+        setMaxStep(inspection.currentStep);
         setSummary(summaryData);
         setFindings(findingsData);
 
@@ -297,7 +299,9 @@ const QualityCheckInspection: React.FC = () => {
           items,
         });
         if (res.status) {
-          setCurrentStep(res.data.currentStep);
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
           setSummary(res.data.summary);
           updateCategoriesFromResponse(res.data.categories);
           setErrors({});
@@ -312,7 +316,9 @@ const QualityCheckInspection: React.FC = () => {
           items,
         });
         if (res.status) {
-          setCurrentStep(res.data.currentStep);
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
           setSummary(res.data.summary);
           updateCategoriesFromResponse(res.data.categories);
           setErrors({});
@@ -327,7 +333,9 @@ const QualityCheckInspection: React.FC = () => {
           items,
         });
         if (res.status) {
-          setCurrentStep(res.data.currentStep);
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
           setSummary(res.data.summary);
           updateCategoriesFromResponse(res.data.categories);
           setErrors({});
@@ -342,10 +350,10 @@ const QualityCheckInspection: React.FC = () => {
           brakeVibration: findings?.brakeTestSummary?.vibration || null,
         });
         if (res.status) {
-          // Submit the inspection after findings are saved
           const submitRes = await submitInspection(inspectionId);
           if (submitRes.status) {
             setCurrentStep(5);
+            setMaxStep(5);
           }
           setErrors({});
         }
@@ -379,17 +387,17 @@ const QualityCheckInspection: React.FC = () => {
   const exteriorDisplayItems = exteriorItems.map((item) => ({
     id: item.id,
     label: item.itemLabel,
-    photoCount: item.photos.length,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
   }));
   const interiorDisplayItems = interiorItems.map((item) => ({
     id: item.id,
     label: item.itemLabel,
-    photoCount: item.photos.length,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
   }));
   const brakeDisplayItems = brakeItems.map((item) => ({
     id: item.id,
     label: item.itemLabel,
-    photoCount: item.photos.length,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
   }));
 
   // Calculate progress strings
@@ -579,7 +587,15 @@ const QualityCheckInspection: React.FC = () => {
 
         <div className="border-b border-[#CACACA] my-4"></div>
         <div className="p-8">
-          <ProgressSteps currentStep={currentStep} />
+          <ProgressSteps
+            currentStep={currentStep}
+            maxStep={maxStep}
+            onStepClick={(step) => {
+              if (step <= maxStep && step !== currentStep && currentStep < 5) {
+                setCurrentStep(step);
+              }
+            }}
+          />
         </div>
         <div className="border-b border-[#CACACA] my-4"></div>
 

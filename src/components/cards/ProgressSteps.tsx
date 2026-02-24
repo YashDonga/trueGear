@@ -8,9 +8,12 @@ interface Step {
 
 interface ProgressStepsProps {
   currentStep: number;
+  maxStep?: number;
+  onStepClick?: (step: number) => void;
 }
 
-export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
+export default function ProgressSteps({ currentStep, maxStep, onStepClick }: ProgressStepsProps) {
+  const highestStep = maxStep ?? currentStep;
   const steps: Step[] = [
     { id: 1, label: "Exterior", icon: Truck },
     { id: 2, label: "Interior", icon: Armchair },
@@ -27,19 +30,22 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
         <div className="absolute left-5 top-3 bottom-3 w-0.5 bg-gray-300" />
         <div 
           className="absolute left-5 top-3 w-0.5 bg-linear-to-r from-[#7CE000] to-[#03A800]" 
-          style={{ height: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+          style={{ height: `${((highestStep - 1) / (steps.length - 1)) * 100}%` }}
         />
 
         <div className="flex flex-col space-y-0">
           {steps.map((step) => {
             const Icon = step.icon;
             const isActive = step.id === currentStep;
-            const isCompleted = step.id < currentStep;
+            const isCompleted = step.id < highestStep;
+
+            const isClickable = step.id !== currentStep && step.id <= highestStep && onStepClick;
 
             return (
               <div
                 key={step.id}
-                className="relative flex items-center py-2"
+                className={`relative flex items-center py-2 ${isClickable ? "cursor-pointer" : ""}`}
+                onClick={isClickable ? () => onStepClick(step.id) : undefined}
               >
                 {/* Icon */}
                 <div
@@ -76,7 +82,7 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
         <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-300" />
         <div 
           className="absolute top-5 left-0 h-0.5 bg-linear-to-r from-[#7CE000] to-[#03A800]" 
-          style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+          style={{ width: `${((highestStep - 1) / (steps.length - 1)) * 100}%` }}
         />
 
         <div className="flex items-center justify-between">
@@ -84,12 +90,14 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
             const Icon = step.icon;
 
             const isActive = step.id === currentStep;
-            const isCompleted = step.id < currentStep;
+            const isCompleted = step.id < highestStep;
+
+            const isClickable = step.id !== currentStep && step.id <= highestStep && onStepClick;
 
             return (
               <div
                 key={step.id}
-                className={`relative z-10 flex flex-col
+                className={`relative z-10 flex flex-col ${isClickable ? "cursor-pointer" : ""}
                   ${
                     index === 0
                       ? "items-start"
@@ -97,6 +105,7 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                       ? "items-end"
                       : "items-center"
                   }`}
+                onClick={isClickable ? () => onStepClick(step.id) : undefined}
               >
                 {/* Icon */}
                 <div

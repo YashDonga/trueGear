@@ -37,10 +37,10 @@ function mapPriority(apiPriority: string): DisplayPriority {
 
 function StatusBadge({ status }: { status: DisplayStatus }) {
   const styles = {
-    'QC In Progress': 'bg-[#e8f4ff] text-[#0066cc] border-[#b3d9ff]',
-    'QC Completed': 'bg-[#e6f7ed] text-[#00a651] border-[#99d9b8]',
-    'Ready': 'bg-[#fff4e6] text-[#ff9500] border-[#ffd699]',
-    'Pending': 'bg-[#ffe6e6] text-[#ff0000] border-[#ffb3b3]',
+    'QC In Progress': ' text-[#0066cc] ',
+    'QC Completed': ' text-[#00a651]',
+    'Ready': ' text-[#ff9500] ',
+    'Pending': ' text-[#ff0000] ',
   };
 
   const dotColors = {
@@ -51,7 +51,7 @@ function StatusBadge({ status }: { status: DisplayStatus }) {
   };
 
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[20px] border ${styles[status]}`}>
+    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[20px]  ${styles[status]}`}>
       <div className={`w-1.5 h-1.5 rounded-full ${dotColors[status]}`} />
       <span className="text-[14px]">{status}</span>
     </div>
@@ -60,10 +60,10 @@ function StatusBadge({ status }: { status: DisplayStatus }) {
 
 function PriorityBadge({ priority }: { priority: DisplayPriority }) {
   const styles = {
-    'Standard': 'bg-white text-[#0066cc] border-[#b3d9ff]',
-    'Urgent': 'bg-white text-[#ff0000] border-[#ffb3b3]',
-    'Express': 'bg-white text-[#ff9500] border-[#ffd699]',
-    'Basic': 'bg-white text-[#999] border-[#e5e7eb]',
+    'Standard': 'bg-[#e8f4ff] text-[#0066cc] border-[#b3d9ff]',
+    'Urgent': 'bg-[#FFDEDE66] text-[#ff0000] border-[#FF0000]',
+    'Express': 'bg-[#FFC38B3D] text-[#FF7A00] border-[#FFC38B]',
+    'Basic': 'bg-[#BFBFBF1F] text-[#999999] border-[#CACACA]',
   };
 
   return (
@@ -210,7 +210,7 @@ export function QCTable({ queue, pagination, loading, filter, onFilterChange, on
                           Resume Inspection
                         </Button>
                       ) : (
-                        <StatusBadge status={mapStatus(vehicle.status)} />
+                        ""
                       )}
                     </td>
                   </tr>

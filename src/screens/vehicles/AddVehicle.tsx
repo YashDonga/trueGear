@@ -102,14 +102,17 @@ const AddVehicle: React.FC = () => {
               );
             }
 
-            // Map existing images to photo slots
+            // Map existing images to photo slots by category
             if (images && images.length > 0) {
               setPhotoSlots((prev) => {
                 const updated = [...prev];
-                images.forEach((img, i) => {
-                  if (i < updated.length) {
-                    updated[i] = {
-                      ...updated[i],
+                images.forEach((img) => {
+                  const slotIndex = updated.findIndex(
+                    (slot) => slot.title === img.imageCategory
+                  );
+                  if (slotIndex !== -1) {
+                    updated[slotIndex] = {
+                      ...updated[slotIndex],
                       capturedImage: `/${img.imagePath}`,
                       imageId: img.id,
                     };
@@ -210,7 +213,7 @@ const AddVehicle: React.FC = () => {
       try {
         if (slot.imageId) {
           // Replace existing image
-          const res = await replaceVehicleImage(vehicleId, slot.imageId, file);
+          const res = await replaceVehicleImage(vehicleId, slot.imageId, file, slot.title);
           if (res.status) {
             setPhotoSlots((prev) => {
               const updated = [...prev];
@@ -225,7 +228,7 @@ const AddVehicle: React.FC = () => {
           }
         } else {
           // Upload new image
-          const res = await uploadVehicleImages(vehicleId, [file]);
+          const res = await uploadVehicleImages(vehicleId, [file], slot.title);
           if (res.status && res.data.uploaded.length > 0) {
             const uploaded = res.data.uploaded[0];
             setPhotoSlots((prev) => {
