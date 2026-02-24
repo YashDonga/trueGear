@@ -1,5 +1,6 @@
 import { Save, Share2 } from "lucide-react";
 import Button from "../common/Button";
+import { useCurrency } from "../../context/CurrencyContext";
 
 interface JobCardActionsProps {
   jobCount: number;
@@ -14,6 +15,8 @@ export function JobCardActions({
   onSaveDraft, 
   onShareEstimate 
 }: JobCardActionsProps) {
+  const { formatCurrency } = useCurrency();
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
       <div>
@@ -21,7 +24,7 @@ export function JobCardActions({
           Ready to share estimate?
         </h3>
         <p className="text-xs text-gray-400 mt-1">
-          {jobCount} job(s) - Total: ₹{total.toLocaleString()}
+          {jobCount} job(s) - Total: {formatCurrency(total)}
         </p>
       </div>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-6 w-full sm:w-auto">

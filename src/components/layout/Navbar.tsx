@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, Settings, LogOut, Menu, ChevronDown } from "lucide-react";
 import user from "../../assets/user.jpg";
 import Button from "../common/Button";
@@ -12,6 +12,7 @@ interface Props {
 export function Header({ toggleSidebar }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const routeTitles: Record<string, { title: string; description: string }> = {
     [ROUTES.SECURITY_DASHBOARD]: {
@@ -91,6 +92,7 @@ export function Header({ toggleSidebar }: Props) {
           variant="outline"
           className="p-2! h-10!"
           icon={<Settings className="w-5 h-5 text-[#8C8C8C]" />}
+          onClick={() => navigate(ROUTES.SETTINGS)}
         />
         <Button
           variant="outline"
@@ -153,6 +155,7 @@ export function Header({ toggleSidebar }: Props) {
               <Button
                 className="w-full justify-start gap-3 px-3 py-3! bg-transparent hover:bg-gray-50"
                 icon={<Settings className="w-5 h-5 text-[#8C8C8C]" />}
+                onClick={() => { navigate(ROUTES.SETTINGS); setMobileMenuOpen(false); }}
               >
                 <span className="text-sm text-[#333]">Settings</span>
               </Button>

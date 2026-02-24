@@ -1,6 +1,7 @@
 import { Trash2 } from "lucide-react";
 import Button from "../common/Button";
 import Input from "../common/Input";
+import { useCurrency } from "../../context/CurrencyContext";
 
 export interface Job {
   id: number;
@@ -20,6 +21,8 @@ interface JobRowProps {
 }
 
 export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: JobRowProps) {
+  const { formatCurrency } = useCurrency();
+
   return (
     <div className="flex flex-col gap-4 md:gap-6">
       <div className="flex items-center justify-between border-b border-gray-100 pb-2">
@@ -102,7 +105,7 @@ export function JobRow({ job, index, onUpdate, onRemove, calculateLineTotal }: J
             Line Total
           </label>
           <div className="w-full h-10 px-4 md:px-5 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-800 text-sm md:text-base font-semibold flex items-center">
-            ₹ {calculateLineTotal(job).toLocaleString()}
+            {formatCurrency(calculateLineTotal(job))}
           </div>
         </div>
       </div>

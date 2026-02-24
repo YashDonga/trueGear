@@ -12,6 +12,7 @@ export const ROUTES = {
   ADD_VEHICLE: '/security-dashboard/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
   CREATE_JOB_CARD: '/service-advisor-dashboard/job-card/:vehicleId',
+  SETTINGS: '/settings',
 };
 
 export default ROUTES;

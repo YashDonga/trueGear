@@ -11,6 +11,7 @@ import { QCReport } from "../../components/cards/QCReport";
 import { VehicleHistory } from "../../components/cards/VehicleHistory";
 import { JobCardEmpty } from "../../components/cards/JobCardEmpty";
 import ROUTES from "../../constants/routes";
+import { useCurrency } from "../../context/CurrencyContext";
 import {
   getVehicleDetail,
   getVehicleQCReport,
@@ -28,6 +29,7 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("qcReport");
+  const { formatCurrency } = useCurrency();
 
   const [vehicleDetail, setVehicleDetail] = useState<SAVehicleDetail | null>(null);
   const [qcReport, setQcReport] = useState<SAQCReport | null>(null);
@@ -239,7 +241,7 @@ const ServiceAdvisorVehicleDetail: React.FC = () => {
                 year: "numeric",
               }),
               advisor: h.technicianName || "—",
-              price: h.totalCost ? `₹${Number(h.totalCost).toLocaleString("en-IN")}` : "—",
+              price: h.totalCost ? formatCurrency(Number(h.totalCost)) : "—",
               duration: h.duration || "—",
             }))}
           />
