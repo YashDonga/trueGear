@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, CheckCircle, ShieldUser, ClipboardList, Settings } from "lucide-react";
+import { Menu, X, CheckCircle, ShieldUser, ClipboardList, Settings, BadgeCheck, User, Package, Wrench, Receipt } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../context/AuthContext";
 import type { LucideIcon } from "lucide-react";
@@ -18,7 +18,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { route: ROUTES.SECURITY_DASHBOARD, icon: ShieldUser, roles: ['security-gate-keeper'] },
   { route: ROUTES.QUALITY_CHECK_DASHBOARD, icon: CheckCircle, roles: ['qc-inspector'] },
-  { route: ROUTES.SERVICE_ADVISOR_DASHBOARD, icon: ClipboardList, roles: ['customer'] },
+  { route: ROUTES.SERVICE_ADVISOR_DASHBOARD, icon: ClipboardList, roles: ['customer', 'service-advisor'] },
 ];
 
 export function Sidebar({ open, setOpen }: Props) {
@@ -168,7 +168,6 @@ export function Sidebar({ open, setOpen }: Props) {
         >
           <Receipt className={isActive(ROUTES.FINANCE_BILLING_DASHBOARD) ? "text-white" : "text-gray-400"} />
         </button>
-        </div>
       </aside>
     </>
   );

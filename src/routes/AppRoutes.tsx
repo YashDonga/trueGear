@@ -32,6 +32,7 @@ const ROLE_DEFAULT_ROUTES: Record<string, string> = {
   'security-gate-keeper': ROUTES.SECURITY_DASHBOARD,
   'qc-inspector': ROUTES.QUALITY_CHECK_DASHBOARD,
   'customer': ROUTES.SERVICE_ADVISOR_DASHBOARD,
+  'service-advisor': ROUTES.SERVICE_ADVISOR_DASHBOARD,
 };
 
 function RootRedirect() {
@@ -89,7 +90,7 @@ const AppRoutes: React.FC = () => (
         <Route
           path={ROUTES.SERVICE_ADVISOR_DASHBOARD.slice(1)}
           element={
-            <ProtectedRoute allowedRoles={['customer']}>
+            <ProtectedRoute allowedRoles={['customer', 'service-advisor']}>
               <ServiceAdvisorDashboard />
             </ProtectedRoute>
           }

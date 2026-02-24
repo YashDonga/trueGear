@@ -12,6 +12,7 @@ const ROLE_DEFAULT_ROUTES: Record<string, string> = {
   'security-gate-keeper': ROUTES.SECURITY_DASHBOARD,
   'qc-inspector': ROUTES.QUALITY_CHECK_DASHBOARD,
   'customer': ROUTES.SERVICE_ADVISOR_DASHBOARD,
+  'service-advisor': ROUTES.SERVICE_ADVISOR_DASHBOARD,
 };
 
 const ProtectedRoute: React.FC<Props> = ({ children, allowedRoles }) => {
