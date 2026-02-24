@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import truck from "../../assets/truck.png";
 import { InspectionSection } from "../../components/cards/InspectionSection";
 import ProgressSteps from "../../components/cards/ProgressSteps";
@@ -11,6 +12,17 @@ import { CriticalAlert } from "../../components/cards/CriticalAlert";
 import QCRatingSection from "../../components/cards/QCRatingSection";
 import QCRemarkSection from "../../components/cards/QCRemarkSection";
 import QCSuccess from "../../components/cards/QCSuccess";
+import {
+  getInspectionDetails,
+  saveStepItems,
+  saveFindings,
+  submitInspection,
+  uploadItemPhoto,
+  type InspectionItem,
+  type InspectionVehicle,
+  type InspectionSummary,
+  type InspectionFindings,
+} from "../../api/qc.api";
 
 // Type for checklist item status
 type ChecklistStatus = "pass" | "fail" | "na" | null;
@@ -20,37 +32,160 @@ interface ValidationErrors {
   [key: string]: string;
 }
 
-const QualityCheckInspection: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [errors, setErrors] = useState<ValidationErrors>({});
+// Map API result to local status
+function mapResultToStatus(result: string | null): ChecklistStatus {
+  if (!result) return null;
+  switch (result.toUpperCase()) {
+    case "PASS":
+      return "pass";
+    case "FAIL":
+      return "fail";
+    case "NA":
+      return "na";
+    default:
+      return null;
+  }
+}
 
-  // State for Step 1 (Exterior) - Body & Paint
+// Map local status to API result
+function mapStatusToResult(
+  status: ChecklistStatus
+): "PASS" | "FAIL" | "NA" | null {
+  if (!status) return null;
+  return status.toUpperCase() as "PASS" | "FAIL" | "NA";
+}
+
+// Map QC rating display value to API enum
+function mapRatingToApi(rating: string): string {
+  const map: Record<string, string> = {
+    "Pass": "PASS",
+    "conditional": "CONDITIONAL",
+    "Conditional": "CONDITIONAL",
+    "Fail - Suggested": "FAIL",
+    "Fail": "FAIL",
+  };
+  return map[rating] || rating.toUpperCase();
+}
+
+// Map API enum to QC rating display value
+function mapApiToRating(apiValue: string): string {
+  const map: Record<string, string> = {
+    "PASS": "Pass",
+    "CONDITIONAL": "conditional",
+    "FAIL": "Fail - Suggested",
+  };
+  return map[apiValue] || apiValue;
+}
+
+const QualityCheckInspection: React.FC = () => {
+  const { inspectionId } = useParams<{ inspectionId: string }>();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [maxStep, setMaxStep] = useState(1);
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Vehicle info from API
+  const [vehicle, setVehicle] = useState<InspectionVehicle | null>(null);
+
+  // Items from API categories
+  const [exteriorItems, setExteriorItems] = useState<InspectionItem[]>([]);
+  const [interiorItems, setInteriorItems] = useState<InspectionItem[]>([]);
+  const [brakeItems, setBrakeItemsList] = useState<InspectionItem[]>([]);
+
+  // Summary from API
+  const [summary, setSummary] = useState<InspectionSummary>({
+    totalItems: 0,
+    passCount: 0,
+    failCount: 0,
+    naCount: 0,
+    pendingCount: 0,
+  });
+
+  // Findings from API
+  const [findings, setFindings] = useState<InspectionFindings | null>(null);
+
+  // Status records for checklist UI
   const [bodyPaintStatus, setBodyPaintStatus] = useState<
     Record<number, ChecklistStatus>
   >({});
-
-  // State for Step 2 (Interior) - Seats & Upholstery
   const [seatsStatus, setSeatsStatus] = useState<
     Record<number, ChecklistStatus>
   >({});
-
-  // State for Step 3 (Brake)
   const [brakeStatus, setBrakeStatus] = useState<
     Record<number, ChecklistStatus>
   >({});
-
   // State for Step 4 (Findings)
   const [qcRating, setQcrating] = useState<string>("");
+  const [finalRemarks, setFinalRemarks] = useState<string>("");
 
+  // Fetch inspection data
+  const fetchInspection = useCallback(async () => {
+    if (!inspectionId) return;
+    setLoading(true);
+    try {
+      const res = await getInspectionDetails(inspectionId);
+      if (res.status) {
+        const { inspection, vehicle: vehicleData, categories, summary: summaryData, findings: findingsData } = res.data;
+
+        setVehicle(vehicleData);
+        setCurrentStep(inspection.currentStep);
+        setMaxStep(inspection.currentStep);
+        setSummary(summaryData);
+        setFindings(findingsData);
+
+        // Set exterior items and pre-fill statuses
+        const ext = categories.EXTERIOR || [];
+        setExteriorItems(ext);
+        const extStatus: Record<number, ChecklistStatus> = {};
+        ext.forEach((item, index) => {
+          extStatus[index] = mapResultToStatus(item.result);
+        });
+        setBodyPaintStatus(extStatus);
+
+        // Set interior items and pre-fill statuses
+        const int = categories.INTERIOR || [];
+        setInteriorItems(int);
+        const intStatus: Record<number, ChecklistStatus> = {};
+        int.forEach((item, index) => {
+          intStatus[index] = mapResultToStatus(item.result);
+        });
+        setSeatsStatus(intStatus);
+
+        // Set brake items and pre-fill statuses
+        const brk = categories.BRAKE || [];
+        setBrakeItemsList(brk);
+        const brkStatus: Record<number, ChecklistStatus> = {};
+        brk.forEach((item, index) => {
+          brkStatus[index] = mapResultToStatus(item.result);
+        });
+        setBrakeStatus(brkStatus);
+
+        // Pre-fill findings
+        if (findingsData.overallStatus) {
+          setQcrating(mapApiToRating(findingsData.overallStatus));
+        }
+        if (findingsData.finalRemarks) {
+          setFinalRemarks(findingsData.finalRemarks);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch inspection details:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [inspectionId]);
+  useEffect(() => {
+    fetchInspection();
+  }, [fetchInspection]);
   // Validation functions for each step
   const validateStep = (step: number): boolean => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
 
     switch (step) {
-      case 1: // Exterior - All items must have status
-        // Body & Paint (6 items)
-        for (let i = 0; i < 6; i++) {
+      case 1:
+        for (let i = 0; i < exteriorItems.length; i++) {
           if (!bodyPaintStatus[i]) {
             newErrors["bodyPaint"] = "Please complete all Body & Paint items";
             isValid = false;
@@ -58,20 +193,18 @@ const QualityCheckInspection: React.FC = () => {
           }
         }
         break;
-
-      case 2: // Interior - All items must have status
-        // Seats & Upholstery (6 items)
-        for (let i = 0; i < 6; i++) {
+      case 2:
+        for (let i = 0; i < interiorItems.length; i++) {
           if (!seatsStatus[i]) {
-            newErrors["seats"] = "Please complete all Seats & Upholstery items";
+            newErrors["seats"] =
+              "Please complete all Seats & Upholstery items";
             isValid = false;
             break;
           }
         }
         break;
-
-      case 3: // Brake - All items must have status (4 items)
-        for (let i = 0; i < 4; i++) {
+      case 3:
+        for (let i = 0; i < brakeItems.length; i++) {
           if (!brakeStatus[i]) {
             newErrors["brake"] = "Please complete all Brake items";
             isValid = false;
@@ -80,7 +213,7 @@ const QualityCheckInspection: React.FC = () => {
         }
         break;
 
-      case 4: // Findings - QC Rating must be selected
+      case 4:
         if (!qcRating) {
           newErrors["qcRating"] = "Please select a QC status rating";
           isValid = false;
@@ -94,43 +227,176 @@ const QualityCheckInspection: React.FC = () => {
     setErrors(newErrors);
     return isValid;
   };
+  // Update all categories and statuses from save response
+  const updateCategoriesFromResponse = (categories: {
+    EXTERIOR: InspectionItem[];
+    INTERIOR: InspectionItem[];
+    BRAKE: InspectionItem[];
+  }) => {
+    const ext = categories.EXTERIOR || [];
+    setExteriorItems(ext);
+    const extStatus: Record<number, ChecklistStatus> = {};
+    ext.forEach((item, index) => {
+      extStatus[index] = mapResultToStatus(item.result);
+    });
+    setBodyPaintStatus(extStatus);
 
-  const handleSaveAndContinue = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < 5) {
-        setCurrentStep((prev) => prev + 1);
-        // Clear errors when moving to next step
-        setErrors({});
+    const int = categories.INTERIOR || [];
+    setInteriorItems(int);
+    const intStatus: Record<number, ChecklistStatus> = {};
+    int.forEach((item, index) => {
+      intStatus[index] = mapResultToStatus(item.result);
+    });
+    setSeatsStatus(intStatus);
+
+    const brk = categories.BRAKE || [];
+    setBrakeItemsList(brk);
+    const brkStatus: Record<number, ChecklistStatus> = {};
+    brk.forEach((item, index) => {
+      brkStatus[index] = mapResultToStatus(item.result);
+    });
+    setBrakeStatus(brkStatus);
+
+    // Derive failed items for findings step
+    const allItems = [...ext, ...int, ...brk];
+    const failedItems = allItems
+      .filter((item) => item.result === "FAIL")
+      .map((item) => ({
+        itemCode: item.itemCode,
+        itemLabel: item.itemLabel,
+        category: ext.includes(item) ? "EXTERIOR" : int.includes(item) ? "INTERIOR" : "BRAKE",
+        comment: item.comment,
+      }));
+
+    setFindings((prev) => prev ? { ...prev, failedItems } : {
+      overallStatus: null,
+      overrideJustification: null,
+      finalRemarks: null,
+      brakeTestSummary: { performance: null, noise: null, vibration: null },
+      failedItems,
+      criticalIssuesDetected: failedItems.length > 0,
+    });
+  };
+
+  const handleSaveAndContinue = async () => {
+    if (!validateStep(currentStep) || !inspectionId) return;
+
+    setSaving(true);
+    try {
+      if (currentStep === 1) {
+        const items = exteriorItems.map((item, index) => ({
+          itemId: item.id,
+          result: mapStatusToResult(bodyPaintStatus[index])!,
+        }));
+        const res = await saveStepItems(inspectionId, {
+          category: "EXTERIOR",
+          items,
+        });
+        if (res.status) {
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
+          setSummary(res.data.summary);
+          updateCategoriesFromResponse(res.data.categories);
+          setErrors({});
+        }
+      } else if (currentStep === 2) {
+        const items = interiorItems.map((item, index) => ({
+          itemId: item.id,
+          result: mapStatusToResult(seatsStatus[index])!,
+        }));
+        const res = await saveStepItems(inspectionId, {
+          category: "INTERIOR",
+          items,
+        });
+        if (res.status) {
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
+          setSummary(res.data.summary);
+          updateCategoriesFromResponse(res.data.categories);
+          setErrors({});
+        }
+      } else if (currentStep === 3) {
+        const items = brakeItems.map((item, index) => ({
+          itemId: item.id,
+          result: mapStatusToResult(brakeStatus[index])!,
+        }));
+        const res = await saveStepItems(inspectionId, {
+          category: "BRAKE",
+          items,
+        });
+        if (res.status) {
+          const nextStep = res.data.currentStep;
+          setCurrentStep(nextStep);
+          setMaxStep((prev) => Math.max(prev, nextStep));
+          setSummary(res.data.summary);
+          updateCategoriesFromResponse(res.data.categories);
+          setErrors({});
+        }
+      } else if (currentStep === 4) {
+        const res = await saveFindings(inspectionId, {
+          overallStatus: mapRatingToApi(qcRating),
+          finalRemarks: finalRemarks || null,
+          brakePerformance:
+            findings?.brakeTestSummary?.performance || null,
+          brakeNoise: findings?.brakeTestSummary?.noise || null,
+          brakeVibration: findings?.brakeTestSummary?.vibration || null,
+        });
+        if (res.status) {
+          const submitRes = await submitInspection(inspectionId);
+          if (submitRes.status) {
+            setCurrentStep(5);
+            setMaxStep(5);
+          }
+          setErrors({});
+        }
       }
+    } catch (err) {
+      console.error("Failed to save step:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+  // Photo upload handler
+  const handlePhotoUpload = async (itemId: string, file: File) => {
+    if (!inspectionId) return;
+    const res = await uploadItemPhoto(inspectionId, itemId, file);
+    if (res.status) {
+      // Update photo count in the relevant category
+      const updatePhotos = (items: InspectionItem[]) =>
+        items.map((item) =>
+          item.id === itemId
+            ? { ...item, photos: [...item.photos, res.data] }
+            : item
+        );
+      setExteriorItems((prev) => updatePhotos(prev));
+      setInteriorItems((prev) => updatePhotos(prev));
+      setBrakeItemsList((prev) => updatePhotos(prev));
     }
   };
 
-  const bodyPaintItems = [
-    {
-      label: "Body Panels Condition",
-    },
-    { label: "Paint condition & scratches" },
-    { label: "Windshield & windows" },
-    { label: "Headlights & tail lights" },
-    { label: "Tyres & wheel condition" },
-    { label: "Side mirrors" },
-  ];
+  // Convert API items to display format
+  const exteriorDisplayItems = exteriorItems.map((item) => ({
+    id: item.id,
+    label: item.itemLabel,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
+  }));
+  const interiorDisplayItems = interiorItems.map((item) => ({
+    id: item.id,
+    label: item.itemLabel,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
+  }));
+  const brakeDisplayItems = brakeItems.map((item) => ({
+    id: item.id,
+    label: item.itemLabel,
+    photoUrl: item.photos.length > 0 ? item.photos[item.photos.length - 1].imageUrl : undefined,
+  }));
 
-
-  const seatupholstryItems = [
-    { label: "Dashboard condition" },
-    { label: "Seat condition" },
-    { label: "AC vents & controls" },
-    { label: "Steering & gear lever" },
-    { label: "Infotainment system" },
-    { label: "Engine bay inspection" },
-  ];
-  const BreakItems = [
-    { label: "Brake pedal response" },
-    { label: "Handbrake function" },
-    { label: "Brake fluid level" },
-    { label: "Brake pad wear" },
-  ];
+  // Calculate progress strings
+  const exteriorCompleted = Object.values(bodyPaintStatus).filter(Boolean).length;
+  const interiorCompleted = Object.values(seatsStatus).filter(Boolean).length;
+  const brakeCompleted = Object.values(brakeStatus).filter(Boolean).length;
 
   // Render error message if exists
   const renderError = (errorKey: string) => {
@@ -145,6 +411,14 @@ const QualityCheckInspection: React.FC = () => {
   };
 
   const renderStepContent = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-[#999] text-base">Loading inspection data...</p>
+        </div>
+      );
+    }
+
     switch (currentStep) {
       case 1: // Exterior
         return (
@@ -163,10 +437,11 @@ const QualityCheckInspection: React.FC = () => {
             <InspectionSection
               title="Body & Paint"
               description="Scratches, Cracks or impact inspection"
-              progress="0/6"
-              items={bodyPaintItems}
+              progress={`${exteriorCompleted}/${exteriorItems.length}`}
+              items={exteriorDisplayItems}
               status={bodyPaintStatus}
               onStatusChange={setBodyPaintStatus}
+              onPhotoUpload={handlePhotoUpload}
             />
           </>
         );
@@ -187,10 +462,11 @@ const QualityCheckInspection: React.FC = () => {
             <InspectionSection
               title="Seats & Upholstery"
               description="Vehicles awaiting quality inspection"
-              progress="0/4"
-              items={seatupholstryItems}
+              progress={`${interiorCompleted}/${interiorItems.length}`}
+              items={interiorDisplayItems}
               status={seatsStatus}
               onStatusChange={setSeatsStatus}
+              onPhotoUpload={handlePhotoUpload}
             />
           </>
         );
@@ -211,10 +487,11 @@ const QualityCheckInspection: React.FC = () => {
             <InspectionSection
               title="Brake System"
               description="Brake system inspection"
-              progress="0/4"
-              items={BreakItems}
+              progress={`${brakeCompleted}/${brakeItems.length}`}
+              items={brakeDisplayItems}
               status={brakeStatus}
               onStatusChange={setBrakeStatus}
+              onPhotoUpload={handlePhotoUpload}
             />
           </>
         );
@@ -232,16 +509,25 @@ const QualityCheckInspection: React.FC = () => {
               </div>
             </div>
             {renderError("qcRating")}
-            <FindingsSection />
+            <FindingsSection
+              passCount={summary.passCount}
+              failCount={summary.failCount}
+              naCount={summary.naCount}
+              pendingCount={summary.pendingCount}
+            />
             <FailedItemSection
               title="Failed Items"
-              description="Rate overall brake performance"
+              description="Items that failed inspection"
+              items={findings?.failedItems || []}
             />
             <BreakTestSummary
               title="Brake Test Summary"
               description="Rate overall brake performance"
+              performance={findings?.brakeTestSummary?.performance}
+              noise={findings?.brakeTestSummary?.noise}
+              vibration={findings?.brakeTestSummary?.vibration}
             />
-            <CriticalAlert />
+            <CriticalAlert show={findings?.criticalIssuesDetected || false} />
             <QCRatingSection
               title="Overall QC Status"
               description="Rate overall brake performance"
@@ -250,7 +536,9 @@ const QualityCheckInspection: React.FC = () => {
             />
             <QCRemarkSection
               title="Final Remarks"
-              description="Rate overall brake performance"
+              description="Add final remarks for this inspection"
+              value={finalRemarks}
+              onChange={setFinalRemarks}
             />
           </>
         );
@@ -281,14 +569,26 @@ const QualityCheckInspection: React.FC = () => {
             />
           </div>
           <div>
-            <p className="text-[#333] text-[16px] mb-0.5">BL 00 MY ZN</p>
-            <p className="text-[#999] text-[12px]">Vehicle Modal Name</p>
+            <p className="text-[#333] text-[16px] mb-0.5">
+              {vehicle?.registrationNumber || "—"}
+            </p>
+            <p className="text-[#999] text-[12px]">
+              {vehicle ? `${vehicle.brand} ${vehicle.model}` : "—"}
+            </p>
           </div>
         </div>
 
         <div className="border-b border-[#CACACA] my-4"></div>
         <div className="p-8">
-          <ProgressSteps currentStep={currentStep} />
+          <ProgressSteps
+            currentStep={currentStep}
+            maxStep={maxStep}
+            onStepClick={(step) => {
+              if (step <= maxStep && step !== currentStep && currentStep < 5) {
+                setCurrentStep(step);
+              }
+            }}
+          />
         </div>
         <div className="border-b border-[#CACACA] my-4"></div>
 
@@ -316,9 +616,9 @@ const QualityCheckInspection: React.FC = () => {
                 variant="gradient"
                 gradient={{ from: "#ff4f31", to: "#fe2b73" }}
                 onClick={handleSaveAndContinue}
-                disabled={currentStep === 5}
+                disabled={saving || loading}
               >
-                {currentStep === 5 ? "Submit" : "Save & Continue"}
+                {saving ? "Saving..." : "Save & Continue"}
               </Button>
             </div>
           )}

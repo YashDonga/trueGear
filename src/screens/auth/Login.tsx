@@ -2,22 +2,57 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import { login as loginApi } from "../../api/auth.api";
+import { useAuth } from "../../context/AuthContext";
 import imgBg from "../../assets/login_bg.png";
-import { EyeOffIcon } from "lucide-react";
+import { EyeOffIcon, EyeIcon, Loader2 } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import { GoogleIcon } from "../../assets/GoogleIcon";
 
-const Login = () => {
-  const [email] = useState("");
-  const [password] = useState("");
+const ROLE_DEFAULT_ROUTES: Record<string, string> = {
+  "security-gate-keeper": ROUTES.SECURITY_DASHBOARD,
+  "qc-inspector": ROUTES.QUALITY_CHECK_DASHBOARD,
+  "customer": ROUTES.SERVICE_ADVISOR_DASHBOARD,
+};
+
+const Login: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // wire up auth.login
-    console.log("login", { email, password });
-    navigate(ROUTES.SECURITY_DASHBOARD);
+    setError("");
+
+    if (!email || !password) {
+      setError("Please enter email and password");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await loginApi(email, password);
+
+      if (res.status && res.data) {
+        login({ token: res.data.token, user: res.data.user });
+
+        const roleSlug = res.data.user.role?.slug;
+        const defaultRoute = ROLE_DEFAULT_ROUTES[roleSlug] || ROUTES.HOME;
+        navigate(defaultRoute, { replace: true });
+      } else {
+        setError(res.message || "Login failed");
+      }
+    } catch (err: any) {
+      const msg = err.response?.data?.message || "Login failed. Please try again.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,12 +88,20 @@ const Login = () => {
               Login to access all your data
             </p>
           </div>
+          {/* Error */}
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-400/30 text-white text-sm">
+              {error}
+            </div>
+          )}
 
           {/* Form */}
-          <form className="space-y-4 sm:space-y-6" onSubmit={(e) => handleSubmit(e)}>
+          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             <Input
               label="Email Address"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
               placeholder="Enter your email address"
               className="w-full h-12 sm:h-16 px-4 sm:px-5 py-2 border border-gray-200 rounded-[20px] text-sm sm:text-base font-medium"
             />
@@ -66,22 +109,39 @@ const Login = () => {
             <Input
               label="Password"
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
               placeholder="Enter your password"
               className="w-full h-12 sm:h-16 px-4 sm:px-5 py-2 border border-gray-200 rounded-[20px] text-sm sm:text-base font-medium"
               rightIcon={
-                <EyeOffIcon
-                  className="h-5 w-5 sm:h-6 sm:w-6 text-white hover:opacity-80 transition-opacity cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                />
+                showPassword ? (
+                  <EyeIcon
+                    className="h-5 w-5 sm:h-6 sm:w-6 text-white hover:opacity-80 transition-opacity cursor-pointer"
+                    onClick={() => setShowPassword(false)}
+                  />
+                ) : (
+                  <EyeOffIcon
+                    className="h-5 w-5 sm:h-6 sm:w-6 text-white hover:opacity-80 transition-opacity cursor-pointer"
+                    onClick={() => setShowPassword(true)}
+                  />
+                )
               }
             />
 
             <Button
               type="submit"
               variant="custom"
+              disabled={loading}
               className="w-full mt-4 sm:mt-4 md:mt-6 shadow-lg hover:shadow-orange-500/20 bg-[#FF5100] text-white rounded-[20px] hover:bg-[#FF5100]/90 border-none h-12 sm:h-14 md:h-16"
             >
-              Log In
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Signing in...
+                </span>
+              ) : (
+                "Log In"
+              )}
             </Button>
           </form>
 

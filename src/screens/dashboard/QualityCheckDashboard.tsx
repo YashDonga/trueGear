@@ -1,12 +1,82 @@
-import { useLocation, Outlet } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { StatCard } from "../../components/cards/StatCard.tsx";
 import { Truck } from "lucide-react";
 import { QCTable } from "../../components/cards/QCTable.tsx";
 import { ROUTES } from "../../constants/routes.ts";
+import { getQCDashboard, startInspection, type QCStats, type QCQueueItem, type QCPagination } from "../../api/qc.api";
 
 const QualityCheckDashboard: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isIndexRoute = location.pathname === ROUTES.QUALITY_CHECK_DASHBOARD;
+
+  const [stats, setStats] = useState<QCStats>({
+    pendingInspection: 0,
+    inProgress: 0,
+    completed: 0,
+    avgTimeInside: "0h 0m",
+  });
+  const [queue, setQueue] = useState<QCQueueItem[]>([]);
+  const [pagination, setPagination] = useState<QCPagination>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<"ALL" | "URGENT" | "DELAYED">("ALL");
+  const [page, setPage] = useState(1);
+
+  const fetchDashboard = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getQCDashboard({ page, limit: 10, filter, sortOrder: "asc" });
+      if (res.status) {
+        setStats(res.data.stats);
+        setQueue(res.data.queue);
+        setPagination(res.data.pagination);
+      }
+    } catch (err) {
+      console.error("Failed to fetch QC dashboard:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, filter]);
+
+  useEffect(() => {
+    if (isIndexRoute) {
+      fetchDashboard();
+    }
+  }, [isIndexRoute, fetchDashboard]);
+
+  const handleFilterChange = (newFilter: "ALL" | "URGENT" | "DELAYED") => {
+    setFilter(newFilter);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleStartInspection = async (vehicle: QCQueueItem) => {
+    try {
+      const res = await startInspection({
+        vehicleId: vehicle.vehicleId,
+        serviceType: vehicle.serviceType || undefined,
+        priority: vehicle.priority,
+      });
+      if (res.status) {
+        navigate(ROUTES.QUALITY_CHECK_INSPECTION.replace(':inspectionId', res.data.inspection.id));
+      }
+    } catch (err) {
+      console.error("Failed to start inspection:", err);
+    }
+  };
+
+  const handleResumeInspection = (vehicle: QCQueueItem) => {
+    navigate(ROUTES.QUALITY_CHECK_INSPECTION.replace(':inspectionId', vehicle.inspectionId!));
+  };
 
   return (
     <>
@@ -17,33 +87,42 @@ const QualityCheckDashboard: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-7.5">
             <StatCard
               title="Pending Inspection"
-              value="05"
-              change="+12%"
+              value={String(stats.pendingInspection).padStart(2, "0")}
+              change=""
               icon={<Truck className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]" strokeWidth={1.5} />}
             />
             <StatCard
               title="In Progress"
-              value="12%"
-              change="+12%"
+              value={String(stats.inProgress).padStart(2, "0")}
+              change=""
               icon={<Truck className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]" strokeWidth={1.5} />}
             />
             <StatCard
               title="Completed Today"
-              value="05"
-              change="+12%"
+              value={String(stats.completed).padStart(2, "0")}
+              change=""
               icon={<Truck className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]" strokeWidth={1.5} />}
             />
             <StatCard
               title="Avg. Time Inside"
-              value="3h 41m"
-              change="+12%"
+              value={stats.avgTimeInside}
+              change=""
               icon={<Truck className="w-7 h-7 sm:w-8 sm:h-8 text-[#BFBFBF]" strokeWidth={1.5} />}
             />
           </div>
 
           {/* QC Table */}
           <div className="overflow-x-auto">
-            <QCTable />
+            <QCTable
+              queue={queue}
+              pagination={pagination}
+              loading={loading}
+              filter={filter}
+              onFilterChange={handleFilterChange}
+              onPageChange={handlePageChange}
+              onStartInspection={handleStartInspection}
+              onResumeInspection={handleResumeInspection}
+            />
           </div>
         </>
       )}
@@ -55,4 +134,3 @@ const QualityCheckDashboard: React.FC = () => {
 };
 
 export default QualityCheckDashboard;
-

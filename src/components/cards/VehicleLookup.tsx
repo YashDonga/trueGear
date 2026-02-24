@@ -5,7 +5,6 @@ import Input from "../common/Input";
 
 interface VehicleLookupProps {
   onSearch?: (query: string) => void;
-  onAddVehicle?: () => void;
 }
 
 export function VehicleLookup({ onSearch }: VehicleLookupProps) {
@@ -39,10 +38,13 @@ export function VehicleLookup({ onSearch }: VehicleLookupProps) {
 
           <Input
             type="text"
-            placeholder="Enter Registration Number (e.g., KA-01-AB-1234)"
+            placeholder="Enter VIN Number to search"
             className="flex-1 text-[13px] sm:text-[14px] text-[#333] placeholder:text-[#bfbfbf] outline-none bg-transparent"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
           />
         </div>
 

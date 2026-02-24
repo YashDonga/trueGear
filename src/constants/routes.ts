@@ -4,9 +4,7 @@ export const ROUTES = {
   REGISTER: '/register',
   SECURITY_DASHBOARD: '/security-dashboard',
   QUALITY_CHECK_DASHBOARD: '/quality-check-dashboard',
-  QUALITY_CHECK_INSPECTION: '/quality-check-dashboard/quality-check-inspection',
-  POST_SERVICE_QC_DASHBOARD: '/post-service-qc',
-  POST_SERVICE_QC_INSPECTION: '/post-service-qc/inspection/:id',
+  QUALITY_CHECK_INSPECTION: '/quality-check-dashboard/quality-check-inspection/:inspectionId',
   SERVICE_ADVISOR_DASHBOARD: '/service-advisor-dashboard',
   SERVICE_ADVISOR_VEHICLE_DETAIL: '/service-advisor-dashboard/vehicle/:id',
   CUSTOMER_APPROVAL_DASHBOARD: '/customer-approval-dashboard',
@@ -15,12 +13,11 @@ export const ROUTES = {
   TECHNICIAN_DASHBOARD: '/technician-dashboard',
   TECHNICIAN_JOB_DETAIL: '/technician-dashboard/job/:id',
   PROFILE: '/profile',
+  ADD_CUSTOMER: '/security-dashboard/add-customer',
   ADD_VEHICLE: '/security-dashboard/add-vehicle',
   VEHICLE_ENTRY_SUCCESS: '/security-dashboard/vehicle-entry-success',
   CREATE_JOB_CARD: '/service-advisor-dashboard/job-card/:vehicleId',
-  SEND_ESTIMATE: '/service-advisor-dashboard/send-estimate',
-  FINANCE_BILLING_DASHBOARD: '/finance-billing',
-  FINANCE_BILLING_INVOICE: '/finance-billing/invoice/:id',
+  SETTINGS: '/settings',
 };
 
 export default ROUTES;

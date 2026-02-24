@@ -1,12 +1,64 @@
+import { useState, useEffect, useCallback } from "react";
 import { StatCard } from "../../components/cards/StatCard.tsx";
-import { Truck, Clock, CheckCircle, Calendar } from "lucide-react";
+import { Truck, Clock, CheckCircle, Calendar, Loader2 } from "lucide-react";
 import { ServiceAdvisorTable } from "../../components/cards/ServiceAdvisorTable.tsx";
 import { Outlet, useLocation } from "react-router-dom";
 import ROUTES from "../../constants/routes.ts";
+import {
+  getServiceAdvisorDashboard,
+  type SAStats,
+  type SAVehicle,
+  type SAPagination,
+  type SAFilterStatus,
+} from "../../api/serviceAdvisor.api";
 
 const ServiceAdvisorDashboard: React.FC = () => {
   const location = useLocation();
   const isIndexRoute = location.pathname === ROUTES.SERVICE_ADVISOR_DASHBOARD;
+
+  const [stats, setStats] = useState<SAStats | null>(null);
+  const [vehicles, setVehicles] = useState<SAVehicle[]>([]);
+  const [pagination, setPagination] = useState<SAPagination | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<SAFilterStatus>("ALL");
+  const [page, setPage] = useState(1);
+  const limit = 5;
+
+  const fetchDashboard = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getServiceAdvisorDashboard({
+        page,
+        limit,
+        filter,
+        sortOrder: "desc",
+      });
+      if (res.status) {
+        setStats(res.data.stats);
+        setVehicles(res.data.activeVehicles);
+        setPagination(res.data.pagination);
+      }
+    } catch (err) {
+      console.error("Failed to fetch SA dashboard:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, filter]);
+
+  useEffect(() => {
+    if (isIndexRoute) {
+      fetchDashboard();
+    }
+  }, [isIndexRoute, fetchDashboard]);
+
+  const handleFilterChange = (newFilter: SAFilterStatus) => {
+    setFilter(newFilter);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   return (
     <>
@@ -16,7 +68,7 @@ const ServiceAdvisorDashboard: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-7.5">
             <StatCard
               title="QC Complete"
-              value="05"
+              value={stats ? String(stats.qcComplete).padStart(2, "0") : "--"}
               change="+12%"
               icon={
                 <CheckCircle
@@ -27,7 +79,7 @@ const ServiceAdvisorDashboard: React.FC = () => {
             />
             <StatCard
               title="Awaiting Approval"
-              value="12"
+              value={stats ? String(stats.pendingApproval).padStart(2, "0") : "--"}
               change="+12%"
               icon={
                 <Calendar
@@ -38,7 +90,7 @@ const ServiceAdvisorDashboard: React.FC = () => {
             />
             <StatCard
               title="In Service"
-              value="05"
+              value={stats ? String(stats.inService).padStart(2, "0") : "--"}
               change="+12%"
               icon={
                 <Truck
@@ -49,7 +101,7 @@ const ServiceAdvisorDashboard: React.FC = () => {
             />
             <StatCard
               title="Ready for Billing"
-              value="03"
+              value={stats ? String(stats.readyForBilling).padStart(2, "0") : "--"}
               change="+12%"
               icon={
                 <Clock
@@ -62,7 +114,19 @@ const ServiceAdvisorDashboard: React.FC = () => {
 
           {/* Service Queue Table */}
           <div className="overflow-x-auto">
-            <ServiceAdvisorTable />
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+              </div>
+            ) : (
+              <ServiceAdvisorTable
+                vehicles={vehicles}
+                pagination={pagination}
+                filter={filter}
+                onFilterChange={handleFilterChange}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
         </>
       )}

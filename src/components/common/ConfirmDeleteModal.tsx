@@ -1,57 +1,50 @@
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { Trash2, Loader2 } from 'lucide-react';
 import Button from './Button';
 
-interface ConfirmVehicleEntryModalProps {
+interface ConfirmDeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   registration: string;
-  owner: string;
-  photosCaptured: string;
-  entryTime: string;
-  isConfirming?: boolean;
+  model: string;
+  isDeleting?: boolean;
   error?: string | null;
 }
 
-export function ConfirmVehicleEntryModal({
+export function ConfirmDeleteModal({
   isOpen,
   onClose,
   onConfirm,
   registration,
-  owner,
-  photosCaptured,
-  entryTime,
-  isConfirming = false,
+  model,
+  isDeleting = false,
   error,
-}: ConfirmVehicleEntryModalProps) {
+}: ConfirmDeleteModalProps) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-7.5 w-125 shadow-xl">
+        {/* Icon */}
+        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+          <Trash2 className="w-6 h-6 text-red-500" />
+        </div>
+
         {/* Title */}
-        <h2 className="text-[#333] text-[20px] mb-2">Confirm Vehicle Entry</h2>
+        <h2 className="text-[#333] text-[20px] mb-2">Delete Vehicle</h2>
         <p className="text-[#999] text-[14px] mb-7.5">
-          This will register the vehicle for service and notify the Quality check team.
+          Are you sure you want to delete this vehicle? This action cannot be undone.
         </p>
 
-        {/* Information Grid */}
+        {/* Vehicle Info */}
         <div className="grid grid-cols-2 gap-x-10 gap-y-5 mb-7.5">
           <div>
             <p className="text-[#999] text-[12px] mb-1.25">Registration</p>
             <p className="text-[#333] text-[16px]">{registration}</p>
           </div>
           <div>
-            <p className="text-[#999] text-[12px] mb-1.25">Owner</p>
-            <p className="text-[#333] text-[16px]">{owner}</p>
-          </div>
-          <div>
-            <p className="text-[#999] text-[12px] mb-1.25">Photos Captured</p>
-            <p className="text-[#333] text-[16px]">{photosCaptured}</p>
-          </div>
-          <div>
-            <p className="text-[#999] text-[12px] mb-1.25">Entry time</p>
-            <p className="text-[#333] text-[16px]">{entryTime}</p>
+            <p className="text-[#999] text-[12px] mb-1.25">Model</p>
+            <p className="text-[#333] text-[16px]">{model}</p>
           </div>
         </div>
 
@@ -67,16 +60,17 @@ export function ConfirmVehicleEntryModal({
 
         {/* Action Buttons */}
         <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={onClose} disabled={isConfirming}>
+          <Button variant="outline" onClick={onClose} disabled={isDeleting}>
             Cancel
           </Button>
           <Button
-            variant="gradient"
+            variant="custom"
+            className="bg-red-500! text-white! hover:bg-red-600! px-6!"
             onClick={onConfirm}
-            disabled={isConfirming}
-            icon={isConfirming ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+            disabled={isDeleting}
+            icon={isDeleting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
           >
-            {isConfirming ? "Confirming..." : "Confirm Entry!"}
+            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </div>
       </div>

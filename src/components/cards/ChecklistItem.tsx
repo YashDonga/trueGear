@@ -1,5 +1,6 @@
-import { Camera, StickyNote } from 'lucide-react';
-import { useState, useEffect } from 'react';
+
+import { Camera, StickyNote, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button';
 
 interface ChecklistItemProps {
@@ -7,11 +8,16 @@ interface ChecklistItemProps {
   description?: string;
   status?: 'pass' | 'fail' | 'na' | null;
   onStatusChange?: (status: 'pass' | 'fail' | 'na' | null) => void;
+  onPhotoUpload?: (file: File) => Promise<void>;
+  photoUrl?: string;
 }
 
-export function ChecklistItem({ label, description, status: externalStatus, onStatusChange }: ChecklistItemProps) {
+export function ChecklistItem({ label, description, status: externalStatus, onStatusChange, onPhotoUpload, photoUrl }: ChecklistItemProps) {
   const [internalStatus, setInternalStatus] = useState<'pass' | 'fail' | 'na' | null>(externalStatus || null);
-  
+  const [uploading, setUploading] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Sync internal state with external status prop
   useEffect(() => {
     if (externalStatus !== undefined) {
@@ -27,6 +33,32 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
     const updatedStatus = currentStatus === newStatus ? null : newStatus;
     setInternalStatus(updatedStatus);
     onStatusChange?.(updatedStatus);
+  };
+
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onPhotoUpload) return;
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onloadend = () => setLocalPreview(reader.result as string);
+    reader.readAsDataURL(file);
+
+    setUploading(true);
+    try {
+      await onPhotoUpload(file);
+    } catch (err) {
+      console.error("Failed to upload photo:", err);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   return (
@@ -79,11 +111,26 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
         </div>
 
         {/* Camera Button */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
         <Button
           variant="custom"
-          className="h-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-3!"
+          onClick={handleCameraClick}
+          disabled={uploading}
+          className="relative h-12.5! w-12.5! rounded-md bg-[#FBFBFB] border border-[#BFBFBF] flex items-center justify-center hover:bg-gray-50 shrink-0 px-0! overflow-hidden"
         >
-          <Camera size={20} color="#CACACA" />
+          {uploading ? (
+            <Loader2 size={20} className="animate-spin text-[#CACACA]" />
+          ) : localPreview || photoUrl ? (
+            <img src={localPreview || `/${photoUrl}`} alt={label} className="w-full h-full object-cover" />
+          ) : (
+            <Camera size={20} color="#CACACA" />
+          )}
         </Button>
 
         {/* Notes Button */}
@@ -97,4 +144,3 @@ export function ChecklistItem({ label, description, status: externalStatus, onSt
     </div>
   );
 }
-
